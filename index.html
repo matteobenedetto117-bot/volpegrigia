@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>La volpe grigia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #fdfcf9;
+      --text:      #1c1c2e;
+      --muted:     #888;
+      --border:    #e8e4dc;
+      --max:       640px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 4rem 1.5rem 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .site-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 7vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .site-title em {
+      font-style: italic;
+      color: #555;
+    }
+
+    .site-tagline {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    /* ── LISTA PILLOLE ── */
+    .pillole {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    .pillole-header {
+      padding: 2rem 0 1.2rem;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+
+    .pillole-header-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .pillole-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── CARD PILLOLA ── */
+    .pillola {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      padding: 1.8rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      position: relative;
+    }
+
+    .pillola:hover { background: rgba(0,0,0,0.015); }
+    .pillola:hover .pillola-arrow { opacity: 1; transform: translateX(0); }
+
+    .pillola-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .pillola-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 2px;
+      color: #fff;
+    }
+
+    .pillola-date {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .pillola-readtime {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .pillola-domanda {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      padding-right: 2rem;
+    }
+
+    .pillola-risposta {
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.55;
+      max-width: 520px;
+    }
+
+    .pillola-arrow {
+      position: absolute;
+      right: 0.2rem;
+      top: 50%;
+      transform: translateX(-6px) translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      padding: 3rem 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+      font-size: 0.75rem;
+      color: #bbb;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="site-eyebrow">Divulgazione culturale</div>
+  <h1 class="site-title">La volpe<br><em>grigia</em></h1>
+  <p class="site-tagline">Una domanda. Una risposta. Tre minuti.</p>
+</header>
+
+<!-- ── PILLOLE ── -->
+<main class="pillole">
+
+  <div class="pillole-header">
+    <span class="pillole-header-label">Tutte le domande</span>
+    <span class="pillole-count">2 pillole</span>
+  </div>
+
+  <!-- PILLOLA 2 — Quando si è formata la vita? -->
+  <a class="pillola" href="domanda-quando-vita.html">
+    <div class="pillola-meta">
+      <span class="pillola-tag" style="background:#16a085;">#Scienze</span>
+      <span class="pillola-date">Aprile 2026</span>
+      <span class="pillola-readtime">3 min</span>
+    </div>
+    <div class="pillola-domanda">Quando si è formata la vita?</div>
+    <div class="pillola-risposta">Circa 3,8 miliardi di anni fa — forse anche prima. La Terra aveva appena 700 milioni di anni ed era ancora bombardata da meteoriti.</div>
+    <span class="pillola-arrow">→</span>
+  </a>
+
+  <!-- PILLOLA 1 — La vita prima della vita -->
+  <a class="pillola" href="scienze-origine-vita.html">
+    <div class="pillola-meta">
+      <span class="pillola-tag" style="background:#16a085;">#Scienze</span>
+      <span class="pillola-date">Aprile 2026</span>
+      <span class="pillola-readtime">4 min</span>
+    </div>
+    <div class="pillola-domanda">Come si è formata la vita sulla Terra?</div>
+    <div class="pillola-risposta">Molecole semplici, un fulmine, e tre miliardi di anni di pazienza. La chimica prebiotica dall'esperimento Miller-Urey all'ipotesi RNA World.</div>
+    <span class="pillola-arrow">→</span>
+  </a>
+
+</main>
+
+<footer>
+  La volpe grigia — divulgazione culturale personale
+</footer>
+
+</body>
+</html>

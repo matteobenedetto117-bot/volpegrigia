@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quando si è formata la vita?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fdfcf9;
+      --text: #1c1c2e;
+      --accent: #16a085;
+      --accent-dim: rgba(22,160,133,0.12);
+      --muted: #888;
+      --border: #e8e4dc;
+      --max: 640px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 300;
+      font-size: 1.08rem;
+      line-height: 1.75;
+      padding: 0 1.25rem 5rem;
+    }
+
+    /* ── NAV ── */
+    nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1.5rem 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .site-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .read-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── DOMANDA ── */
+    .domanda-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 0.7rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 5vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 1.6rem;
+      max-width: var(--max);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── RISPOSTA DIRETTA ── */
+    .risposta {
+      max-width: var(--max);
+      margin: 0 auto 2.2rem;
+      background: var(--accent-dim);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 1rem 1.2rem;
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .risposta strong { color: var(--accent); }
+
+    /* ── TESTO ── */
+    .corpo {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .corpo p {
+      margin-bottom: 1.3rem;
+      font-size: 1.05rem;
+      line-height: 1.78;
+    }
+
+    /* ── APPLET ── */
+    .applet {
+      max-width: var(--max);
+      margin: 2rem auto;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .applet-header {
+      padding: 0.9rem 1.2rem 0;
+    }
+
+    .applet-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .applet-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── TIMELINE ── */
+    .tl-wrap {
+      padding: 1.5rem 1.2rem 0.8rem;
+      overflow-x: auto;
+    }
+
+    .tl-track {
+      position: relative;
+      display: flex;
+      min-width: 520px;
+      padding-bottom: 0.5rem;
+    }
+
+    .tl-line {
+      position: absolute;
+      top: 10px;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, #ccc, var(--accent));
+    }
+
+    .tl-node {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tl-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: var(--bg);
+      transition: background 0.2s, transform 0.2s;
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .tl-node:hover .tl-dot,
+    .tl-node.sel .tl-dot {
+      background: var(--accent);
+      transform: scale(1.25);
+    }
+
+    .tl-age {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .tl-tag {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.3;
+      padding: 0 4px;
+    }
+
+    .tl-detail {
+      margin: 0 1.2rem 1.2rem;
+      background: var(--accent-dim);
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      font-size: 0.86rem;
+      line-height: 1.6;
+      min-height: 56px;
+      transition: opacity 0.25s;
+    }
+
+    /* ── COME LO SAPPIAMO ── */
+    .metodi {
+      max-width: var(--max);
+      margin: 0 auto 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 480px) { .metodi { grid-template-columns: 1fr; } }
+
+    .metodo-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      background: #fff;
+    }
+
+    .metodo-icon {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .metodo-nome {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: var(--text);
+    }
+
+    .metodo-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── APPLET TEMPO ── */
+    .applet-tempo {
+      max-width: var(--max);
+      margin: 2rem auto;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+
+    .tempo-bar-wrap {
+      margin: 1rem 0 0.5rem;
+      position: relative;
+    }
+
+    .tempo-track {
+      height: 28px;
+      background: #f0ece4;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tempo-segment {
+      position: absolute;
+      top: 0; bottom: 0;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: filter 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .tempo-segment:hover { filter: brightness(1.12); }
+
+    .tempo-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      padding: 0 2px;
+    }
+
+    .tempo-detail {
+      margin-top: 0.8rem;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      color: var(--muted);
+      min-height: 2rem;
+    }
+
+    /* ── TAKEAWAY ── */
+    .takeaway {
+      max-width: var(--max);
+      margin: 2.5rem auto 0;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* ── FONTE ── */
+    .fonte-mini {
+      max-width: var(--max);
+      margin: 1.5rem auto 0;
+      font-size: 0.75rem;
+      color: #aaa;
+      line-height: 1.6;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    .fonte-mini a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="site-name" href="index.html">← Tutte le domande</a>
+  <span class="read-time">3 min</span>
+</nav>
+
+<div style="max-width:var(--max);margin:0 auto;">
+  <div class="domanda-label">Domanda</div>
+  <h1>Quando si è formata la vita?</h1>
+</div>
+
+<!-- RISPOSTA DIRETTA -->
+<div class="risposta">
+  Circa <strong>3,8 miliardi di anni fa</strong> — forse anche prima. La Terra aveva appena 700 milioni di anni, era ancora bombardata da meteoriti, e la vita era già lì.
+</div>
+
+<!-- TESTO -->
+<div class="corpo">
+  <p>
+    È una delle scoperte più sorprendenti della geologia moderna: la vita non ha aspettato che la Terra si "calmasse". Appena le condizioni lo hanno permesso — un po' d'acqua liquida, qualche minerale, un po' di calore — qualcosa ha cominciato a replicarsi.
+  </p>
+  <p>
+    Come lo sappiamo? Non troviamo fossili nel senso classico del termine: a quelle età, la roccia è stata così scaldata e deformata che le strutture biologiche scompaiono. Quello che troviamo sono <em>tracce chimiche</em> — rapporti isotopici del carbonio che solo il metabolismo biologico produce, e strutture minerali che i batteri costruiscono ancora oggi.
+  </p>
+</div>
+
+<!-- APPLET 1: TIMELINE -->
+<div class="applet">
+  <div class="applet-header">
+    <div class="applet-title">La finestra del tempo</div>
+    <div class="applet-hint">Clicca su un evento per i dettagli</div>
+  </div>
+  <div class="tl-wrap">
+    <div class="tl-track" id="tl">
+      <div class="tl-line"></div>
+
+      <div class="tl-node" data-txt="La Terra si forma per accrescimento di polvere e gas. Nei primi 100 milioni di anni è in parte fusa, continuamente colpita da meteoriti. Impossibile qualsiasi chimica prebiotica stabile. <em>Fonte: USGS; datazione Pb-Pb su meteoriti.</em>">
+        <div class="tl-dot"></div>
+        <div class="tl-age">4,54 Ga</div>
+        <div class="tl-tag">Formazione<br>della Terra</div>
+      </div>
+
+      <div class="tl-node" data-txt="I cristalli di zircone di Jack Hills (Australia) mostrano firme chimiche compatibili con acqua liquida. La finestra per la vita si apre molto prima del previsto. <em>Fonte: Wilde et al., Nature 2001.</em>">
+        <div class="tl-dot"></div>
+        <div class="tl-age">4,40 Ga</div>
+        <div class="tl-tag">Primi oceani<br>stabili</div>
+      </div>
+
+      <div class="tl-node" data-txt="Pioggia intensa di meteoriti e asteroidi. Paradossalmente, questi corpi portano molecole organiche complesse — aminoacidi, zuccheri — sintetizzate nello spazio. Non solo distruzione: anche materia prima. <em>Fonte: revisione in Chyba & Sagan, Nature 1992.</em>">
+        <div class="tl-dot"></div>
+        <div class="tl-age">4,1–3,8 Ga</div>
+        <div class="tl-tag">Bombardamento<br>tardivo</div>
+      </div>
+
+      <div class="tl-node" data-txt="Nelle rocce di Isua (Groenlandia), il carbonio è arricchito in ¹²C rispetto al ¹³C — la firma isotopica tipica del metabolismo biologico. È la traccia chimica più antica di vita. <em>Fonte: Rosing, Science 1999.</em>">
+        <div class="tl-dot"></div>
+        <div class="tl-age">3,70 Ga</div>
+        <div class="tl-tag">Biomarcatori<br>in Groenlandia</div>
+      </div>
+
+      <div class="tl-node" data-txt="I microfossili nell'Apex Chert australiano e le stromatoliti in Sudafrica sono le prove morfologiche più antiche accettate dalla comunità scientifica. Batteri filamentosi simili alle cianobatteri moderni. <em>Fonte: Schopf, Science 1993.</em>">
+        <div class="tl-dot"></div>
+        <div class="tl-age">3,50 Ga</div>
+        <div class="tl-tag">Microfossili<br>certi</div>
+      </div>
+
+    </div>
+  </div>
+  <div class="tl-detail" id="tl-detail">👆 Clicca su un punto per leggere cosa è successo.</div>
+</div>
+
+<!-- TESTO 2 -->
+<div class="corpo">
+  <p>
+    La prova più contestata è quella più antica: i filamenti di ematite nel Nuvvuagittuq Belt (Québec), datati fino a 4,28 miliardi di anni fa. Se fosse confermata, la vita sarebbe comparsa quasi immediatamente dopo la formazione degli oceani. Ma l'interpretazione è ancora dibattuta: strutture simili possono formarsi anche per processi puramente geologici.
+  </p>
+</div>
+
+<!-- APPLET 2: BARRA DEL TEMPO GEOLOGICO -->
+<div class="applet-tempo">
+  <div class="applet-title" style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:0.2rem;">Quanto è durata l'attesa?</div>
+  <div class="applet-hint" style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-bottom:0.4rem;">Clicca su un segmento per capire le proporzioni</div>
+
+  <div class="tempo-bar-wrap">
+    <div class="tempo-track">
+      <!-- Terra sterile: 0 → ~16% (700 Ma su 4540) -->
+      <div class="tempo-segment" style="left:0%;width:15.4%;background:#b0a090;" data-info="I primi 700 milioni di anni: Terra fusa, bombardamento di meteoriti, nessuna condizione per la vita. Un'eternità in termini umani, un battito di ciglia in termini geologici.">Terra sterile</div>
+      <!-- Vita unicellulare: 16% → 87% (3300 Ma) -->
+      <div class="tempo-segment" style="left:15.4%;width:72%;background:#16a085;" data-info="Per oltre 3 miliardi di anni, la vita sulla Terra è rimasta microscopica — batteri e archea. Niente animali, niente piante, niente occhi. Solo chimica replicante.">Vita unicellulare (3,3 miliardi di anni)</div>
+      <!-- Animali complessi: 87% → 100% -->
+      <div class="tempo-segment" style="left:87.4%;width:12.6%;background:#e67e22;" data-info="Solo negli ultimi 600 milioni di anni compaiono gli animali complessi — la Esplosione Cambriana. Tutto ciò che possiamo vedere a occhio nudo è comparso nell'ultimo 13% della storia della Terra.">Animali</div>
+    </div>
+    <div class="tempo-labels">
+      <span>4,54 Ga — Inizio</span>
+      <span>Oggi</span>
+    </div>
+  </div>
+  <div class="tempo-detail" id="tempo-detail">Clicca su un segmento per capire le proporzioni del tempo geologico.</div>
+</div>
+
+<!-- TESTO 3 -->
+<div class="corpo">
+  <p>
+    La cosa che colpisce davvero non è la data precisa. È la proporzione. La vita unicellulare ha dominato il pianeta per tre miliardi di anni — il 66% dell'intera storia della Terra. Gli animali complessi, gli ecosistemi visibili, tutto ciò che associamo alla "natura" è comparso nell'ultimo 13%. Noi siamo gli ultimi arrivati.
+  </p>
+</div>
+
+<!-- TAKEAWAY -->
+<div class="takeaway">
+  "La vita non ha aspettato le condizioni perfette. Ha cominciato non appena ha potuto, e per quasi tre miliardi di anni non ha avuto nessuna fretta di diventare complicata."
+</div>
+
+<!-- FONTI -->
+<div class="fonte-mini">
+  <strong>Fonti dei dati:</strong> Datazione Terra (Pb-Pb): USGS. Zirconi Jack Hills: Wilde et al., <em>Nature</em> 409, 2001. Biomarcatori Isua: Rosing, <em>Science</em> 283, 1999. Microfossili Apex Chert: Schopf, <em>Science</em> 260, 1993. Nuvvuagittuq: Dodd et al., <em>Nature</em> 543, 2017 (interpretazione dibattuta). Bombardamento tardivo: Chyba & Sagan, <em>Nature</em> 355, 1992.
+</div>
+
+<script>
+  /* TIMELINE */
+  document.querySelectorAll('.tl-node').forEach(node => {
+    node.addEventListener('click', () => {
+      document.querySelectorAll('.tl-node').forEach(n => n.classList.remove('sel'));
+      node.classList.add('sel');
+      const detail = document.getElementById('tl-detail');
+      detail.style.opacity = '0';
+      setTimeout(() => {
+        detail.innerHTML = node.dataset.txt;
+        detail.style.opacity = '1';
+      }, 180);
+    });
+  });
+
+  /* BARRA TEMPO */
+  document.querySelectorAll('.tempo-segment').forEach(seg => {
+    seg.addEventListener('click', () => {
+      const d = document.getElementById('tempo-detail');
+      d.style.opacity = '0';
+      setTimeout(() => {
+        d.textContent = seg.dataset.info;
+        d.style.opacity = '1';
+      }, 150);
+    });
+  });
+</script>
+
+</body>
+</html>
