@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qual è il mezzo di trasporto più pericoloso?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fadbd8;
+    --accent-mid: #e74c3c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  /* HEADER */
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  /* TESTO */
+  .testo {
+    margin: 32px 0;
+  }
+
+  .testo p {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 0;
+  }
+
+  /* APPLET */
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header {
+    margin-bottom: 6px;
+  }
+
+  .applet-numero {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .applet-titolo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .applet-istruzione {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .applet-fonte {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  /* TOGGLE METRICA */
+  .toggle-group {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    padding: 7px 13px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .toggle-btn:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* CHART CONTAINER */
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+
+  /* CALCOLATORE */
+  .calc-grid {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .calc-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .calc-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+
+  .range-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .calc-result {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 16px 18px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 8px;
+  }
+
+  .calc-result .risultato-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .calc-result .risultato-txt {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .calc-comparativo {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .comp-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .comp-card .c-emoji { font-size: 20px; margin-bottom: 3px; }
+  .comp-card .c-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .comp-card .c-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+  /* TIMELINE */
+  .timeline-wrap {
+    position: relative;
+  }
+
+  .timeline-chart-wrap {
+    position: relative;
+    height: 240px;
+  }
+
+  .timeline-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .milestone-list {
+    margin-top: 20px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .milestone {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .milestone:hover, .milestone.active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .milestone-anno {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 44px;
+  }
+
+  .milestone-testo {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* FRASE FINALE */
+  .frase-finale {
+    margin: 48px 0 40px;
+    padding: 24px 28px;
+    border-top: 3px solid var(--accent);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .frase-finale p {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  /* FONTI */
+  .fonti {
+    padding: 28px 0 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .fonti h3 {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .fonti ul {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+
+  .fonti li {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .fonti li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  /* HOME LINK */
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 32px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .calc-comparativo { grid-template-columns: 1fr; }
+    .chart-wrap { height: 220px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Società</div>
+    <h1>Qual è il mezzo di trasporto più pericoloso?</h1>
+    <div class="risposta-box">
+      <p>L'auto, senza dubbio. Ma la risposta cambia radicalmente a seconda di come si misura il rischio — e capire questa differenza cambia il modo in cui pensiamo alla sicurezza.</p>
+    </div>
+    <div class="meta">Lettura: 3 minuti &nbsp;·&nbsp; Aggiornato: aprile 2025</div>
+  </header>
+
+  <!-- TESTO INTRO -->
+  <div class="testo">
+    <p>Quando un aereo cade, finisce sui giornali per settimane. Quando un'auto si schianta, è una notizia locale. Eppure ogni anno in Europa muoiono oltre 20.000 persone sulle strade — e quasi nessuno sulla pista di un aeroporto. Il problema è che il rischio non si misura con le emozioni, ma con i numeri. E i numeri dipendono da <em>come</em> si conta.</p>
+  </div>
+
+  <!-- APPLET 1: Grafico comparativo con toggle -->
+  <div class="applet">
+    <div class="applet-header">
+
+      <div class="applet-titolo">La classifica cambia con la metrica</div>
+      <div class="applet-istruzione">Seleziona una metrica per vedere come cambia la pericolosità relativa di ogni mezzo.</div>
+    </div>
+
+    <div class="toggle-group">
+      <button class="toggle-btn active" data-metric="km" onclick="setMetric('km', this)">Morti per miliardo di km</button>
+      <button class="toggle-btn" data-metric="ore" onclick="setMetric('ore', this)">Morti per miliardo di ore</button>
+      <button class="toggle-btn" data-metric="viaggi" onclick="setMetric('viaggi', this)">Morti per miliardo di viaggi</button>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chartMezzi"></canvas>
+    </div>
+
+    <div class="applet-fonte">
+      Fonte: <a href="https://www.etsc.eu" target="_blank">ETSC — European Transport Safety Council</a>, PIN Report 2023; UK Dept. for Transport, Transport Statistics 2023; IATA Safety Report 2023.
+    </div>
+  </div>
+
+  <!-- TESTO INTERMEDIO -->
+  <div class="testo">
+    <p>La metrica "per chilometro" penalizza le brevi distanze (la moto per fare 2 km al supermercato); quella "per ora" penalizza i mezzi lenti; quella "per viaggio" mette sullo stesso piano una pedalata e un volo intercontinentale. Nessuna è sbagliata — ognuna risponde a una domanda diversa. Per la vita quotidiana, la più utile è quella per chilometro.</p>
+  </div>
+
+  <!-- APPLET 2: Calcolatore rischio personale -->
+  <div class="applet">
+    <div class="applet-header">
+
+      <div class="applet-titolo">Il tuo rischio personale in auto</div>
+      <div class="applet-istruzione">Inserisci i tuoi km annui e gli anni di guida per stimare il rischio cumulato.</div>
+    </div>
+
+    <div class="calc-grid">
+      <div>
+        <div class="calc-label">Chilometri percorsi in auto all'anno</div>
+        <div class="calc-row">
+          <input type="range" id="sliderKm" min="1000" max="50000" step="1000" value="15000" oninput="aggiornaCalc()">
+          <span class="range-val" id="valKm">15.000 km</span>
+        </div>
+      </div>
+      <div>
+        <div class="calc-label">Anni di guida considerati</div>
+        <div class="calc-row">
+          <input type="range" id="sliderAnni" min="1" max="50" step="1" value="20" oninput="aggiornaCalc()">
+          <span class="range-val" id="valAnni">20 anni</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-result">
+      <div class="risultato-num" id="risultatoProb">—</div>
+      <div class="risultato-txt" id="risultatoTxt">probabilità di morire in un incidente stradale in questo periodo</div>
+    </div>
+
+    <div class="calc-comparativo" id="compGrid"></div>
+
+    <div class="applet-fonte">
+      Calcolo basato su: tasso di mortalità UE-27 = 4,8 morti per miliardo di km (Eurostat, 2022). Rischio individuale stimato con modello probabilistico lineare semplificato — non considera variabili individuali (età, tipo di strada, veicolo). Solo a scopo illustrativo.
+    </div>
+  </div>
+
+  <!-- APPLET 3: Timeline sicurezza stradale -->
+  <div class="applet">
+    <div class="applet-header">
+
+      <div class="applet-titolo">Come l'Europa ha ridotto le morti dell'80% in 50 anni</div>
+      <div class="applet-istruzione">Clicca su un evento per scoprire cosa è cambiato in quella fase.</div>
+    </div>
+
+    <div class="timeline-chart-wrap">
+      <canvas id="chartTimeline"></canvas>
+    </div>
+    <div class="timeline-note">Morti per milione di abitanti — UE-27 o paesi equivalenti. Scala logaritmica.</div>
+
+    <div class="milestone-list" id="milestoneList"></div>
+
+    <div class="applet-fonte">
+      Fonte: <a href="https://ec.europa.eu/transport" target="_blank">Commissione Europea — Road Safety Observatory</a>; ETSC PIN Annual Report 2023; WHO Global Status Report on Road Safety 2023.
+    </div>
+  </div>
+
+  <!-- FRASE FINALE -->
+  <div class="frase-finale">
+    <p>L'aereo è l'unico mezzo che ti spaventa di più quanto è sicuro. L'auto è l'unico mezzo che ti rassicura di più quanto è pericoloso. Il rischio vero non è nel mezzo — è nella nostra incapacità di valutarlo.</p>
+  </div>
+
+  <!-- FONTI -->
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>ETSC — European Transport Safety Council, <em>PIN Report 2023: Road Safety Performance Index</em>. etsc.eu</li>
+      <li>European Commission, <em>Road Safety in the European Union 2023</em>. ec.europa.eu/transport</li>
+      <li>Eurostat, <em>Transport accident statistics</em>, dati 2022. ec.europa.eu/eurostat</li>
+      <li>IATA, <em>Safety Report 2023</em>. iata.org</li>
+      <li>UK Department for Transport, <em>Reported road casualties Great Britain 2023</em>. gov.uk</li>
+      <li>WHO, <em>Global Status Report on Road Safety 2023</em>. who.int</li>
+      <li>Our World in Data, <em>Safety by transport mode</em>. ourworldindata.org/transport</li>
+    </ul>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ===================== APPLET 1: GRAFICO COMPARATIVO =====================
+
+const datiMetriche = {
+  km: {
+    label: "Morti per miliardo di km percorsi",
+    valori: [3.1, 0.2, 0.03, 0.04, 108],
+    colori: ['#c0392b','#2980b9','#16a085','#8e44ad','#e67e22']
+  },
+  ore: {
+    label: "Morti per miliardo di ore di viaggio",
+    valori: [130, 30, 3.5, 5, 1640],
+    colori: ['#c0392b','#2980b9','#16a085','#8e44ad','#e67e22']
+  },
+  viaggi: {
+    label: "Morti per miliardo di viaggi",
+    valori: [40, 180, 5, 3, 1000],
+    colori: ['#c0392b','#2980b9','#16a085','#8e44ad','#e67e22']
+  }
+};
+
+const mezzi = ['🚗 Auto', '✈️ Aereo', '🚆 Treno', '🚌 Autobus', '🏍️ Moto'];
+
+let metricaCorrente = 'km';
+let chartMezzi = null;
+
+function initChartMezzi() {
+  const ctx = document.getElementById('chartMezzi').getContext('2d');
+  const d = datiMetriche[metricaCorrente];
+
+  // Sort by value descending
+  const indices = [...Array(mezzi.length).keys()].sort((a,b) => d.valori[b] - d.valori[a]);
+  const sortedMezzi = indices.map(i => mezzi[i]);
+  const sortedValori = indices.map(i => d.valori[i]);
+  const sortedColori = indices.map(i => d.colori[i]);
+
+  chartMezzi = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sortedMezzi,
+      datasets: [{
+        data: sortedValori,
+        backgroundColor: sortedColori,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.x.toLocaleString('it')} — ${datiMetriche[metricaCorrente].label}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: '#f0ece4' },
+          ticks: {
+            font: { family: "'Source Sans 3', sans-serif", size: 12 },
+            color: '#7f8c8d'
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Source Sans 3', sans-serif", size: 13 },
+            color: '#1c1c2e'
+          }
+        }
+      }
+    }
+  });
+}
+
+function setMetric(metrica, btn) {
+  metricaCorrente = metrica;
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const d = datiMetriche[metrica];
+  const indices = [...Array(mezzi.length).keys()].sort((a,b) => d.valori[b] - d.valori[a]);
+
+  chartMezzi.data.labels = indices.map(i => mezzi[i]);
+  chartMezzi.data.datasets[0].data = indices.map(i => d.valori[i]);
+  chartMezzi.data.datasets[0].backgroundColor = indices.map(i => d.colori[i]);
+  chartMezzi.update('active');
+}
+
+// ===================== APPLET 2: CALCOLATORE =====================
+
+function aggiornaCalc() {
+  const km = parseInt(document.getElementById('sliderKm').value);
+  const anni = parseInt(document.getElementById('sliderAnni').value);
+
+  document.getElementById('valKm').textContent = km.toLocaleString('it') + ' km';
+  document.getElementById('valAnni').textContent = anni + ' anni';
+
+  // Tasso UE-27: 4.8 morti per miliardo di km → 4.8e-9 per km
+  const tassoAuto = 4.8e-9;
+  const tassoTreno = 0.04e-9;
+  const tassoAereo = 0.03e-9;
+
+  const kmTotali = km * anni;
+  const rischioAuto = kmTotali * tassoAuto;
+
+  // Formattazione probabilità
+  let probStr;
+  if (rischioAuto < 0.001) {
+    probStr = '1 su ' + Math.round(1/rischioAuto).toLocaleString('it');
+  } else {
+    probStr = (rischioAuto * 100).toFixed(2) + '%';
+  }
+
+  document.getElementById('risultatoProb').textContent = probStr;
+
+  // Comparativo con gli altri mezzi (stessi km totali)
+  const rischioTreno = kmTotali * tassoTreno;
+  const rischioAereo = kmTotali * tassoAereo;
+
+  function fmt(r) {
+    if (r < 0.001) return '1 su ' + Math.round(1/r).toLocaleString('it');
+    return (r*100).toFixed(3) + '%';
+  }
+
+  const grid = document.getElementById('compGrid');
+  grid.innerHTML = `
+    <div class="comp-card">
+      <div class="c-emoji">🚗</div>
+      <div class="c-label">Auto</div>
+      <div class="c-val">${fmt(rischioAuto)}</div>
+    </div>
+    <div class="comp-card">
+      <div class="c-emoji">🚆</div>
+      <div class="c-label">Treno</div>
+      <div class="c-val">${fmt(rischioTreno)}</div>
+    </div>
+    <div class="comp-card">
+      <div class="c-emoji">✈️</div>
+      <div class="c-label">Aereo</div>
+      <div class="c-val">${fmt(rischioAereo)}</div>
+    </div>
+  `;
+}
+
+// ===================== APPLET 3: TIMELINE =====================
+
+const timelineData = {
+  anni: [1970, 1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2019, 2021, 2022],
+  morti: [240, 210, 190, 170, 160, 130, 115, 90, 68, 55, 51, 44, 49]
+};
+
+const milestones = [
+  { anno: 1970, titolo: "Picco storico", testo: "Oltre 125.000 morti all'anno in Europa. Le strade sono un far west: niente cinture obbligatorie, niente airbag, niente limiti di velocità uniformi." },
+  { anno: 1980, titolo: "Prime leggi sul casco", testo: "L'Italia introduce l'obbligo di casco per i motociclisti. In Germania scatta il primo limite di velocità sperimentale in autostrada." },
+  { anno: 1992, titolo: "Cinture obbligatorie in UE", testo: "La direttiva europea rende obbligatorio l'uso delle cinture di sicurezza per tutti i passeggeri. Effetto immediato: –15% di decessi in pochi anni." },
+  { anno: 2001, titolo: "Patente a punti", testo: "Italia e altri paesi UE introducono la patente a punti. La percezione del rischio personale aumenta, i comportamenti migliorano." },
+  { anno: 2010, titolo: "Obiettivo dimezzamento UE", testo: "La Commissione Europea fissa l'obiettivo di dimezzare i morti sulle strade tra il 2010 e il 2020. Verrà quasi raggiunto." },
+  { anno: 2019, titolo: "Pre-pandemia", testo: "51 morti per milione di abitanti: il minimo storico prima del Covid. L'ADAS (frenata automatica, mantenimento corsia) inizia a diffondersi." },
+  { anno: 2022, titolo: "Rimbalzo post-Covid", testo: "Dopo il calo artificiale del 2020–21 (meno traffico), le morti risalgono leggermente. L'obiettivo europeo 2030 di zero morti è ancora lontano." }
+];
+
+let chartTimeline = null;
+let milestoneAttivo = null;
+
+function initTimeline() {
+  const ctx = document.getElementById('chartTimeline').getContext('2d');
+
+  chartTimeline = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: timelineData.anni,
+      datasets: [{
+        data: timelineData.morti,
+        borderColor: '#c0392b',
+        backgroundColor: 'rgba(192,57,43,0.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: timelineData.anni.map(a =>
+          milestones.some(m => m.anno === a) ? '#c0392b' : '#fadbd8'
+        ),
+        pointBorderColor: '#c0392b',
+        pointBorderWidth: 2,
+        pointRadius: timelineData.anni.map(a =>
+          milestones.some(m => m.anno === a) ? 7 : 4
+        ),
+        pointHoverRadius: 9,
+        fill: true,
+        tension: 0.35
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const anno = timelineData.anni[ctx.dataIndex];
+              const m = milestones.find(m => m.anno === anno);
+              return m ? ` ${ctx.parsed.y} morti/milione — ${m.titolo}` : ` ${ctx.parsed.y} morti/milione di ab.`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#7f8c8d' }
+        },
+        y: {
+          grid: { color: '#f0ece4' },
+          ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#7f8c8d' },
+          title: {
+            display: true,
+            text: 'Morti per milione di ab.',
+            font: { family: "'Source Sans 3', sans-serif", size: 11 },
+            color: '#7f8c8d'
+          }
+        }
+      },
+      onClick: (e, elements) => {
+        if (elements.length > 0) {
+          const idx = elements[0].index;
+          const anno = timelineData.anni[idx];
+          const m = milestones.find(m => m.anno === anno);
+          if (m) attivaMilestone(anno);
+        }
+      }
+    }
+  });
+
+  // Render milestone list
+  const list = document.getElementById('milestoneList');
+  list.innerHTML = milestones.map(m => `
+    <div class="milestone" id="ms-${m.anno}" onclick="attivaMilestone(${m.anno})">
+      <div class="milestone-anno">${m.anno}</div>
+      <div class="milestone-testo"><strong>${m.titolo}</strong> — ${m.testo}</div>
+    </div>
+  `).join('');
+}
+
+function attivaMilestone(anno) {
+  document.querySelectorAll('.milestone').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('ms-' + anno);
+  if (el) {
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  initChartMezzi();
+  aggiornaCalc();
+  initTimeline();
+});
+</script>
+</body>
+</html>
