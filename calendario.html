@@ -1,237 +1,722 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>La volpe grigia</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché nel 1582 sparirono 10 giorni dal calendario? — Pillola culturale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #8e44ad;
+    --accent-light: #f5eefb;
+    --accent-mid: #d7bce8;
+    --muted: #7f8c8d;
+    --border: #e8e4dc;
+    --max: 640px;
+  }
 
-    :root {
-      --bg:        #fdfcf9;
-      --text:      #1c1c2e;
-      --muted:     #888;
-      --border:    #e8e4dc;
-      --max:       640px;
-    }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px 80px;
+  }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Source Sans 3', sans-serif;
-      font-weight: 300;
-      font-size: 1rem;
-      line-height: 1.7;
-    }
+  .container { max-width: var(--max); margin: 0 auto; }
 
-    /* ── HERO ── */
-    .hero {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 4rem 1.5rem 3rem;
-      border-bottom: 1px solid var(--border);
-    }
+  /* ── HEADER ── */
+  .pill-header {
+    padding: 56px 0 32px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 40px;
+  }
 
-    .site-eyebrow {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
+  .pill-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
 
-    .site-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.4rem, 7vw, 3.8rem);
-      font-weight: 700;
-      line-height: 1.05;
-      color: var(--text);
-      margin-bottom: 1.2rem;
-      letter-spacing: -0.02em;
-    }
+  .pill-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 36px);
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
 
-    .site-title em {
-      font-style: italic;
-      color: #555;
-    }
+  .pill-answer {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    border-radius: 0 8px 8px 0;
+  }
 
-    .site-tagline {
-      font-size: 1.05rem;
-      color: var(--muted);
-      max-width: 420px;
-      line-height: 1.6;
-    }
+  .pill-answer p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
 
-    /* ── LISTA PILLOLE ── */
-    .pillole {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 0 1.5rem 5rem;
-    }
+  /* ── TEXT ── */
+  .text-block {
+    margin: 36px 0;
+  }
 
-    .pillole-header {
-      padding: 2rem 0 1.2rem;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 0;
-    }
+  .text-block p {
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
 
-    .pillole-header-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+  /* ── APPLET ── */
+  .applet {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 40px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
 
-    .pillole-count {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
+  .applet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
 
-    /* ── CARD PILLOLA ── */
-    .pillola {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      padding: 1.8rem 0;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-      position: relative;
-    }
+  .applet-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
 
-    .pillola:hover { background: rgba(0,0,0,0.015); }
-    .pillola:hover .pillola-arrow { opacity: 1; transform: translateX(0); }
+  .applet-caption {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
 
-    .pillola-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      margin-bottom: 0.55rem;
-    }
+  /* ── OCTOBER 1582 CALENDAR ── */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
 
-    .pillola-tag {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.2rem 0.55rem;
-      border-radius: 2px;
-      color: #fff;
-    }
+  .cal-header-cell {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--muted);
+    padding: 6px 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
 
-    .pillola-date {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
+  .cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: default;
+    transition: all 0.15s;
+    position: relative;
+  }
 
-    .pillola-readtime {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-left: auto;
-    }
+  .cal-cell.normal {
+    background: var(--bg);
+    color: var(--text);
+  }
 
-    .pillola-domanda {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.45rem;
-      font-weight: 700;
-      line-height: 1.2;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-      padding-right: 2rem;
-    }
+  .cal-cell.missing {
+    background: var(--accent);
+    color: white;
+    opacity: 0.25;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: line-through;
+  }
 
-    .pillola-risposta {
-      font-size: 0.92rem;
-      color: #555;
-      line-height: 1.55;
-      max-width: 520px;
-    }
+  .cal-cell.missing:hover { opacity: 0.45; }
 
-    .pillola-arrow {
-      position: absolute;
-      right: 0.2rem;
-      top: 50%;
-      transform: translateX(-6px) translateY(-50%);
-      opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-      font-size: 1.1rem;
-      color: var(--muted);
-    }
+  .cal-cell.jump {
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 0 0 3px var(--accent-mid);
+    cursor: pointer;
+  }
 
-    /* ── EMPTY STATE ── */
-    .empty {
-      padding: 3rem 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-style: italic;
-    }
+  .cal-cell.jump:hover { transform: scale(1.05); }
 
-    /* ── FOOTER ── */
-    footer {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 1.5rem 1.5rem 3rem;
-      font-size: 0.75rem;
-      color: #bbb;
-      border-top: 1px solid var(--border);
-    }
-  </style>
+  .cal-cell.empty { background: none; }
+
+  .cal-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: white;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .cal-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--text);
+  }
+
+  .cal-cell:hover .cal-tooltip { display: block; }
+
+  .cal-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+  }
+
+  /* ── DRIFT SIMULATOR ── */
+  .drift-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .drift-controls label {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  input[type=range] {
+    flex: 1;
+    min-width: 120px;
+    accent-color: var(--accent);
+  }
+
+  .drift-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 80px;
+  }
+
+  .drift-visual {
+    background: #f5f0f8;
+    border-radius: 10px;
+    padding: 16px 80px 16px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .drift-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .drift-row-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+
+  .drift-track {
+    flex: 1;
+    height: 24px;
+    background: #e8e0f0;
+    border-radius: 5px;
+    overflow: visible;
+    position: relative;
+  }
+
+  .drift-bar-real {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    border-radius: 5px;
+  }
+
+  .drift-bar-cal {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #9b59b6);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+    position: relative;
+  }
+
+  .drift-gap-arrow {
+    position: absolute;
+    right: -78px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .drift-gap-label {
+    font-size: 14px;
+    color: var(--text);
+    margin-top: 8px;
+  }
+
+  .drift-gap-label strong {
+    color: var(--accent);
+    font-size: 18px;
+  }
+
+  .drift-annotation {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-style: italic;
+    min-height: 20px;
+  }
+
+  /* ── ADOPTION MAP ── */
+  .adoption-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  @media (max-width: 400px) { .adoption-list { grid-template-columns: 1fr; } }
+
+  .adoption-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .adoption-item:hover { background: var(--accent-light); border-color: var(--accent-mid); }
+  .adoption-item.selected { background: var(--accent-light); border-color: var(--accent); }
+
+  .adoption-year {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 42px;
+  }
+
+  .adoption-country {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .adoption-detail {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: var(--accent-light);
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 58px;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ── TAKEAWAY ── */
+  .takeaway {
+    margin: 48px 0 32px;
+    padding: 24px 28px;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .takeaway p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .footer ul {
+    list-style: none;
+  }
+
+  .footer li {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .footer li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .reading-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reading-time::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+</style>
 </head>
 <body>
+<div class="container">
 
-<!-- ── HERO ── -->
-<header class="hero">
-  <div class="site-eyebrow">Divulgazione culturale</div>
-  <h1 class="site-title">La volpe<br><em>grigia</em></h1>
-  <p class="site-tagline">Una domanda. Una risposta. Tre minuti.</p>
-</header>
+  <nav style="max-width:640px;margin:0 auto;padding:1.5rem 0 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e4dc;margin-bottom:2rem;">
+    <a href="index.html" style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#16a085;text-decoration:none;">← Tutte le domande</a>
+    <span style="font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.1em;">3 min</span>
+  </nav>
 
-<!-- ── PILLOLE ── -->
-<main class="pillole">
+  <header class="pill-header">
+    <div class="pill-tag">#Storia · #Calendari</div>
+    <h1 class="pill-title">Perché nel 1582 sparirono 10 giorni dal calendario?</h1>
+    <div class="reading-time">3 minuti di lettura</div>
+    <div class="pill-answer">
+      <p>Il calendario giuliano perdeva 11 minuti e 14 secondi ogni anno rispetto al ciclo solare reale. In 1.300 anni lo sfasamento era diventato di 10 giorni interi — e papa Gregorio XIII li cancellò con un decreto, saltando dal 4 al 15 ottobre 1582.</p>
+    </div>
+  </header>
 
-  <div class="pillole-header">
-    <span class="pillole-header-label">Tutte le domande</span>
-    <span class="pillole-count">2 pillole</span>
+  <div class="text-block">
+    <p>Giulio Cesare nel 46 a.C. fissò l'anno a 365,25 giorni — un giorno bisestile ogni quattro anni. Era una buona approssimazione, ma non perfetta. L'anno solare reale dura 365 giorni, 5 ore, 48 minuti e 45 secondi: undici minuti in meno di quanto calcolava il calendario giuliano.</p>
+    <p>Undici minuti all'anno sembrano nulla. Ma moltiplicati per tredici secoli, nel 1582 si erano accumulati esattamente 10 giorni di sfasamento. La conseguenza più visibile era religiosa: la Pasqua, calcolata in base all'equinozio di primavera, stava scivolando sempre più lontano dalla data astronomicamente corretta.</p>
   </div>
 
-  <!-- PILLOLA 2 — Calendario gregoriano -->
-  <a class="pillola" href="calendario.html">
-    <div class="pillola-meta">
-      <span class="pillola-tag" style="background:#c0392b;">#Storia</span>
-      <span class="pillola-date">Aprile 2026</span>
-      <span class="pillola-readtime">3 min</span>
+  <!-- APPLET 1: Ottobre 1582 -->
+  <div class="applet">
+    <div class="applet-title">Ottobre 1582 — il mese con i giorni mancanti</div>
+    <div class="applet-hint">Passa il cursore sui giorni evidenziati per scoprire cosa accadde.</div>
+
+    <div class="cal-grid" id="cal-grid"></div>
+
+    <div class="cal-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--bg);border:1px solid var(--border)"></div>
+        Giorno normale
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--accent);opacity:0.3"></div>
+        Giorno cancellato
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--accent);box-shadow:0 0 0 2px var(--accent-mid)"></div>
+        Salto: dal 4 al 15
+      </div>
     </div>
-    <div class="pillola-domanda">Perché nel 1582 sparirono 10 giorni dal calendario?</div>
-    <div class="pillola-risposta">Il calendario giuliano perdeva 11 minuti ogni anno. In 1.300 anni lo sfasamento era diventato di 10 giorni — e papa Gregorio XIII li cancellò con un decreto.</div>
-    <span class="pillola-arrow">→</span>
-  </a>
 
-  <!-- PILLOLA 1 — Quando si è formata la vita? -->
-  <a class="pillola" href="vita.html">
-    <div class="pillola-meta">
-      <span class="pillola-tag" style="background:#16a085;">#Scienze</span>
-      <span class="pillola-date">Aprile 2026</span>
-      <span class="pillola-readtime">3 min</span>
+    <div class="applet-caption">Fonte: Bolla papale <em>Inter gravissimas</em>, Gregorio XIII, 24 febbraio 1582. Il decreto fu applicato in Italia, Spagna, Portogallo e Polonia il 15 ottobre 1582.</div>
+  </div>
+
+  <div class="text-block">
+    <p>La bolla papale <em>Inter gravissimas</em> non si limitava a tagliare 10 giorni: introduceva anche una nuova regola per evitare che lo sfasamento si ripetesse. Gli anni divisibili per 100 non sarebbero più stati bisestili, <em>a meno che</em> non fossero anche divisibili per 400. Così il 1900 non fu bisestile, il 2000 sì. L'errore residuo del calendario gregoriano è di soli 26 secondi all'anno — ci vorranno 3.300 anni per accumulare un giorno di sfasamento.</p>
+  </div>
+
+  <!-- APPLET 2: Simulatore di sfasamento -->
+  <div class="applet">
+    <div class="applet-title">Lo sfasamento che si accumula — simulazione</div>
+    <div class="applet-hint">Sposta il cursore per vedere come cresce l'errore nei secoli.</div>
+
+    <div class="drift-controls">
+      <label for="yearSlider">Anno d.C.:</label>
+      <input type="range" id="yearSlider" min="46" max="1582" value="46" step="1">
+      <div class="drift-value" id="yearDisplay">46</div>
     </div>
-    <div class="pillola-domanda">Quando si è formata la vita?</div>
-    <div class="pillola-risposta">Circa 3,8 miliardi di anni fa — forse anche prima. La Terra aveva appena 700 milioni di anni ed era ancora bombardata da meteoriti.</div>
-    <span class="pillola-arrow">→</span>
-  </a>
 
-</main>
+    <div class="drift-visual">
+      <div class="drift-row">
+        <div class="drift-row-label">🌍 Anno solare</div>
+        <div class="drift-track"><div class="drift-bar-real"></div></div>
+      </div>
+      <div class="drift-row">
+        <div class="drift-row-label">📅 Cal. giuliano</div>
+        <div class="drift-track">
+          <div class="drift-bar-cal" id="driftBar">
+            <div class="drift-gap-arrow" id="driftArrow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<footer>
-  La volpe grigia — divulgazione culturale personale
-</footer>
+    <div class="drift-gap-label">
+      Sfasamento accumulato: <strong id="driftDays">0,0</strong> giorni
+    </div>
+    <div class="drift-annotation" id="driftAnnotation"></div>
 
+    <div class="applet-caption">Fonte: Meeus, J. (1991). <em>Astronomical Algorithms</em>, Willmann-Bell. L'errore del calendario giuliano è di 11 min e 14 sec/anno rispetto all'anno tropico medio (365,24219 giorni).</div>
+  </div>
+
+  <!-- APPLET 3: Mappa delle adozioni -->
+  <div class="applet">
+    <div class="applet-title">Quando ogni paese adottò il calendario gregoriano</div>
+    <div class="applet-hint">Clicca su un paese per vedere la storia dell'adozione.</div>
+
+    <div class="adoption-list" id="adoptionList"></div>
+    <div class="adoption-detail" id="adoptionDetail">← Seleziona un paese per leggere la storia della sua adozione.</div>
+
+    <div class="applet-caption">Fonte: Doggett, L.E. (1992). "Calendars", in <em>Explanatory Supplement to the Astronomical Almanac</em>, University Science Books; Blackburn & Holford-Strevens (1999), <em>The Oxford Companion to the Year</em>.</div>
+  </div>
+
+  <div class="takeaway">
+    <p>Dieci giorni che non sono mai esistiti — non li ha vissuti nessuno, non ci è morto nessuno durante, non c'è nessun documento datato in quei giorni. Sono semplicemente evaporati per correggere un errore di undici minuti che durava da tredici secoli.</p>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-title">Fonti dei dati</div>
+    <ul>
+      <li>Gregorio XIII, <em>Inter gravissimas</em> (24 febbraio 1582) — testo originale della bolla di riforma del calendario</li>
+      <li>Meeus, J. (1991). <em>Astronomical Algorithms</em>. Willmann-Bell — errore del calendario giuliano: 11 min 14 sec/anno rispetto all'anno tropico</li>
+      <li>Doggett, L.E. (1992). "Calendars", in <em>Explanatory Supplement to the Astronomical Almanac</em>. University Science Books — date di adozione per paese</li>
+      <li>Blackburn, B. & Holford-Strevens, L. (1999). <em>The Oxford Companion to the Year</em>. Oxford University Press — storia della riforma e resistenze politico-religiose</li>
+      <li>Richards, E.G. (1998). <em>Mapping Time: The Calendar and its History</em>. Oxford University Press — analisi tecnica comparativa dei sistemi calendari</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// APPLET 1 — Calendario Ottobre 1582
+// ─────────────────────────────────────────────
+(function() {
+  const grid = document.getElementById('cal-grid');
+  const days = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+
+  // Render headers
+  days.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'cal-header-cell';
+    cell.textContent = d;
+    grid.appendChild(cell);
+  });
+
+  // October 1582 starts on Friday (index 4 in Mon-based grid)
+  // Empty cells before day 1
+  for (let i = 0; i < 4; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-cell empty';
+    grid.appendChild(e);
+  }
+
+  const missingDays = new Set([5,6,7,8,9,10,11,12,13,14]);
+
+  const tooltips = {
+    4: 'Ultimo giorno del calendario giuliano in Italia.<br>Il giorno dopo è il 15 ottobre.',
+    15: 'Primo giorno del calendario gregoriano.<br>Il salto è avvenuto stanotte.',
+    5: 'Giorno cancellato — non è mai esistito.',
+    6: 'Giorno cancellato — non è mai esistito.',
+    7: 'Giorno cancellato — non è mai esistito.',
+    8: 'Giorno cancellato — non è mai esistito.',
+    9: 'Giorno cancellato — non è mai esistito.',
+    10: 'Giorno cancellato — non è mai esistito.',
+    11: 'Giorno cancellato — non è mai esistito.',
+    12: 'Giorno cancellato — non è mai esistito.',
+    13: 'Giorno cancellato — non è mai esistito.',
+    14: 'Giorno cancellato — non è mai esistito.',
+    1: '1 ottobre 1582: il decreto è già in vigore,<br>ma i giorni verranno saltati solo dopo il 4.',
+    31: 'Il mese finisce regolarmente il 31.<br>Da qui in poi il calendario è gregoriano.'
+  };
+
+  for (let d = 1; d <= 31; d++) {
+    const cell = document.createElement('div');
+
+    if (missingDays.has(d)) {
+      cell.className = 'cal-cell missing';
+      cell.innerHTML = d;
+      const tip = document.createElement('div');
+      tip.className = 'cal-tooltip';
+      tip.innerHTML = tooltips[d] || 'Giorno cancellato';
+      cell.appendChild(tip);
+    } else if (d === 4 || d === 15) {
+      cell.className = 'cal-cell jump';
+      cell.innerHTML = d;
+      const tip = document.createElement('div');
+      tip.className = 'cal-tooltip';
+      tip.innerHTML = tooltips[d];
+      cell.appendChild(tip);
+    } else {
+      cell.className = 'cal-cell normal';
+      if (tooltips[d]) {
+        cell.style.cursor = 'pointer';
+        cell.innerHTML = d;
+        const tip = document.createElement('div');
+        tip.className = 'cal-tooltip';
+        tip.innerHTML = tooltips[d];
+        cell.appendChild(tip);
+      } else {
+        cell.textContent = d;
+      }
+    }
+
+    grid.appendChild(cell);
+  }
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 2 — Simulatore sfasamento
+// ─────────────────────────────────────────────
+(function() {
+  const slider = document.getElementById('yearSlider');
+  const yearDisplay = document.getElementById('yearDisplay');
+  const driftDays = document.getElementById('driftDays');
+  const driftBar = document.getElementById('driftBar');
+  const driftAnnotation = document.getElementById('driftAnnotation');
+  const driftArrow = document.getElementById('driftArrow');
+
+  // Error: Julian year = 365.25, Tropical year = 365.24219 days
+  // Difference = 0.00781 days/year = ~11 min 14 sec/year
+  const errorPerYear = 0.00781;
+
+  const annotations = {
+    325: '→ Concilio di Nicea (325): l\'equinozio cade già il 21 marzo, ma la deriva è ancora lieve.',
+    1000: '→ Anno 1000: lo sfasamento supera i 7 giorni. Gli astronomi medievali se ne accorgono.',
+    1582: '→ 1582: 10 giorni di sfasamento. Gregorio XIII taglia il nodo con la bolla Inter gravissimas.'
+  };
+
+  function getAnnotation(year) {
+    const keys = Object.keys(annotations).map(Number).sort((a,b)=>a-b);
+    for (let i = keys.length - 1; i >= 0; i--) {
+      if (year >= keys[i]) return annotations[keys[i]];
+    }
+    return '';
+  }
+
+  function update() {
+    const year = parseInt(slider.value);
+    const years = year - 46;
+    const drift = Math.max(0, years * errorPerYear);
+    // La barra verde (sole) è sempre al 100%.
+    // La barra viola (giuliano) rimane indietro: parte al 100% e si accorcia all'aumentare dello sfasamento.
+    const pct = Math.max(5, 100 - (drift / 15) * 100);
+
+    yearDisplay.textContent = year === 46 ? '46 a.C.' : year + ' d.C.';
+    driftDays.textContent = drift.toFixed(2).replace('.', ',');
+    driftBar.style.width = pct + '%';
+    driftArrow.textContent = drift >= 0.1 ? `← ${drift.toFixed(1).replace('.',',')} gg indietro` : '';
+    driftAnnotation.textContent = getAnnotation(year);
+  }
+
+  slider.addEventListener('input', update);
+  update();
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 3 — Adozione del calendario gregoriano
+// ─────────────────────────────────────────────
+(function() {
+  const data = [
+    { year: 1582, country: '🇮🇹 Italia', detail: 'L\'Italia adotta il calendario gregoriano il 15 ottobre 1582, insieme a Spagna, Portogallo e Polonia. La bolla Inter gravissimas era stata promulgata il 24 febbraio, ma l\'applicazione fu fissata ad ottobre per dare tempo alla preparazione.' },
+    { year: 1582, country: '🇪🇸 Spagna', detail: 'Spagna e i suoi possedimenti coloniali (incluse le Americhe spagnole) adottano il gregoriano simultaneamente all\'Italia. Felipe II era uno dei sovrani più potenti d\'Europa e la scelta fu immediatamente vincolante per l\'intero impero.' },
+    { year: 1582, country: '🇵🇹 Portogallo', detail: 'Il Portogallo adotta il calendario nel 1582, insieme a Spagna e Italia. All\'epoca la corona portoghese era sotto Filippo II di Spagna (unione iberica 1580–1640), il che ne facilitò l\'adozione immediata.' },
+    { year: 1582, country: '🇵🇱 Polonia', detail: 'La Polonia adottò il calendario gregoriano nel 1582, tra i primi paesi non mediterranei. La forte presenza cattolica e i legami con Roma favorirono un\'adozione rapida, nonostante l\'opposizione della minoranza protestante.' },
+    { year: 1583, country: '🇩🇪 Germania (catt.)', detail: 'Gli stati cattolici della Germania adottano il gregoriano nel 1583–1584. Gli stati protestanti resistono a lungo: l\'adozione completa in Germania avviene solo nel 1700, con un accordo tra stati cattolici e luterani.' },
+    { year: 1587, country: '🇭🇺 Ungheria', detail: 'L\'Ungheria adotta il calendario gregoriano nel 1587, ancora sotto influenza asburgica e cattolica. L\'adozione fu abbastanza rapida rispetto ad altri paesi dell\'Europa centrale.' },
+    { year: 1700, country: '🇩🇰 Danimarca', detail: 'La Danimarca e la Norvegia (unite all\'epoca) adottano il calendario gregoriano nel 1700. La resistenza protestante aveva ritardato l\'adozione di oltre un secolo. Per aggiornare il calendario, saltarono dall\'18 febbraio al 1° marzo 1700.' },
+    { year: 1700, country: '🇸🇪 Svezia', detail: 'La Svezia tentò un\'adozione graduale a partire dal 1700, saltando i giorni bisestili per undici anni. Il piano fallì: nel 1712 aggiunsero addirittura un 30 febbraio per tornare al giuliano. Adottarono definitivamente il gregoriano solo nel 1753.' },
+    { year: 1752, country: '🇬🇧 Gran Bretagna', detail: 'La Gran Bretagna e le colonie americane adottano il gregoriano nel 1752. I giorni cancellati furono 11 (dal 2 al 14 settembre). Si racconta — probabilmente per esagerazione popolare — che ci furono rivolte di gente che urlava "Ridateci i nostri 11 giorni!"' },
+    { year: 1873, country: '🇯🇵 Giappone', detail: 'Il Giappone adotta il calendario gregoriano nel 1873, durante l\'era Meiji, nel quadro della modernizzazione del paese. Mantiene tuttavia anche il proprio calendario tradizionale giapponese per usi cerimoniali e ufficiali.' },
+    { year: 1912, country: '🇨🇳 Cina', detail: 'La Repubblica di Cina adotta ufficialmente il calendario gregoriano nel 1912, dopo la rivoluzione che abbatté la dinastia Qing. L\'adozione fu un segnale di apertura al mondo moderno, ma il calendario lunare tradizionale rimane in uso per le festività.' },
+    { year: 1918, country: '🇷🇺 Russia', detail: 'La Russia zarista usava il calendario giuliano fino al 1918: il Soviet di Lenin decretò il salto di 13 giorni. Per questo la Rivoluzione d\'Ottobre del 1917 cade — nel calendario gregoriano — in novembre. La Russia ortodossa celebra ancora il Natale il 7 gennaio (= 25 dic. giuliano).' },
+    { year: 1923, country: '🇬🇷 Grecia', detail: 'La Grecia è stato uno degli ultimi paesi europei ad adottare il calendario gregoriano, nel 1923. La Chiesa ortodossa greca continua tuttavia a usare il calendario giuliano per le festività religiose, motivo per cui il Natale ortodosso cade il 7 gennaio.' },
+  ];
+
+  const list = document.getElementById('adoptionList');
+  const detail = document.getElementById('adoptionDetail');
+
+  data.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'adoption-item';
+    el.innerHTML = `<span class="adoption-year">${item.year}</span><span class="adoption-country">${item.country}</span>`;
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.adoption-item').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      detail.textContent = item.detail;
+    });
+    list.appendChild(el);
+  });
+})();
+</script>
 </body>
 </html>
