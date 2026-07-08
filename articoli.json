@@ -1,0 +1,23 @@
+[
+  {
+    "file": "trasporto.html",
+    "domanda": "Qual è il mezzo di trasporto più pericoloso?",
+    "risposta_breve": "L'auto, senza dubbio. Ma la risposta cambia radicalmente a seconda di come si misura il rischio — e capire questa differenza cambia il modo in cui pensiamo alla sicurezza.",
+    "categoria": "Società",
+    "data": "Aprile 2026"
+  },
+  {
+    "file": "calendario.html",
+    "domanda": "Perché nel 1582 sparirono 10 giorni dal calendario?",
+    "risposta_breve": "Il calendario giuliano perdeva 11 minuti ogni anno. In 1.300 anni lo sfasamento era diventato di 10 giorni — e papa Gregorio XIII li cancellò con un decreto.",
+    "categoria": "Storia",
+    "data": "Aprile 2026"
+  },
+  {
+    "file": "vita.html",
+    "domanda": "Quando si è formata la vita?",
+    "risposta_breve": "Circa 3,8 miliardi di anni fa — forse anche prima. La Terra aveva appena 700 milioni di anni ed era ancora bombardata da meteoriti.",
+    "categoria": "Scienze",
+    "data": "Aprile 2026"
+  }
+]
