@@ -1,5 +1,12 @@
 [
   {
+    "file": "ambiente-meccanizzazione-agricola.html",
+    "domanda": "Si può risolvere la crisi ambientale riducendo l'agricoltura meccanizzata?",
+    "risposta_breve": "No, non in modo decisivo: i macchinari agricoli valgono solo circa l'1-2% delle emissioni globali. Il grosso del problema è altrove — bestiame, uso del suolo e fertilizzanti pesano molto di più.",
+    "categoria": "Ambiente",
+    "data": "Luglio 2026"
+  },
+  {
     "file": "trasporto.html",
     "domanda": "Qual è il mezzo di trasporto più pericoloso?",
     "risposta_breve": "L'auto, senza dubbio. Ma la risposta cambia radicalmente a seconda di come si misura il rischio — e capire questa differenza cambia il modo in cui pensiamo alla sicurezza.",

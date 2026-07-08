@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Si può risolvere la crisi ambientale riducendo l'agricoltura meccanizzata?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #27ae60;
+    --accent-light: #d5f5e3;
+    --accent-mid: #2ecc71;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .chart-wrap { position: relative; height: 260px; }
+
+  /* CONFRONTO DI SCALA */
+  .scala-wrap { display: grid; gap: 16px; }
+  .scala-riga { display: grid; gap: 6px; }
+  .scala-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; }
+  .scala-label strong { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text); }
+  .scala-val { font-size: 12.5px; color: var(--muted); }
+  .scala-bar-track { background: #f3f1ec; border-radius: 3px; height: 22px; overflow: hidden; }
+  .scala-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+  .scala-bar-fill.mid { background: var(--accent-mid); }
+  .scala-bar-fill.small { background: #145a32; }
+
+  /* CALCOLATORE */
+  .calc-grid { display: grid; gap: 16px; margin-bottom: 20px; }
+  .calc-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .calc-row { display: flex; align-items: center; gap: 14px; }
+  input[type="range"] { -webkit-appearance: none; flex: 1; height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .range-val { font-size: 14px; font-weight: 600; color: var(--accent); min-width: 80px; text-align: right; }
+
+  .calc-result { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 16px 18px; border-radius: 0 4px 4px 0; margin-top: 8px; }
+  .calc-result .risultato-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .calc-result .risultato-txt { font-size: 14px; color: var(--text); line-height: 1.45; }
+
+  .calc-comparativo { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .comp-card { background: white; border: 1px solid var(--border); border-radius: 4px; padding: 10px; text-align: center; }
+  .comp-card .c-emoji { font-size: 20px; margin-bottom: 3px; }
+  .comp-card .c-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .comp-card .c-val { font-size: 15px; font-weight: 700; color: var(--text); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .calc-comparativo { grid-template-columns: 1fr; }
+    .chart-wrap { height: 220px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Ambiente</div>
+    <h1>Si può risolvere la crisi ambientale riducendo l'agricoltura meccanizzata?</h1>
+    <div class="risposta-box">
+      <p>No, non in modo decisivo: i macchinari agricoli valgono solo circa l'1-2% delle emissioni globali. Il grosso del problema è altrove — bestiame, uso del suolo e fertilizzanti pesano molto di più.</p>
+    </div>
+    <div class="meta">Lettura: 3 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Trattori, mietitrebbie, pompe per l'irrigazione: quando pensiamo all'impatto ambientale dell'agricoltura, la mente corre subito ai motori diesel nei campi. È un'intuizione ragionevole — e in gran parte sbagliata. La macchina agricola più inquinante non è il problema principale: lo sono gli animali, i terreni disboscati e i fertilizzanti.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Da dove vengono le emissioni del cibo</div>
+      <div class="applet-istruzione">Il grafico mostra le quattro grandi fonti delle emissioni legate al sistema alimentare globale.</div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartFonti"></canvas></div>
+    <div class="applet-fonte">
+      Fonte: <a href="https://ourworldindata.org/food-ghg-emissions" target="_blank">Poore &amp; Nemecek (2018), Science, via Our World in Data</a>. Il cibo nel suo complesso vale il 26% delle emissioni globali; qui sotto la scomposizione di quel 26%.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>I macchinari agricoli non hanno una loro fetta separata in questo grafico: sono nascosti dentro "Produzione colture" (27%), insieme ai fertilizzanti azotati e al metano del riso. Per isolarli serve un'altra fonte, più tecnica ma più precisa.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Il confronto di scala</div>
+      <div class="applet-istruzione">Tre livelli, dallo stesso ordine di grandezza globale fino ai soli trattori e mietitrebbie.</div>
+    </div>
+    <div class="scala-wrap">
+      <div class="scala-riga">
+        <div class="scala-label"><strong>Emissioni globali totali</strong><span class="scala-val">~55 Gt CO₂eq/anno</span></div>
+        <div class="scala-bar-track"><div class="scala-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="scala-riga">
+        <div class="scala-label"><strong>Sistemi agroalimentari</strong><span class="scala-val">17 Gt CO₂eq/anno · 31%</span></div>
+        <div class="scala-bar-track"><div class="scala-bar-fill mid" style="width:31%"></div></div>
+      </div>
+      <div class="scala-riga">
+        <div class="scala-label"><strong>Energia in azienda agricola</strong><span class="scala-val">~0,95 Gt CO₂eq/anno · ~1,7%</span></div>
+        <div class="scala-bar-track"><div class="scala-bar-fill small" style="width:3%"></div></div>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      Fonte: <a href="https://openknowledge.fao.org/" target="_blank">FAO, Greenhouse gas emissions from agrifood systems: global, regional and country trends, 2000–2022</a> (totale ed emissioni agroalimentari); dato sull'energia in azienda agricola (trattori, mietitrebbie, irrigazione) riferito al 2018, stessa serie FAO. Anni di riferimento leggermente diversi, ma il divario di scala resta valido. L'ultima barra ha una larghezza minima per restare leggibile: il valore reale è ~1,7%, non 3%.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Anche azzerando del tutto i motori nei campi, il termometro globale si muoverebbe appena. Per capire quanto vale davvero questa leva rispetto ad altre, prova il calcolatore.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Quanto conta ridurre la meccanizzazione?</div>
+      <div class="applet-istruzione">Sposta lo slider per simulare una riduzione della meccanizzazione agricola globale.</div>
+    </div>
+
+    <div class="calc-grid">
+      <div>
+        <div class="calc-label">Riduzione della meccanizzazione agricola globale</div>
+        <div class="calc-row">
+          <input type="range" id="sliderMecc" min="0" max="100" step="5" value="50" oninput="aggiornaCalc()">
+          <span class="range-val" id="valMecc">50%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-result">
+      <div class="risultato-num" id="risultatoPP">—</div>
+      <div class="risultato-txt">punti percentuali di riduzione sulle emissioni globali totali</div>
+    </div>
+
+    <div class="calc-comparativo">
+      <div class="comp-card">
+        <div class="c-emoji">🚜</div>
+        <div class="c-label">Azzerare la meccanizzazione</div>
+        <div class="c-val">1,7 punti %</div>
+      </div>
+      <div class="comp-card">
+        <div class="c-emoji">🥩</div>
+        <div class="c-label">Dimezzare il consumo di carne</div>
+        <div class="c-val">~4 punti %</div>
+      </div>
+    </div>
+
+    <div class="applet-fonte">
+      Calcolo: la riduzione massima (100% di meccanizzazione azzerata) equivale a 1,7 punti percentuali delle emissioni globali, in base al dato FAO sull'energia in azienda agricola. Il confronto "dimezzare il consumo di carne" è una stima costruita sui dati di Poore &amp; Nemecek/OWID (bestiame e pesca = 31% del 26% del totale globale attribuito al cibo, dimezzato ≈ 4 punti percentuali). Sono ordini di grandezza illustrativi, non previsioni esatte.
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>La meccanizzazione è la parte visibile del problema — il rumore del trattore, il fumo dal tubo di scarico. Ma la crisi ambientale dell'agricoltura si gioca soprattutto altrove: negli animali che alleviamo, nelle foreste che tagliamo, nell'azoto che spargiamo. Guardare al posto giusto conta più che guardare al posto rumoroso.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Poore, J. &amp; Nemecek, T. (2018), <em>Reducing food's environmental impacts through producers and consumers</em>, Science 360(6392). Dati via Our World in Data: ourworldindata.org/food-ghg-emissions</li>
+      <li>FAO, <em>Greenhouse gas emissions from agrifood systems: global, regional and country trends, 2000–2022</em>, FAOSTAT Analytical Briefs. openknowledge.fao.org</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const ctxFonti = document.getElementById('chartFonti').getContext('2d');
+new Chart(ctxFonti, {
+  type: 'bar',
+  data: {
+    labels: ['Bestiame e pesca', 'Produzione colture', 'Uso del suolo', 'Filiera (trasporto, packaging, ecc.)'],
+    datasets: [{
+      data: [31, 27, 24, 18],
+      backgroundColor: ['#27ae60','#2ecc71','#145a32','#82e0aa'],
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x}% delle emissioni del cibo` } }
+    },
+    scales: {
+      x: { beginAtZero: true, max: 35, grid: { color: '#f0ece4' }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#7f8c8d', callback: v => v + '%' } },
+      y: { grid: { display: false }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12.5 }, color: '#1c1c2e' } }
+    }
+  }
+});
+
+function aggiornaCalc() {
+  const pct = parseInt(document.getElementById('sliderMecc').value);
+  document.getElementById('valMecc').textContent = pct + '%';
+  const risultato = (pct / 100) * 1.7;
+  document.getElementById('risultatoPP').textContent = risultato.toFixed(2).replace('.', ',');
+}
+
+document.addEventListener('DOMContentLoaded', aggiornaCalc);
+</script>
+</body>
+</html>
