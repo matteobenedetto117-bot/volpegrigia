@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disboscando perdiamo l'ossigeno da respirare?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #27ae60;
+    --accent-light: #d5f5e3;
+    --accent-mid: #2ecc71;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .chart-wrap { position: relative; height: 260px; }
+
+  /* TOGGLE CONFRONTO */
+  .toggle-wrap { display: flex; gap: 8px; margin-bottom: 20px; }
+  .toggle-btn {
+    flex: 1;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.attivo { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .balance-wrap { display: grid; gap: 10px; margin-bottom: 18px; }
+  .balance-riga { display: grid; gap: 5px; }
+  .balance-label { display: flex; justify-content: space-between; font-size: 13.5px; }
+  .balance-label strong { color: var(--text); }
+  .balance-track { background: #f3f1ec; border-radius: 3px; height: 20px; overflow: hidden; }
+  .balance-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+  .balance-fill.consumo { background: #145a32; }
+  .balance-fill.netto { background: var(--accent-mid); }
+
+  .toggle-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* CALCOLATORE */
+  .calc-grid { display: grid; gap: 16px; margin-bottom: 20px; }
+  .calc-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .calc-row { display: flex; align-items: center; gap: 14px; }
+  input[type="range"] { -webkit-appearance: none; flex: 1; height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .range-val { font-size: 14px; font-weight: 600; color: var(--accent); min-width: 80px; text-align: right; }
+
+  .calc-result { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 16px 18px; border-radius: 0 4px 4px 0; margin-top: 8px; }
+  .calc-result .risultato-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .calc-result .risultato-txt { font-size: 14px; color: var(--text); line-height: 1.45; }
+
+  .calc-comparativo { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .comp-card { background: white; border: 1px solid var(--border); border-radius: 4px; padding: 10px; text-align: center; }
+  .comp-card .c-emoji { font-size: 20px; margin-bottom: 3px; }
+  .comp-card .c-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .comp-card .c-val { font-size: 15px; font-weight: 700; color: var(--text); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .calc-comparativo { grid-template-columns: 1fr; }
+    .chart-wrap { height: 220px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Ambiente</div>
+    <h1>Disboscando perdiamo l'ossigeno da respirare?</h1>
+    <div class="risposta-box">
+      <p>No: il mito che le foreste — Amazzonia in testa — producano gran parte del nostro ossigeno è sbagliato. Il loro contributo netto è vicino allo zero, e la riserva atmosferica è troppo enorme perché il disboscamento la intacchi in modo percepibile.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Durante gli incendi dell'Amazzonia del 2019 girò ovunque una frase: "i polmoni del pianeta producono il 20% del nostro ossigeno". La ripeterono telegiornali, politici come Macron e Kamala Harris, perfino le guide nei musei di scienze. Il problema è che è falsa — e di parecchio.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il mito del 20%, smontato passo dopo passo</div>
+      <div class="applet-istruzione">Ogni barra è una correzione scientifica successiva alla cifra virale.</div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartCascata"></canvas></div>
+    <div class="applet-fonte">
+      Fonte: Foley (1995), <em>Tellus B</em>; Beer et al. (2010), <em>Science</em> 329(5993); Malhi, "Does the Amazon provide 20% of our oxygen?" (Univ. di Oxford, 2019) — dati sintetizzati in McDonald, "Amazon Doesn't Produce 20% of Earth's Oxygen", FactCheck.org SciCheck (2019).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La quota scende ogni volta che si aggiunge un pezzo mancante: l'Amazzonia produce il 12-16% della fotosintesi <em>sulla terraferma</em>, ma la terraferma è solo metà della fotosintesi globale — l'altra metà la fa il fitoplancton oceanico. E anche i vegetali "respirano" di notte, riconsumando ossigeno.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Chi ha creato l'ossigeno che respiriamo oggi?</div>
+      <div class="applet-istruzione">Confronta il ciclo di oggi con l'accumulo geologico che ha reso l'aria respirabile.</div>
+    </div>
+    <div class="toggle-wrap">
+      <button class="toggle-btn attivo" id="btnOggi" onclick="mostraOggi()">Il ciclo di oggi</button>
+      <button class="toggle-btn" id="btnPassato" onclick="mostraPassato()">L'accumulo geologico</button>
+    </div>
+    <div class="balance-wrap" id="balanceWrap">
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Ossigeno prodotto (fotosintesi)</strong><span>100</span></div>
+        <div class="balance-track"><div class="balance-fill" style="width:100%"></div></div>
+      </div>
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Ossigeno riconsumato (respirazione + decomposizione)</strong><span id="consumoVal">~100</span></div>
+        <div class="balance-track"><div class="balance-fill consumo" id="consumoBar" style="width:98%"></div></div>
+      </div>
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Bilancio netto</strong><span id="nettoVal">≈ 0</span></div>
+        <div class="balance-track"><div class="balance-fill netto" id="nettoBar" style="width:2%"></div></div>
+      </div>
+    </div>
+    <div class="toggle-testo" id="toggleTesto">Ogni anno le piante e i microbi consumano quasi tutto l'ossigeno che producono: la metà o più se lo riprendono le piante stesse respirando di notte, il resto lo usano i microbi che decompongono foglie e legno morto. Il saldo netto di un ecosistema come l'Amazzonia è, nella pratica, vicino allo zero.</div>
+    <div class="applet-fonte">
+      Fonte: Malhi (Univ. di Oxford, 2019); Denning, "Amazon fires are destructive, but they aren't depleting Earth's oxygen supply", <em>The Conversation</em> (2019) — via FactCheck.org SciCheck.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Se le piante di oggi non creano ossigeno netto, da dove viene il 21% che respiriamo? Da un accumulo lentissimo: solo circa una particella organica su un milione finisce sepolta senza decomporsi — di solito sui fondali marini — lasciando indietro l'ossigeno che aveva prodotto da viva. In centinaia di milioni di anni, quella minuscola eccedenza ha riempito l'atmosfera.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Quanto ossigeno perderemmo disboscando davvero?</div>
+      <div class="applet-istruzione">Sposta lo slider per simulare una perdita di vegetazione, ancorata a uno scenario estremo reale.</div>
+    </div>
+
+    <div class="calc-grid">
+      <div>
+        <div class="calc-label">Quota dello scenario estremo simulata</div>
+        <div class="calc-row">
+          <input type="range" id="sliderOssigeno" min="0" max="100" step="5" value="50" oninput="aggiornaCalc()">
+          <span class="range-val" id="valOssigeno">50%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-result">
+      <div class="risultato-num" id="risultatoO2">—</div>
+      <div class="risultato-txt">livello di ossigeno atmosferico stimato (oggi: 20,9%)</div>
+    </div>
+
+    <div class="calc-comparativo">
+      <div class="comp-card">
+        <div class="c-emoji">🔥</div>
+        <div class="c-label">Se bruciasse tutta la vita non umana</div>
+        <div class="c-val">20,9% → 20,4%</div>
+      </div>
+      <div class="comp-card">
+        <div class="c-emoji">⛽</div>
+        <div class="c-label">Perdita naturale annua</div>
+        <div class="c-val">0,002%/anno</div>
+      </div>
+    </div>
+
+    <div class="applet-fonte">
+      Calcolo: lo scenario di riferimento (100%) è la stima del geologo Shanan Peters (Univ. of Wisconsin-Madison) secondo cui, se bruciasse ogni essere vivente della Terra tranne gli umani, l'ossigeno atmosferico scenderebbe dal 20,9% al 20,4% — via Brannen, "The Amazon Is Not Earth's Lungs", <em>The Atlantic</em> (2019). Lo slider è un'estrapolazione lineare illustrativa di quello scenario estremo, non un modello fisico preciso. Perdita naturale annua: Scripps Institution of Oceanography, Scripps O₂ Program.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Questo non significa che disboscare non abbia conseguenze. Le foreste restano riserve enormi di carbonio, regolano il clima locale, ospitano gran parte della biodiversità del pianeta. Solo, non sono la fonte dell'aria che respiriamo: quella viene soprattutto dall'oceano, e dal passato geologico.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Non serve inventare un pericolo per l'ossigeno per giustificare la tutela delle foreste: bastano il clima che regolano e le specie che ospitano. La scienza sbagliata, anche quando serve una buona causa, resta scienza sbagliata.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>McDonald, J., <em>Amazon Doesn't Produce 20% of Earth's Oxygen</em>, FactCheck.org SciCheck (3 settembre 2019)</li>
+      <li>Zimmer, K., <em>Why the Amazon doesn't really produce 20% of the world's oxygen</em>, National Geographic (agg. 2025)</li>
+      <li>Malhi, Y., <em>Does the Amazon provide 20% of our oxygen?</em>, blog Travels in Ecosystem Science, Univ. di Oxford (2019)</li>
+      <li>Foley, J.A. (1995), <em>An equilibrium model of the terrestrial carbon budget</em>, Tellus B 47(3)</li>
+      <li>Beer, C. et al. (2010), <em>Terrestrial Gross Carbon Dioxide Uptake</em>, Science 329(5993)</li>
+      <li>Denning, S., <em>Amazon fires are destructive, but they aren't depleting Earth's oxygen supply</em>, The Conversation (2019)</li>
+      <li>Brannen, P., <em>The Amazon Is Not Earth's Lungs</em>, The Atlantic (2019) — stima di Shanan Peters, Univ. of Wisconsin-Madison</li>
+      <li>Scripps Institution of Oceanography, Scripps O₂ Program, FAQ: scrippso2.ucsd.edu</li>
+      <li>NASA Science / Smithsonian Ocean, sul contributo del fitoplancton all'ossigeno atmosferico (~50-80%)</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const ctxCascata = document.getElementById('chartCascata').getContext('2d');
+new Chart(ctxCascata, {
+  type: 'bar',
+  data: {
+    labels: ['Mito virale (2019)', 'Fotosintesi terrestre (Amazzonia)', 'Quota globale reale (oceano incluso)', 'Contributo netto reale'],
+    datasets: [{
+      data: [20, 14, 7.5, 0.3],
+      backgroundColor: ['#c0392b','#2ecc71','#27ae60','#145a32'],
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => {
+        const labels = ['20% (cifra diffusa nel 2019)', '12-16% della fotosintesi sulla terraferma', '6-9% su scala globale, oceano incluso', '≈ 0%, dopo respirazione e decomposizione'];
+        return ' ' + labels[ctx.dataIndex];
+      } } }
+    },
+    scales: {
+      x: { beginAtZero: true, max: 22, grid: { color: '#f0ece4' }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#7f8c8d', callback: v => v + '%' } },
+      y: { grid: { display: false }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#1c1c2e' } }
+    }
+  }
+});
+
+function mostraOggi() {
+  document.getElementById('btnOggi').classList.add('attivo');
+  document.getElementById('btnPassato').classList.remove('attivo');
+  document.getElementById('consumoVal').textContent = '~98';
+  document.getElementById('consumoBar').style.width = '98%';
+  document.getElementById('nettoVal').textContent = '≈ 0';
+  document.getElementById('nettoBar').style.width = '2%';
+  document.getElementById('toggleTesto').textContent = "Ogni anno le piante e i microbi consumano quasi tutto l'ossigeno che producono: la metà o più se lo riprendono le piante stesse respirando di notte, il resto lo usano i microbi che decompongono foglie e legno morto. Il saldo netto di un ecosistema come l'Amazzonia è, nella pratica, vicino allo zero.";
+}
+
+function mostraPassato() {
+  document.getElementById('btnPassato').classList.add('attivo');
+  document.getElementById('btnOggi').classList.remove('attivo');
+  document.getElementById('consumoVal').textContent = '~99,9999';
+  document.getElementById('consumoBar').style.width = '99.9%';
+  document.getElementById('nettoVal').textContent = '~0,0001 (accumulato per 100+ milioni di anni)';
+  document.getElementById('nettoBar').style.width = '0.5%';
+  document.getElementById('toggleTesto').textContent = "Solo circa una particella organica su un milione — di solito fitoplancton marino — finisce sepolta senza decomporsi, di solito sui fondali oceanici. Quella minuscola eccedenza di ossigeno non riconsumato si è accumulata per centinaia di milioni di anni, fino a portare l'atmosfera al 21% di oggi.";
+}
+
+function aggiornaCalc() {
+  const pct = parseInt(document.getElementById('sliderOssigeno').value);
+  document.getElementById('valOssigeno').textContent = pct + '%';
+  const risultato = 20.9 - (pct / 100) * 0.5;
+  document.getElementById('risultatoO2').textContent = risultato.toFixed(2).replace('.', ',') + '%';
+}
+
+document.addEventListener('DOMContentLoaded', aggiornaCalc);
+</script>
+</body>
+</html>
