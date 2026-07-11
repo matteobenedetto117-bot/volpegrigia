@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Come fanno a rientrare delle spese i voli low cost da 20€?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #2980b9;
+    --accent-light: #d6eaf8;
+    --accent-mid: #3498db;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* TOGGLE CONFRONTO */
+  .toggle-wrap { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .toggle-btn {
+    flex: 1;
+    min-width: 100px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.attivo { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .balance-wrap { display: grid; gap: 14px; margin-bottom: 18px; }
+  .balance-riga { display: grid; gap: 5px; }
+  .balance-label { display: flex; justify-content: space-between; font-size: 13.5px; }
+  .balance-label strong { color: var(--text); }
+  .balance-track { background: #f3f1ec; border-radius: 3px; height: 20px; overflow: hidden; }
+  .balance-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+
+  .toggle-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* CALCOLATORE A CHIP */
+  .chip-grid { display: grid; gap: 10px; margin-bottom: 20px; }
+  .chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip.attivo { background: var(--accent-light); border-color: var(--accent); }
+  .chip-left { display: flex; align-items: center; gap: 10px; }
+  .chip-check {
+    width: 20px; height: 20px; border-radius: 4px; border: 1.5px solid var(--muted);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 13px; color: white; background: white; transition: all 0.15s;
+  }
+  .chip.attivo .chip-check { background: var(--accent); border-color: var(--accent); }
+  .chip-nome { font-size: 14.5px; font-weight: 600; color: var(--text); }
+  .chip-desc { font-size: 12.5px; color: var(--muted); }
+  .chip-prezzo { font-size: 14.5px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  .calc-result { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 16px 18px; border-radius: 0 4px 4px 0; margin-top: 8px; }
+  .calc-result .risultato-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .calc-result .risultato-txt { font-size: 14px; color: var(--text); line-height: 1.45; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .chart-wrap { height: 200px; }
+    .chip { flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Economia</div>
+    <h1>Come fanno a rientrare delle spese i voli low cost da 20€?</h1>
+    <div class="risposta-box">
+      <p>Non ci rientrano vendendo solo quel biglietto: quasi un terzo dei ricavi di una low cost arriva da bagagli, posti ed extra, e il resto lo recuperano facendo volare gli aerei il più possibile, a costi ridotti all'osso.</p>
+    </div>
+    <div class="meta">Lettura: 3 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Un biglietto Ryanair Cagliari–Milano Bergamo a 18€ sembra quasi un regalo. Ma nel 2026 un'indagine di Altroconsumo su 60 voli di cinque compagnie low cost ha misurato un rincaro medio del 200% — fino al 316% nei casi peggiori — una volta aggiunti bagaglio, posto e imbarco prioritario.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Da dove arrivano davvero i ricavi di una low cost</div>
+      <div class="applet-istruzione">Il grafico mostra i ricavi totali di Ryanair nell'anno fiscale 2025 (marzo 2024 – marzo 2025).</div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartRicavi"></canvas></div>
+    <div class="applet-fonte">
+      Fonte: Ryanair, <em>FY25 Results</em> e <em>Annual Report 2025</em> (investor.ryanair.com, maggio 2025) — ricavi totali 13,949 miliardi di €, di cui 9,230 mld da biglietti e 4,719 mld da bagagli, posti, priorità d'imbarco e altri extra (+10% sull'anno precedente). Su 200,2 milioni di passeggeri, la tariffa media è stata di 46€ e la spesa extra media di circa 23,6€ a persona.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il fenomeno non è un'eccezione italiana: nell'anno fiscale 2025 Ryanair ha incassato 13,9 miliardi di euro, e quasi un terzo — 4,7 miliardi — non veniva dal prezzo del biglietto ma da bagagli, posti e altri extra. Il biglietto "nudo" serve a riempire l'aereo, non a generare profitto da solo.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">L'altra leva: far volare l'aereo il più possibile</div>
+      <div class="applet-istruzione">Confronta i tempi operativi di una low cost con quelli di una compagnia tradizionale.</div>
+    </div>
+    <div class="toggle-wrap">
+      <button class="toggle-btn attivo" id="btnLc" onclick="mostraLc()">Low cost</button>
+      <button class="toggle-btn" id="btnTrad" onclick="mostraTrad()">Tradizionale</button>
+    </div>
+    <div class="balance-wrap" id="balanceWrap">
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Tempo a terra tra un volo e l'altro</strong><span id="turnaroundVal">25 min</span></div>
+        <div class="balance-track"><div class="balance-fill" id="turnaroundBar" style="width:36%"></div></div>
+      </div>
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Ore di volo al giorno per aereo</strong><span id="utilizzoVal">12-13 ore</span></div>
+        <div class="balance-track"><div class="balance-fill" id="utilizzoBar" style="width:96%"></div></div>
+      </div>
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Tratte servite al giorno</strong><span id="tratteVal">7-8</span></div>
+        <div class="balance-track"><div class="balance-fill" id="tratteBar" style="width:94%"></div></div>
+      </div>
+    </div>
+    <div class="toggle-testo" id="toggleTesto">Meno bagagli in stiva da caricare, aeroporti più piccoli e meno trafficati, pulizie rapide: un aereo Ryanair torna in volo in appena 25 minuti dall'atterraggio. Lo stesso velivolo può così coprire fino a 7-8 tratte al giorno invece di 4-5.</div>
+    <div class="applet-fonte">
+      Fonte: Flightradar24, <em>Turnarounds — the low cost pilot's perspective</em>; Il Post, <em>Come funziona una compagnia low cost</em> (2016) — turnaround low cost ~25 min contro 40-70 min delle compagnie tradizionali; utilizzo aereo 12-13 ore/giorno contro 7-8 ore/giorno.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La seconda metà della storia è la velocità: un aereo Ryanair torna in volo appena 25 minuti dopo l'atterraggio, contro i 40-70 minuti di una compagnia tradizionale, e resta in aria fino a 12-13 ore al giorno invece di 7-8. Più tratte con lo stesso aereo significano più ricavi sullo stesso costo fisso — a cui si sommano gli incentivi che molti aeroporti secondari, come Bergamo, offrono pur di ospitare una base Ryanair: circa 1,9 miliardi di euro nel solo 2024.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Costruisci il tuo biglietto da 18€</div>
+      <div class="applet-istruzione">Clicca sugli extra per aggiungerli e guarda il prezzo finale salire (tariffe massime rilevate su Ryanair).</div>
+    </div>
+
+    <div class="chip-grid" id="chipGrid">
+      <div class="chip" data-prezzo="21" onclick="toggleChip(this)">
+        <div class="chip-left">
+          <div class="chip-check"></div>
+          <div>
+            <div class="chip-nome">Trolley in cabina</div>
+            <div class="chip-desc">oltre al bagaglio piccolo incluso</div>
+          </div>
+        </div>
+        <div class="chip-prezzo">fino a 21€</div>
+      </div>
+      <div class="chip" data-prezzo="32" onclick="toggleChip(this)">
+        <div class="chip-left">
+          <div class="chip-check"></div>
+          <div>
+            <div class="chip-nome">Posto a sedere standard</div>
+            <div class="chip-desc">scelta del posto, non assegnato random</div>
+          </div>
+        </div>
+        <div class="chip-prezzo">fino a 32€</div>
+      </div>
+      <div class="chip" data-prezzo="55" onclick="toggleChip(this)">
+        <div class="chip-left">
+          <div class="chip-check"></div>
+          <div>
+            <div class="chip-nome">Check-in in aeroporto</div>
+            <div class="chip-desc">invece che online prima del volo</div>
+          </div>
+        </div>
+        <div class="chip-prezzo">fino a 55€</div>
+      </div>
+    </div>
+
+    <div class="calc-result">
+      <div class="risultato-num" id="risultatoTot">18€</div>
+      <div class="risultato-txt" id="risultatoTxt">tariffa base — nessun extra selezionato</div>
+    </div>
+
+    <div class="applet-fonte">
+      Base: tariffa Ryanair Cagliari–Milano Bergamo rilevata a 18€. Prezzi massimi degli extra: Altroconsumo, <em>Voli low cost, i costi extra fanno aumentare il prezzo del biglietto fino a cinque volte</em> (2026), indagine su 60 voli di cinque compagnie.
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>Un volo da 20€ non è un regalo: è la porta d'ingresso a un negozio che vende soprattutto extra — ed è il passeggero, alla cassa, a decidere quanto costerà davvero il suo viaggio.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Altroconsumo, <em>Voli low cost, i costi extra fanno aumentare il prezzo del biglietto fino a cinque volte</em> (2026)</li>
+      <li>Ryanair, <em>FY25 Results — Ryanair Reports PAT of €1.61bn Despite 7% Lower Fares</em>, investor.ryanair.com (maggio 2025)</li>
+      <li>Ryanair, <em>Annual Report 2025</em>, investor.ryanair.com</li>
+      <li>Flightradar24 Blog, <em>Turnarounds — the low cost pilot's perspective</em></li>
+      <li>Il Post, <em>Come funziona una compagnia low cost</em> (2016)</li>
+      <li>Non Sprecare, <em>Aeroporti europei regalano ogni anno miliardi di euro alle low cost</em></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const ctxRicavi = document.getElementById('chartRicavi').getContext('2d');
+new Chart(ctxRicavi, {
+  type: 'bar',
+  data: {
+    labels: ['Ricavi da biglietti', 'Ricavi da bagagli, posti e altri extra'],
+    datasets: [{
+      data: [9230, 4719],
+      backgroundColor: ['#2980b9', '#e67e22'],
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => {
+        const pct = ctx.dataIndex === 0 ? '66%' : '34%';
+        return ' ' + ctx.formattedValue + ' mln € (' + pct + ' del totale)';
+      } } }
+    },
+    scales: {
+      x: { beginAtZero: true, grid: { color: '#f0ece4' }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#7f8c8d', callback: v => (v/1000) + 'mld' } },
+      y: { grid: { display: false }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#1c1c2e' } }
+    }
+  }
+});
+
+function mostraLc() {
+  document.getElementById('btnLc').classList.add('attivo');
+  document.getElementById('btnTrad').classList.remove('attivo');
+  document.getElementById('turnaroundVal').textContent = '25 min';
+  document.getElementById('turnaroundBar').style.width = '36%';
+  document.getElementById('utilizzoVal').textContent = '12-13 ore';
+  document.getElementById('utilizzoBar').style.width = '96%';
+  document.getElementById('tratteVal').textContent = '7-8';
+  document.getElementById('tratteBar').style.width = '94%';
+  document.getElementById('toggleTesto').textContent = "Meno bagagli in stiva da caricare, aeroporti più piccoli e meno trafficati, pulizie rapide: un aereo Ryanair torna in volo in appena 25 minuti dall'atterraggio. Lo stesso velivolo può così coprire fino a 7-8 tratte al giorno invece di 4-5.";
+}
+
+function mostraTrad() {
+  document.getElementById('btnTrad').classList.add('attivo');
+  document.getElementById('btnLc').classList.remove('attivo');
+  document.getElementById('turnaroundVal').textContent = '40-70 min';
+  document.getElementById('turnaroundBar').style.width = '100%';
+  document.getElementById('utilizzoVal').textContent = '7-8 ore';
+  document.getElementById('utilizzoBar').style.width = '58%';
+  document.getElementById('tratteVal').textContent = '4-5';
+  document.getElementById('tratteBar').style.width = '56%';
+  document.getElementById('toggleTesto').textContent = "Più bagagli da stivare, hub grandi e congestionati, procedure più articolate: una compagnia tradizionale tiene l'aereo a terra 40-70 minuti tra un volo e l'altro, e lo fa volare 7-8 ore al giorno contro le 12-13 di una low cost.";
+}
+
+function toggleChip(el) {
+  el.classList.toggle('attivo');
+  const check = el.querySelector('.chip-check');
+  check.textContent = el.classList.contains('attivo') ? '✓' : '';
+  aggiornaTotale();
+}
+
+function aggiornaTotale() {
+  const base = 18;
+  let extra = 0;
+  let nomi = [];
+  document.querySelectorAll('.chip.attivo').forEach(chip => {
+    extra += parseInt(chip.dataset.prezzo);
+    nomi.push(chip.querySelector('.chip-nome').textContent);
+  });
+  const totale = base + extra;
+  document.getElementById('risultatoTot').textContent = totale + '€';
+  if (extra === 0) {
+    document.getElementById('risultatoTxt').textContent = 'tariffa base — nessun extra selezionato';
+  } else {
+    const pct = Math.round((extra / base) * 100);
+    document.getElementById('risultatoTxt').textContent = '+' + extra + '€ di extra (' + nomi.join(', ') + ') — prezzo salito del ' + pct + '% rispetto alla tariffa iniziale';
+  }
+}
+</script>
+</body>
+</html>
