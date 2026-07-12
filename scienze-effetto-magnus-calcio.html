@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Come funziona l'effetto Magnus nei tiri a effetto nel calcio?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #16a085;
+    --accent-light: #d7f2ec;
+    --accent-mid: #1abc9c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  /* SIMULAZIONE CAMPO */
+  .campo-wrap { position: relative; background: #eef7f3; border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .campo-svg { display: block; width: 100%; height: auto; }
+  .campo-controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .campo-btn {
+    flex: 1;
+    min-width: 140px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .campo-btn.attivo { background: var(--accent); border-color: var(--accent); color: white; }
+  .campo-esito { font-size: 14px; color: var(--text); text-align: center; padding: 10px; min-height: 20px; }
+
+  /* TOGGLE CONFRONTO */
+  .toggle-wrap { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .toggle-btn {
+    flex: 1;
+    min-width: 100px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.attivo { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .balance-wrap { display: grid; gap: 14px; margin-bottom: 18px; }
+  .balance-riga { display: grid; gap: 5px; }
+  .balance-label { display: flex; justify-content: space-between; font-size: 13.5px; }
+  .balance-label strong { color: var(--text); }
+  .balance-track { background: #f3f1ec; border-radius: 3px; height: 20px; overflow: hidden; }
+  .balance-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+
+  .toggle-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* CALCOLATORE SLIDER */
+  .slider-grid { display: grid; gap: 20px; margin-bottom: 20px; }
+  .slider-riga { display: grid; gap: 8px; }
+  .slider-label { display: flex; justify-content: space-between; font-size: 14px; }
+  .slider-label strong { color: var(--text); }
+  .slider-label span { color: var(--accent); font-weight: 700; }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #f3f1ec;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+
+  .calc-result { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 16px 18px; border-radius: 0 4px 4px 0; margin-top: 8px; }
+  .calc-result .risultato-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .calc-result .risultato-txt { font-size: 14px; color: var(--text); line-height: 1.45; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .campo-btn { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Scienze</div>
+    <h1>Come funziona l'effetto Magnus nei tiri a effetto nel calcio?</h1>
+    <div class="risposta-box">
+      <p>La rotazione del pallone crea una differenza di pressione dell'aria tra i due lati: la palla viene spinta verso il lato a pressione più bassa. Più forte è la rotazione, più la traiettoria si incurva.</p>
+    </div>
+    <div class="meta">Lettura: 3 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Quando un calciatore colpisce il pallone "di taglio", con l'esterno o l'interno del piede, gli imprime una rotazione attorno a un asse verticale. L'aria scorre più veloce sul lato che gira nella stessa direzione del moto e più lenta sul lato opposto: nasce così una differenza di pressione che spinge la palla lateralmente. È l'effetto Magnus — lo stesso principio, applicato a una sfera, che tiene in aria l'ala di un aereo.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Prova a scavalcare la barriera</div>
+      <div class="applet-istruzione">Scegli la rotazione del tiro e osserva come cambia la traiettoria verso la porta.</div>
+    </div>
+    <div class="campo-controls">
+      <button class="campo-btn attivo" id="btnDritto" onclick="impostaTiro('dritto')">Nessun effetto</button>
+      <button class="campo-btn" id="btnLeggero" onclick="impostaTiro('leggero')">Effetto leggero</button>
+      <button class="campo-btn" id="btnForte" onclick="impostaTiro('forte')">Effetto alla Roberto Carlos</button>
+    </div>
+    <div class="campo-wrap">
+      <svg class="campo-svg" id="campoSvg" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="400" height="260" fill="#eef7f3"></rect>
+        <rect x="10" y="10" width="380" height="240" fill="none" stroke="#bfe3d6" stroke-width="2"></rect>
+        <rect x="150" y="10" width="100" height="28" fill="none" stroke="#bfe3d6" stroke-width="2"></rect>
+        <rect x="170" y="10" width="60" height="12" fill="none" stroke="#c0392b" stroke-width="2.5"></rect>
+        <circle cx="60" cy="220" r="70" fill="none" stroke="#bfe3d6" stroke-width="1.5" stroke-dasharray="4 4"></circle>
+        <circle cx="176" cy="150" r="9" fill="#1c1c2e"></circle>
+        <circle cx="196" cy="148" r="9" fill="#1c1c2e"></circle>
+        <circle cx="216" cy="150" r="9" fill="#1c1c2e"></circle>
+        <path id="traiettoria" d="M 60 220 Q 60 220 60 220" fill="none" stroke="#16a085" stroke-width="2.5" stroke-dasharray="5 4"></path>
+        <circle id="pallone" cx="60" cy="220" r="6" fill="#1c1c2e"></circle>
+      </svg>
+    </div>
+    <div class="campo-esito" id="campoEsito">Nessun effetto: il tiro va dritto sulla barriera.</div>
+    <div class="applet-fonte">
+      Traiettorie illustrative, non a scala fisica reale — costruite per mostrare la relazione qualitativa tra rotazione e curvatura descritta in Dupeux, Le Goff, Quéré, Clanet, <em>The spinning ball spiral</em>, New Journal of Physics 12, 093004 (2010).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il caso di scuola è la punizione di Roberto Carlos contro la Francia, il 3 giugno 1997: da 35 metri, palla che parte fuori dalla porta e rientra all'ultimo istante. Nel 2010 un gruppo di fisici francesi ha ricostruito il tiro: velocità iniziale di circa 30 m/s (108 km/h) e rotazione di circa 10 giri al secondo. A quella velocità di rotazione, mentre la palla rallenta per l'attrito dell'aria, la curva si accentua progressivamente in una spirale — non un semplice arco.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Tiro a effetto contro pallonetto senza rotazione</div>
+      <div class="applet-istruzione">Confronta il tiro "alla Roberto Carlos" con il knuckleball, il tiro a rotazione quasi nulla.</div>
+    </div>
+    <div class="toggle-wrap">
+      <button class="toggle-btn attivo" id="btnEffetto" onclick="mostraEffetto()">Effetto (Roberto Carlos)</button>
+      <button class="toggle-btn" id="btnKnuckle" onclick="mostraKnuckle()">Knuckleball</button>
+    </div>
+    <div class="balance-wrap" id="balanceWrap2">
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Velocità del tiro</strong><span id="velVal">~108 km/h</span></div>
+        <div class="balance-track"><div class="balance-fill" id="velBar" style="width:90%"></div></div>
+      </div>
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Rotazione del pallone</strong><span id="rotVal">~10 giri/secondo</span></div>
+        <div class="balance-track"><div class="balance-fill" id="rotBar" style="width:95%"></div></div>
+      </div>
+    </div>
+    <div class="toggle-testo" id="toggleTesto2">Con una rotazione così alta, la differenza di pressione tra i due lati del pallone è stabile: la traiettoria curva in modo regolare e — nel caso di Roberto Carlos — a spirale, ma resta prevedibile per chi la studia a posteriori.</div>
+    <div class="applet-fonte">
+      Fonte: Dupeux, Le Goff, Quéré, Clanet, <em>The spinning ball spiral</em>, New Journal of Physics 12, 093004 (2010); Hong &amp; Asai, <em>Investigating the Knuckleball Effect in Soccer Using a Smart Ball and Training Machine</em>, Sensors 22(11), 3984 (2022) — soglia knuckleball inferiore a un decimo di giro sull'intera traiettoria del tiro.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quando la rotazione è vicina a zero — meno di un decimo di giro lungo tutto il volo, come nei tiri di Cristiano Ronaldo o Gareth Bale — non si forma nessuna differenza di pressione stabile. A "decidere" la traiettoria sono le cuciture del pallone, che generano turbolenze asimmetriche e mutevoli: la palla "balla" in aria in modo imprevedibile, per il portiere e per chi l'ha calciata.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Quanto curva un tiro a effetto?</div>
+      <div class="applet-istruzione">Regola rotazione e distanza dalla porta e stima lo scarto laterale rispetto a una traiettoria dritta.</div>
+    </div>
+    <div class="slider-grid">
+      <div class="slider-riga">
+        <div class="slider-label"><strong>Rotazione</strong><span id="spinLabel">9 giri/s</span></div>
+        <input type="range" id="spinRange" min="2" max="12" step="1" value="9" oninput="aggiornaCalcolo()">
+      </div>
+      <div class="slider-riga">
+        <div class="slider-label"><strong>Distanza dal punto di tiro</strong><span id="distLabel">30 m</span></div>
+        <input type="range" id="distRange" min="18" max="40" step="1" value="30" oninput="aggiornaCalcolo()">
+      </div>
+    </div>
+    <div class="calc-result">
+      <div class="risultato-num" id="risultatoDev">4,0 m</div>
+      <div class="risultato-txt" id="risultatoDevTxt">scarto laterale stimato rispetto a un tiro senza effetto</div>
+    </div>
+    <div class="applet-fonte">
+      Modello semplificato, calibrato sulla stima pubblicata in <em>Physics World</em>, <em>The physics of football</em>: a 25-30 m/s e 8-10 giri/secondo, la forza di Magnus può deviare il pallone fino a circa 4 metri su 30 metri di volo. Lo scarto qui è stimato come proporzionale alla rotazione e al quadrato della distanza — non è un calcolo aerodinamico completo, ma un'approssimazione didattica.
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>Un pallone che gira è aria che spinge da un lato solo: la stessa fisica che tiene in volo un aereo, richiusa nei tre secondi di un calcio di punizione.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Dupeux, G., Le Goff, A., Quéré, D., Clanet, C., <em>The spinning ball spiral</em>, New Journal of Physics 12, 093004 (2010), DOI: 10.1088/1367-2630/12/9/093004</li>
+      <li>ScienceDaily / EurekAlert, <em>Carlos '97 free kick no fluke, say French physicists</em> (settembre 2010)</li>
+      <li>Physics World, <em>The physics of football</em></li>
+      <li>Hong, S., Asai, T., <em>Investigating the Knuckleball Effect in Soccer Using a Smart Ball and Training Machine</em>, Sensors 22(11), 3984 (2022), DOI: 10.3390/s22113984</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const traiettorie = {
+  dritto:  { path: "M 60 220 Q 145 165 176 150", esito: "Nessun effetto: il tiro va dritto sulla barriera." },
+  leggero: { path: "M 60 220 Q 90 130 196 148", esito: "Effetto leggero: la palla scarta quel poco che basta per scavalcare il muro." },
+  forte:   { path: "M 60 220 Q 10 110 30 60 Q 50 20 196 40 Q 260 55 216 150", esito: "Effetto alla Roberto Carlos: la palla esce fuori dalla porta e rientra all'ultimo istante, a spirale." }
+};
+
+function impostaTiro(tipo) {
+  ['dritto','leggero','forte'].forEach(t => {
+    document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('attivo', t === tipo);
+  });
+  const dati = traiettorie[tipo];
+  const path = document.getElementById('traiettoria');
+  const pallone = document.getElementById('pallone');
+  path.setAttribute('d', dati.path);
+  document.getElementById('campoEsito').textContent = dati.esito;
+
+  const len = path.getTotalLength();
+  let start = null;
+  const durata = 900;
+  function anima(ts) {
+    if (!start) start = ts;
+    const t = Math.min((ts - start) / durata, 1);
+    const punto = path.getPointAtLength(t * len);
+    pallone.setAttribute('cx', punto.x);
+    pallone.setAttribute('cy', punto.y);
+    if (t < 1) requestAnimationFrame(anima);
+  }
+  pallone.setAttribute('cx', 60);
+  pallone.setAttribute('cy', 220);
+  requestAnimationFrame(anima);
+}
+
+function mostraEffetto() {
+  document.getElementById('btnEffetto').classList.add('attivo');
+  document.getElementById('btnKnuckle').classList.remove('attivo');
+  document.getElementById('velVal').textContent = '~108 km/h';
+  document.getElementById('velBar').style.width = '90%';
+  document.getElementById('rotVal').textContent = '~10 giri/secondo';
+  document.getElementById('rotBar').style.width = '95%';
+  document.getElementById('toggleTesto2').textContent = "Con una rotazione così alta, la differenza di pressione tra i due lati del pallone è stabile: la traiettoria curva in modo regolare e — nel caso di Roberto Carlos — a spirale, ma resta prevedibile per chi la studia a posteriori.";
+}
+
+function mostraKnuckle() {
+  document.getElementById('btnKnuckle').classList.add('attivo');
+  document.getElementById('btnEffetto').classList.remove('attivo');
+  document.getElementById('velVal').textContent = '~90-100 km/h';
+  document.getElementById('velBar').style.width = '78%';
+  document.getElementById('rotVal').textContent = '< 0,1 giri in tutto il volo';
+  document.getElementById('rotBar').style.width = '4%';
+  document.getElementById('toggleTesto2').textContent = "Senza rotazione stabile, non si forma una differenza di pressione costante: sono le turbolenze attorno alle cuciture a spostare la palla, in modo asimmetrico e mutevole. Il risultato è una traiettoria che 'balla' in aria, imprevedibile anche per chi calcia.";
+}
+
+function aggiornaCalcolo() {
+  const spin = parseInt(document.getElementById('spinRange').value);
+  const dist = parseInt(document.getElementById('distRange').value);
+  document.getElementById('spinLabel').textContent = spin + ' giri/s';
+  document.getElementById('distLabel').textContent = dist + ' m';
+
+  const k = 4.0 / 9; // calibrato su ~4m di scarto a 9 giri/s e 30m
+  const dev = k * spin * Math.pow(dist / 30, 2);
+  document.getElementById('risultatoDev').textContent = dev.toFixed(1).replace('.', ',') + ' m';
+
+  let commento;
+  if (dev < 1.5) commento = 'scarto contenuto — utile per aggirare di poco un difensore';
+  else if (dev < 3.5) commento = 'scarto medio — sufficiente a scavalcare una barriera';
+  else commento = 'scarto ampio — nell\'ordine del tiro di Roberto Carlos del 1997';
+  document.getElementById('risultatoDevTxt').textContent = commento;
+}
+
+aggiornaCalcolo();
+</script>
+</body>
+</html>
