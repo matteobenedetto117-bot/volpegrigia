@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché si usavano le sanguisughe per curare malattie e perché si sono quasi estinte?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #8e44ad;
+    --accent-light: #f1e3f6;
+    --accent-mid: #9b59b6;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  /* LINEA DEL TEMPO */
+  .tl-wrap { display: grid; gap: 0; margin-bottom: 4px; }
+  .tl-evento {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .tl-evento:first-child { border-top: none; }
+  .tl-anno { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14.5px; color: var(--accent); padding-top: 2px; }
+  .tl-corpo { }
+  .tl-titolo { font-size: 14.5px; font-weight: 600; color: var(--text); }
+  .tl-dettaglio {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease, margin-top 0.25s ease;
+    margin-top: 0;
+  }
+  .tl-evento.aperto .tl-dettaglio { max-height: 160px; margin-top: 8px; }
+  .tl-evento.aperto .tl-titolo { color: var(--accent); }
+  .tl-hint { font-size: 12px; color: var(--muted); }
+
+  /* TOGGLE CONFRONTO */
+  .toggle-wrap { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .toggle-btn {
+    flex: 1;
+    min-width: 100px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.attivo { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .balance-wrap { display: grid; gap: 14px; margin-bottom: 18px; }
+  .balance-riga { display: grid; gap: 5px; }
+  .balance-label { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+  .balance-label strong { color: var(--text); }
+  .balance-label span { text-align: right; color: var(--muted); }
+  .balance-track { background: #f3f1ec; border-radius: 3px; height: 20px; overflow: hidden; }
+  .balance-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+
+  .toggle-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* CHART */
+  .chart-wrap { position: relative; height: 260px; margin-bottom: 10px; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .tl-evento { grid-template-columns: 70px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Salute</div>
+    <h1>Perché si usavano le sanguisughe per curare malattie e perché si sono quasi estinte?</h1>
+    <div class="risposta-box">
+      <p>Per secoli si è creduto che il sangue in eccesso causasse le malattie, e le sanguisughe erano lo strumento per toglierlo. La domanda in Europa diventò così enorme — decine di milioni di esemplari l'anno — che le popolazioni selvatiche crollarono quasi ovunque nell'Ottocento.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Per secoli la medicina occidentale si è basata sulla teoria dei quattro umori: sangue, bile gialla, bile nera e flemma. Malattia significava squilibrio, e il rimedio più diretto era togliere sangue — a mano, con un salasso, o lasciando che una sanguisuga lo facesse al posto del medico.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Duemila anni di sanguisughe in medicina</div>
+      <div class="applet-istruzione">Clicca su un evento per leggere il dettaglio.</div>
+    </div>
+    <div class="tl-wrap" id="tlWrap">
+      <div class="tl-evento aperto" data-i="0">
+        <div class="tl-anno">~1500 a.C.</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">Le prime testimonianze</div>
+          <div class="tl-dettaglio">Raffigurazioni di sanguisughe usate a scopo terapeutico compaiono già nell'antico Egitto e, secoli dopo, nella medicina greco-romana.</div>
+        </div>
+      </div>
+      <div class="tl-evento" data-i="1">
+        <div class="tl-anno">II sec. d.C.</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">Galeno e la teoria degli umori</div>
+          <div class="tl-dettaglio">Il medico greco sistematizza l'idea che la salute dipenda dall'equilibrio tra sangue, bile gialla, bile nera e flemma: da qui il salasso come cura universale.</div>
+        </div>
+      </div>
+      <div class="tl-evento" data-i="2">
+        <div class="tl-anno">Primo '800</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">Broussais e la "medicina fisiologica"</div>
+          <div class="tl-dettaglio">Il francese François Broussais sostiene che ogni malattia nasca da un'infiammazione gastrointestinale: la cura è togliere sangue, in grandi quantità.</div>
+        </div>
+      </div>
+      <div class="tl-evento" data-i="3">
+        <div class="tl-anno">1832</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">Il picco: 57,5 milioni in un anno</div>
+          <div class="tl-dettaglio">La Francia importa 57,5 milioni di sanguisughe in un solo anno per soddisfare la domanda della "leech mania" europea.</div>
+        </div>
+      </div>
+      <div class="tl-evento" data-i="4">
+        <div class="tl-anno">Fine '800</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">La teoria dei germi cambia tutto</div>
+          <div class="tl-dettaglio">Pasteur e Koch mostrano che le malattie sono causate da microrganismi, non da squilibri di umori: il salasso di massa perde credibilità e crolla.</div>
+        </div>
+      </div>
+      <div class="tl-evento" data-i="5">
+        <div class="tl-anno">2004</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">Ritorno in corsia, ma diverso</div>
+          <div class="tl-dettaglio">La FDA statunitense riconosce la sanguisuga medicinale come dispositivo medico per la chirurgia ricostruttiva: primo animale vivo regolamentato come tale.</div>
+        </div>
+      </div>
+      <div class="tl-evento" data-i="6">
+        <div class="tl-anno">Oggi</div>
+        <div class="tl-corpo">
+          <div class="tl-titolo">Specie "quasi minacciata"</div>
+          <div class="tl-dettaglio">La sanguisuga medicinale europea (Hirudo medicinalis) è classificata Near Threatened dalla IUCN e protetta per legge in gran parte del suo areale.</div>
+        </div>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      Fonti: ScienceInsights, <em>What Were Leeches Used For? From Bloodletting to Surgery</em>; National Geographic, <em>A bloody 19th-century health craze almost drove these creatures extinct</em>; IUCN Red List of Threatened Species, scheda <em>Hirudo medicinalis</em> (iucnredlist.org).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il picco arrivò nell'Ottocento, spinto anche dal successo delle idee di Broussais: ogni febbre, mal di testa o infiammazione diventava un'occasione per applicare sanguisughe. La domanda esplose in tutta Europa, e con essa il commercio di animali vivi su scala industriale.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Dalla mania ottocentesca al mercato di oggi</div>
+      <div class="applet-istruzione">Il confronto tra il consumo al picco della "leech mania" e la produzione del principale fornitore occidentale attuale.</div>
+    </div>
+    <div class="chart-wrap"><canvas id="leechChart"></canvas></div>
+    <div class="applet-fonte">
+      Francia, sanguisughe importate nel 1832 (un solo anno): 57.500.000. Fonte: ScienceInsights / National Geographic, <em>A bloody 19th-century health craze almost drove these creatures extinct</em>. Biopharm (Galles), che oggi copre circa il 70% del mercato occidentale delle sanguisughe medicinali: circa 100.000 esemplari l'anno. Fonte: Science History Institute, <em>Medicinal Leeches and Where to Find Them</em>.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La raccolta fu così intensa da svuotare stagni e paludi in mezza Europa. Il crollo della teoria degli umori, con l'arrivo della medicina basata sui germi, chiuse l'era del salasso di massa — ma non fece sparire del tutto le sanguisughe dagli ospedali.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Perché si usavano ieri, perché si usano oggi</div>
+      <div class="applet-istruzione">Confronta l'uso ottocentesco con quello della chirurgia ricostruttiva moderna.</div>
+    </div>
+    <div class="toggle-wrap">
+      <button class="toggle-btn attivo" id="btnIeri" onclick="mostraIeri()">Ottocento</button>
+      <button class="toggle-btn" id="btnOggi" onclick="mostraOggi()">Oggi</button>
+    </div>
+    <div class="balance-wrap">
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Indicazione principale</strong><span id="indVal">Quasi ogni malattia (febbre, infiammazioni, vaiolo...)</span></div>
+        <div class="balance-track"><div class="balance-fill" id="indBar" style="width:95%"></div></div>
+      </div>
+      <div class="balance-riga">
+        <div class="balance-label"><strong>Base scientifica</strong><span id="baseVal">Teoria degli umori, nessuna verifica sperimentale</span></div>
+        <div class="balance-track"><div class="balance-fill" id="baseBar" style="width:10%"></div></div>
+      </div>
+    </div>
+    <div class="toggle-testo" id="toggleTesto3">Nell'Ottocento le sanguisughe venivano applicate per febbre, mal di testa, infiammazioni e persino il vaiolo: si credeva bastasse togliere sangue per riequilibrare il corpo. Non c'era alcuna prova che funzionasse, e spesso il salasso indeboliva ulteriormente il paziente.</div>
+    <div class="applet-fonte">
+      Fonti: FibonacciMD, <em>The History of Leeches in Medicine and the Era of the "Leech Mania"</em>; WebMD, <em>Blood-Sucking Leeches: Quack Medicine or Medical Miracle?</em>; U.S. Food and Drug Administration, autorizzazione delle sanguisughe medicinali come dispositivo medico (2004).
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>La sanguisuga non è mai cambiata: siamo stati noi, prima a fraintendere il sangue, poi a capire finalmente la sua saliva.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>ScienceInsights, <em>What Were Leeches Used For? From Bloodletting to Surgery</em>, scienceinsights.org</li>
+      <li>National Geographic, <em>A bloody 19th-century health craze almost drove these creatures extinct</em>, nationalgeographic.com</li>
+      <li>FibonacciMD, <em>The History of Leeches in Medicine and the Era of the "Leech Mania"</em>, fibonaccimd.com</li>
+      <li>IUCN Red List of Threatened Species, scheda <em>Hirudo medicinalis</em>, iucnredlist.org</li>
+      <li>Science History Institute, <em>Medicinal Leeches and Where to Find Them</em>, sciencehistory.org</li>
+      <li>WebMD, <em>Blood-Sucking Leeches: Quack Medicine or Medical Miracle?</em>, webmd.com</li>
+      <li>U.S. Food and Drug Administration — autorizzazione delle sanguisughe medicinali (Hirudo medicinalis) come dispositivo medico, giugno 2004</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('tlWrap').addEventListener('click', function(e) {
+  const ev = e.target.closest('.tl-evento');
+  if (!ev) return;
+  const giaAperto = ev.classList.contains('aperto');
+  document.querySelectorAll('.tl-evento').forEach(el => el.classList.remove('aperto'));
+  if (!giaAperto) ev.classList.add('aperto');
+});
+
+function mostraIeri() {
+  document.getElementById('btnIeri').classList.add('attivo');
+  document.getElementById('btnOggi').classList.remove('attivo');
+  document.getElementById('indVal').textContent = 'Quasi ogni malattia (febbre, infiammazioni, vaiolo...)';
+  document.getElementById('indBar').style.width = '95%';
+  document.getElementById('baseVal').textContent = 'Teoria degli umori, nessuna verifica sperimentale';
+  document.getElementById('baseBar').style.width = '10%';
+  document.getElementById('toggleTesto3').textContent = "Nell'Ottocento le sanguisughe venivano applicate per febbre, mal di testa, infiammazioni e persino il vaiolo: si credeva bastasse togliere sangue per riequilibrare il corpo. Non c'era alcuna prova che funzionasse, e spesso il salasso indeboliva ulteriormente il paziente.";
+}
+
+function mostraOggi() {
+  document.getElementById('btnOggi').classList.add('attivo');
+  document.getElementById('btnIeri').classList.remove('attivo');
+  document.getElementById('indVal').textContent = 'Congestione venosa dopo chirurgia ricostruttiva';
+  document.getElementById('indBar').style.width = '20%';
+  document.getElementById('baseVal').textContent = 'Dispositivo medico approvato (FDA, 2004), uso regolamentato';
+  document.getElementById('baseBar').style.width = '90%';
+  document.getElementById('toggleTesto3').textContent = "Oggi le sanguisughe sono usate quasi solo dopo interventi di chirurgia ricostruttiva: quando un lembo di pelle trapiantato non riesce a drenare il sangue, la sanguisuga lo aspira e la sua saliva — ricca di irudina, il più potente anticoagulante naturale conosciuto — mantiene il flusso fluido finché non si formano nuovi vasi.";
+}
+
+new Chart(document.getElementById('leechChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Francia, importazioni in un anno (1832)', 'Biopharm, GB — produzione annua oggi'],
+    datasets: [{
+      label: 'Numero di sanguisughe',
+      data: [57500000, 100000],
+      backgroundColor: ['#8e44ad', '#c9a4d6'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ctx.parsed.x.toLocaleString('it-IT') + ' sanguisughe'
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Numero di sanguisughe (scala lineare)' },
+        grid: { color: '#e8e4de' },
+        ticks: { callback: (v) => (v / 1000000) + 'M' }
+      },
+      y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>
