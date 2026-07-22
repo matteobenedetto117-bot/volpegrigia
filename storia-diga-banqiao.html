@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Che cosa è successo alla diga di Banqiao? — Pillola culturale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fceae8;
+    --accent-mid: #e8a79c;
+    --muted: #7f8c8d;
+    --border: #e8e4dc;
+    --max: 640px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px 80px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  .pill-header {
+    padding: 56px 0 32px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 40px;
+  }
+
+  .pill-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .pill-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 36px);
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .pill-answer {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .pill-answer p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .text-block { margin: 36px 0; }
+  .text-block p { margin-bottom: 16px; font-weight: 300; }
+
+  .applet {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 40px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .applet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .applet-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .applet-caption {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* ── TIMELINE ── */
+  .tl-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 74px 20px 1fr;
+    gap: 0;
+    cursor: pointer;
+  }
+
+  .tl-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 10px 8px 10px 0;
+  }
+
+  .tl-line {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .tl-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent-mid);
+  }
+
+  .tl-item:last-child .tl-line::before { bottom: 50%; }
+  .tl-item:first-child .tl-line::before { top: 50%; }
+
+  .tl-dot {
+    position: relative;
+    z-index: 1;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent-mid);
+    margin-top: 14px;
+    transition: all 0.15s;
+  }
+
+  .tl-item.open .tl-dot, .tl-item:hover .tl-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .tl-body { padding: 10px 0 10px 14px; }
+
+  .tl-label {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tl-detail {
+    display: none;
+    font-size: 13.5px;
+    color: #555;
+    line-height: 1.55;
+    margin-top: 6px;
+    padding-right: 4px;
+  }
+
+  .tl-item.open .tl-detail { display: block; }
+  .tl-item.open .tl-label { color: var(--accent); }
+
+  /* ── CHART ── */
+  .chart-box { position: relative; height: 280px; }
+
+  /* ── RAIN COMPARATOR ── */
+  .rain-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .rain-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .rain-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .rain-visual {
+    background: #faf4f3;
+    border-radius: 10px;
+    padding: 20px 20px 8px;
+  }
+
+  .rain-row { margin-bottom: 18px; }
+
+  .rain-row-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rain-row-label span:last-child { color: var(--accent); font-weight: 700; }
+
+  .rain-track {
+    height: 22px;
+    background: #eee2e0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .rain-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+  }
+
+  .rain-fill.design { background: linear-gradient(90deg, #95a5a6, #bdc3c7); }
+  .rain-fill.actual { background: linear-gradient(90deg, var(--accent), #e67e60); }
+
+  .rain-multiplier {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .rain-multiplier strong {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent);
+    font-size: 20px;
+  }
+
+  .takeaway {
+    margin: 48px 0 32px;
+    padding: 24px 28px;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .takeaway p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+
+  .footer-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .footer ul { list-style: none; }
+
+  .footer li {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .footer li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .reading-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reading-time::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav style="max-width:640px;margin:0 auto;padding:1.5rem 0 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e4dc;margin-bottom:2rem;">
+    <a href="index.html" style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#16a085;text-decoration:none;">← Tutte le domande</a>
+    <span style="font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.1em;">4 min</span>
+  </nav>
+
+  <header class="pill-header">
+    <div class="pill-tag">#Storia · #Disastri</div>
+    <h1 class="pill-title">Che cosa è successo alla diga di Banqiao?</h1>
+    <div class="reading-time">4 minuti di lettura</div>
+    <div class="pill-answer">
+      <p>Nell'agosto 1975 il tifone Nina scaricò sulla regione cinese dello Henan una pioggia quasi quattro volte superiore a quella per cui la diga di Banqiao era stata progettata. La diga cedette insieme ad altre 61, provocando una delle alluvioni più mortali della storia — tenuta segreta dal governo cinese per trent'anni.</p>
+    </div>
+  </header>
+
+  <div class="text-block">
+    <p>Banqiao era stata soprannominata "diga di ferro" dopo un rinforzo strutturale guidato da tecnici sovietici negli anni '50. Era progettata per reggere una piena "one in a thousand years": circa 300 mm di pioggia in un giorno. Il 5 agosto 1975 caddero oltre 1.060 mm in 24 ore vicino al centro del tifone — più della pioggia media di un intero anno.</p>
+    <p>Le linee telefoniche erano già interrotte quando i tecnici capirono la gravità della situazione. Le paratoie non riuscivano a smaltire l'afflusso, anche a causa dei sedimenti che le ostruivano. Alle 01:00 dell'8 agosto l'acqua superò di 30 cm il muro paraonde e la diga collassò.</p>
+  </div>
+
+  <!-- APPLET 1: Timeline -->
+  <div class="applet">
+    <div class="applet-title">Dodici giorni, agosto 1975 — cronologia del disastro</div>
+    <div class="applet-hint">Clicca su una data per leggere cosa accadde.</div>
+
+    <div class="tl-wrap" id="tlWrap"></div>
+
+    <div class="applet-caption">Fonte: Xu, Zhang & Jia (2008), "Lessons from catastrophic dam failures in August 1975 in Zhumadian, China", ASCE / Hong Kong University of Science and Technology; Wikipedia, "1975 Banqiao Dam failure" (sintesi di fonti citate: People's Daily, Xinhua, CCTV).</div>
+  </div>
+
+  <div class="text-block">
+    <p>La diga di Banqiao non cedette da sola: nello stesso temporale collassarono altre 61 dighe della regione. L'onda generata da Banqiao era larga 10 km e alta fino a 7 metri, e avanzava a quasi 50 km/h, spazzando un'area di 55 per 15 km. In totale l'alluvione sommerse 12.000 km² e coinvolse oltre 10 milioni di persone.</p>
+  </div>
+
+  <!-- APPLET 2: Grafico stime -->
+  <div class="applet">
+    <div class="applet-title">Quante persone morirono davvero? Le stime nel tempo</div>
+    <div class="applet-hint">Il numero "ufficiale" è cambiato più volte in trent'anni di segreto di stato.</div>
+
+    <div class="chart-box"><canvas id="deathChart"></canvas></div>
+
+    <div class="applet-caption">Fonte: rapporto del Comitato di partito dello Henan (agosto 1975, cifra preliminare); testimonianze di delegati CPPCC anni '80; Human Rights Watch (1995), "The Three Gorges Dam in China"; <em>Le grandi inondazioni della storia cinese</em>, prefazione di Qian Zhengying, ex Ministro delle Risorse Idriche (anni '90, cifra ufficiale dopo la declassificazione); Discovery Channel, "Ultimate 10" (2005).</div>
+  </div>
+
+  <div class="text-block">
+    <p>Il governo cinese trattò l'accaduto come un segreto di stato fino al 1995, quando iniziarono a filtrare le prime ricostruzioni giornalistiche; i documenti ufficiali furono declassificati solo nel 2005. Ancora oggi la cifra "ufficiale" più citata — 26.000 morti — riguarda solo i decessi diretti nello Henan, non le epidemie e la carestia che seguirono nelle settimane successive.</p>
+  </div>
+
+  <!-- APPLET 3: Confronto pioggia -->
+  <div class="applet">
+    <div class="applet-title">La pioggia di progetto contro la pioggia reale</div>
+    <div class="applet-hint">Seleziona un punto della regione per confrontare i due valori.</div>
+
+    <div class="rain-toggle" id="rainToggle">
+      <button class="rain-btn active" data-loc="zhumadian">Zona del centro del tifone</button>
+      <button class="rain-btn" data-loc="region">Media regionale, 3 giorni</button>
+    </div>
+
+    <div class="rain-visual">
+      <div class="rain-row">
+        <div class="rain-row-label"><span>Pioggia di progetto (1 su 1.000 anni)</span><span id="designVal">300 mm</span></div>
+        <div class="rain-track"><div class="rain-fill design" id="designBar" style="width:26%"></div></div>
+      </div>
+      <div class="rain-row">
+        <div class="rain-row-label"><span>Pioggia effettiva caduta</span><span id="actualVal">1.060 mm</span></div>
+        <div class="rain-track"><div class="rain-fill actual" id="actualBar" style="width:92%"></div></div>
+      </div>
+      <div class="rain-multiplier">Circa <strong id="multVal">3,5×</strong> la pioggia per cui la diga era progettata</div>
+    </div>
+
+    <div class="applet-caption">Fonte: People's Daily (China Energy News, 2012), "1975年那个黑色八月"; Wikipedia, "1975 Banqiao Dam failure" — 306 mm/giorno e 530 mm/3 giorni erano gli standard di progetto; 1.060 mm in 24 ore fu il record registrato vicino al centro del tifone, contro una media annua regionale di circa 800-1.060 mm.</div>
+  </div>
+
+  <div class="takeaway">
+    <p>Non fu solo un evento meteorologico estremo a distruggere Banqiao: fu la distanza tra un progetto pensato per un mondo prevedibile e un clima che, quella notte, decise di non esserlo — più il silenzio che per trent'anni ha impedito di trarne lezioni pubbliche.</p>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-title">Fonti dei dati</div>
+    <ul>
+      <li>Xu, Y.; Zhang, L.M.; Jia, J. (2008). "Lessons from catastrophic dam failures in August 1975 in Zhumadian, China". Hong Kong University of Science and Technology / American Society of Civil Engineers</li>
+      <li>Wikipedia, "1975 Banqiao Dam failure" (consultato luglio 2026) — sintesi con fonti primarie citate: People's Daily, Xinhua News Agency, CCTV, Human Rights Watch</li>
+      <li>Human Rights Watch (1995). "The Three Gorges Dam in China: Forced Resettlement, Suppression of Dissent and Labor Rights Concerns"</li>
+      <li>Association of State Dam Safety Officials (ASDSO), "Dam Failure Case Study: Banqiao Dam (China, 1975)", damsafety.org</li>
+      <li>Xinhua News Agency (2005). "After 30 years, secrets, lessons of China's worst dams burst accident surface", People's Daily Online</li>
+      <li>Burt, C. (2018). "The Deadliest Weather-Related Catastrophe You Probably Never Heard Of", Weather Underground</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// APPLET 1 — Timeline
+// ─────────────────────────────────────────────
+(function() {
+  const events = [
+    { date: '4 ago', label: 'Inizia la pioggia intensa', detail: 'Dopo settimane di siccità, il 4 agosto iniziano piogge torrenziali sulla regione di Zhumadian, nello Henan, portate dal tifone Nina che si scontra con un fronte freddo e rimane bloccato sull\'area per giorni.' },
+    { date: '5 ago', label: 'Le piccole dighe già al limite', detail: 'A Queshan si misurano 1.100 mm di pioggia in tre giorni. Molti dei piccoli bacini costruiti durante il Grande Balzo in Avanti raggiungono la capacità massima; la città di Banqiao inizia ad allagarsi la sera stessa.' },
+    { date: '6 ago', label: 'Le comunicazioni si interrompono', detail: 'Il centralino telefonico viene sommerso e l\'ufficio di controllo della diga perde i contatti con le stazioni pluviometriche a monte. I funzionari, convinti dell\'invincibilità della "diga di ferro", non danno l\'allarme.' },
+    { date: '7 ago, 21:30', label: 'Primo allarme via telegrafo', detail: 'L\'unità dell\'Esercito Popolare di Liberazione di stanza sulla diga invia il primo telegramma di allerta. Un ordine di apertura delle paratoie, richiesto in mattinata, non raggiunge in tempo gli operatori.' },
+    { date: '8 ago, 01:00', label: 'La diga di Banqiao collassa', detail: 'L\'acqua supera di 30 cm il muro paraonde e la diga cede. Nello stesso temporale collassano altre 61 dighe della regione. Un\'onda alta fino a 7 metri e larga 10 km travolge la pianura a quasi 50 km/h.' },
+    { date: '8-9 ago', label: 'Aerei bombardano altre dighe', detail: 'Per salvare bacini più grandi a valle, l\'esercito fa esplodere con attacchi aerei alcune dighe minori, deviando deliberatamente l\'acqua verso aree già evacuate. Oltre 100 km della ferrovia Pechino-Guangzhou restano interrotti per 48 giorni.' },
+    { date: '17 ago', label: 'Un milione di persone isolate', detail: 'Oltre un milione di persone, soprattutto nella contea di Shangcai, restano intrappolate dalle acque, senza cibo o in attesa di lanci aerei — metà dei quali finisce in acqua. Epidemie di dissenteria, tifo ed encefalite si diffondono tra i sopravvissuti.' },
+    { date: '2005', label: 'I documenti vengono declassificati', detail: 'Per trent\'anni il disastro resta un segreto di stato. Solo nel 2005 il governo cinese declassifica i documenti ufficiali, permettendo i primi studi scientifici indipendenti sull\'accaduto.' }
+  ];
+
+  const wrap = document.getElementById('tlWrap');
+  events.forEach((ev, i) => {
+    const item = document.createElement('div');
+    item.className = 'tl-item';
+    item.innerHTML = `
+      <div class="tl-date">${ev.date}</div>
+      <div class="tl-line"><div class="tl-dot"></div></div>
+      <div class="tl-body">
+        <div class="tl-label">${ev.label}</div>
+        <div class="tl-detail">${ev.detail}</div>
+      </div>
+    `;
+    item.addEventListener('click', () => item.classList.toggle('open'));
+    wrap.appendChild(item);
+  });
+  wrap.children[0].classList.add('open');
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 2 — Grafico stime vittime
+// ─────────────────────────────────────────────
+(function() {
+  const ctx = document.getElementById('deathChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Ago 1975\n(rapporto provinciale)', 'Anni \'80\n(delegati CPPCC)', '1995\n(Human Rights Watch)', 'Anni \'90\n(cifra ufficiale post-secretazione)', '2005\n(Discovery Channel)'],
+      datasets: [{
+        label: 'Stima dei morti',
+        data: [85600, 230000, 230000, 26000, 240000],
+        backgroundColor: ['#e8a79c', '#e8a79c', '#e8a79c', '#c0392b', '#e8a79c'],
+        borderRadius: 4,
+        maxBarThickness: 46
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: (c) => c.parsed.y.toLocaleString('it-IT') + ' morti stimati' } } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: (v) => (v/1000) + 'k' }, grid: { color: '#f0ebe6' } },
+        x: { ticks: { font: { size: 10.5 } }, grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 3 — Confronto pioggia
+// ─────────────────────────────────────────────
+(function() {
+  const data = {
+    zhumadian: { design: 300, actual: 1060, designLabel: '300 mm', actualLabel: '1.060 mm' },
+    region: { design: 530, actual: 1100, designLabel: '530 mm (3 giorni)', actualLabel: '1.100 mm (3 giorni)' }
+  };
+
+  const designBar = document.getElementById('designBar');
+  const actualBar = document.getElementById('actualBar');
+  const designVal = document.getElementById('designVal');
+  const actualVal = document.getElementById('actualVal');
+  const multVal = document.getElementById('multVal');
+  const btns = document.querySelectorAll('.rain-btn');
+
+  function render(loc) {
+    const d = data[loc];
+    const maxVal = Math.max(d.design, d.actual);
+    designBar.style.width = (d.design / maxVal * 100) + '%';
+    actualBar.style.width = (d.actual / maxVal * 100) + '%';
+    designVal.textContent = d.designLabel;
+    actualVal.textContent = d.actualLabel;
+    multVal.textContent = (d.actual / d.design).toFixed(1).replace('.', ',') + '×';
+  }
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.loc);
+    });
+  });
+
+  render('zhumadian');
+})();
+</script>
+</body>
+</html>
