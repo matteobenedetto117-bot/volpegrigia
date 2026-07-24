@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché è stata costruita la diga di Assuan? — Pillola culturale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fceae8;
+    --accent-mid: #e8a79c;
+    --muted: #7f8c8d;
+    --border: #e8e4dc;
+    --max: 640px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px 80px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  .pill-header {
+    padding: 56px 0 32px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 40px;
+  }
+
+  .pill-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .pill-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 36px);
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .pill-answer {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .pill-answer p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .text-block { margin: 36px 0; }
+  .text-block p { margin-bottom: 16px; font-weight: 300; }
+
+  .applet {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 40px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .applet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .applet-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .applet-caption {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* ── TIMELINE ── */
+  .tl-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 74px 20px 1fr;
+    gap: 0;
+    cursor: pointer;
+  }
+
+  .tl-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 10px 8px 10px 0;
+  }
+
+  .tl-line {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .tl-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent-mid);
+  }
+
+  .tl-item:last-child .tl-line::before { bottom: 50%; }
+  .tl-item:first-child .tl-line::before { top: 50%; }
+
+  .tl-dot {
+    position: relative;
+    z-index: 1;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent-mid);
+    margin-top: 14px;
+    transition: all 0.15s;
+  }
+
+  .tl-item.open .tl-dot, .tl-item:hover .tl-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .tl-body { padding: 10px 0 10px 14px; }
+
+  .tl-label {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tl-detail {
+    display: none;
+    font-size: 13.5px;
+    color: #555;
+    line-height: 1.55;
+    margin-top: 6px;
+    padding-right: 4px;
+  }
+
+  .tl-item.open .tl-detail { display: block; }
+  .tl-item.open .tl-label { color: var(--accent); }
+
+  /* ── CHART ── */
+  .chart-box { position: relative; height: 280px; }
+
+  /* ── FLOOD COMPARATOR ── */
+  .rain-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .rain-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .rain-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .rain-visual {
+    background: #faf4f3;
+    border-radius: 10px;
+    padding: 20px 20px 8px;
+  }
+
+  .rain-row { margin-bottom: 18px; }
+
+  .rain-row-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rain-row-label span:last-child { color: var(--accent); font-weight: 700; }
+
+  .rain-track {
+    height: 22px;
+    background: #eee2e0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .rain-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+  }
+
+  .rain-fill.design { background: linear-gradient(90deg, #95a5a6, #bdc3c7); }
+  .rain-fill.actual { background: linear-gradient(90deg, var(--accent), #e67e60); }
+
+  .rain-multiplier {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .rain-multiplier strong {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent);
+    font-size: 20px;
+  }
+
+  .takeaway {
+    margin: 48px 0 32px;
+    padding: 24px 28px;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .takeaway p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+
+  .footer-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .footer ul { list-style: none; }
+
+  .footer li {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .footer li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .reading-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reading-time::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav style="max-width:640px;margin:0 auto;padding:1.5rem 0 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e4dc;margin-bottom:2rem;">
+    <a href="index.html" style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#16a085;text-decoration:none;">← Tutte le domande</a>
+    <span style="font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.1em;">4 min</span>
+  </nav>
+
+  <header class="pill-header">
+    <div class="pill-tag">#Storia · #Grandi opere</div>
+    <h1 class="pill-title">Perché è stata costruita la diga di Assuan?</h1>
+    <div class="reading-time">4 minuti di lettura</div>
+    <div class="pill-answer">
+      <p>Per domare le piene del Nilo, che alternavano carestie e alluvioni imprevedibili, e garantire acqua ed elettricità tutto l'anno. Il prezzo fu alto: circa 100.000 nubiani sfollati e i templi di Abu Simbel salvati tagliandoli in oltre mille blocchi.</p>
+    </div>
+  </header>
+
+  <div class="text-block">
+    <p>Fino al 1970 il Nilo faceva quello che voleva. Una piena debole significava carestia; una piena troppo forte spazzava via case e raccolti. La prima diga di Assuan, costruita dagli inglesi tra il 1899 e il 1902, si rivelò presto insufficiente: serviva un'opera molto più grande per controllare davvero il fiume.</p>
+  </div>
+
+  <!-- APPLET 1: Timeline -->
+  <div class="applet">
+    <div class="applet-title">Dal 1899 al 1971 — come nacque la Grande Diga di Assuan</div>
+    <div class="applet-hint">Clicca su una data per leggere cosa accadde.</div>
+
+    <div class="tl-wrap" id="tlWrap"></div>
+
+    <div class="applet-caption">Fonte: Britannica, "Aswan High Dam"; Institution of Civil Engineers, "Nile Water Control"; UNESCO, "International Campaign to Save the Monuments of Nubia".</div>
+  </div>
+
+  <div class="text-block">
+    <p>Quando Stati Uniti e Regno Unito ritirarono il finanziamento promesso nel 1956, l'Egitto di Nasser reagì nazionalizzando il Canale di Suez per pagare la diga con mezzi propri — la scintilla della crisi di Suez. Fu l'URSS a colmare il vuoto: prestiti, ingegneri e macchinari pesanti resero possibile un cantiere durato dieci anni, costato circa un miliardo di dollari.</p>
+  </div>
+
+  <!-- APPLET 2: Grafico sfollati -->
+  <div class="applet">
+    <div class="applet-title">Quante persone furono sfollate dal lago Nasser?</div>
+    <div class="applet-hint">Le stime cambiano a seconda che si contino solo i nubiani egiziani, quelli sudanesi, o il totale complessivo.</div>
+
+    <div class="chart-box"><canvas id="displacedChart"></canvas></div>
+
+    <div class="applet-caption">Fonte: ResearchGate, "Aswan High Dam Resettlement of Egyptian Nubians"; Project Unsettled, "Histories of Nubian Displacement"; stime aggregate riportate da fonti geografiche e storiche sul lago Nasser (consultate luglio 2026).</div>
+  </div>
+
+  <div class="text-block">
+    <p>La diga garantì elettricità — i suoi 12 turbine arrivarono a coprire circa metà del fabbisogno elettrico egiziano — acqua costante per l'irrigazione e la fine delle carestie legate alle piene. Ma sommerse 500 km di valle abitata dai nubiani da millenni, e i templi di Abu Simbel furono salvati solo grazie a una campagna UNESCO con 50 paesi coinvolti: tagliati in oltre 1.000 blocchi fino a 30 tonnellate l'uno, ricostruiti 65 metri più in alto e 200 metri più indietro.</p>
+  </div>
+
+  <!-- APPLET 3: Comparatore piene -->
+  <div class="applet">
+    <div class="applet-title">Quanto era imprevedibile il Nilo prima della diga?</div>
+    <div class="applet-hint">Confronta il volume di un anno di piena scarsa con quello di un anno di piena abbondante.</div>
+
+    <div class="rain-toggle" id="rainToggle">
+      <button class="rain-btn active" data-loc="magro">Anno magro (1913-14)</button>
+      <button class="rain-btn" data-loc="grasso">Anno grasso (1878-79)</button>
+    </div>
+
+    <div class="rain-visual">
+      <div class="rain-row">
+        <div class="rain-row-label"><span>Volume della piena annuale</span><span id="actualVal">12 miliardi m³</span></div>
+        <div class="rain-track"><div class="rain-fill actual" id="actualBar" style="width:8%"></div></div>
+      </div>
+      <div class="rain-row">
+        <div class="rain-row-label"><span>Riferimento: anno grasso 1878-79</span><span id="designVal">155 miliardi m³</span></div>
+        <div class="rain-track"><div class="rain-fill design" id="designBar" style="width:100%"></div></div>
+      </div>
+      <div class="rain-multiplier"><strong id="multVal">13×</strong> di differenza tra l'anno più povero e quello più ricco d'acqua</div>
+    </div>
+
+    <div class="applet-caption">Fonte: Wikipedia, "Flooding of the Nile" (dati storici su piene annuali del Nilo, anni di riferimento 1878-79 e 1913-14); Science in the Arts and History Project, Smith College, sulle carestie legate a piene deboli.</div>
+  </div>
+
+  <div class="text-block">
+    <p>Il limo che per millenni aveva fertilizzato gratis i campi ora resta sul fondo del lago Nasser: gli agricoltori egiziani devono comprare fertilizzanti chimici, la pesca di sardine nel Mediterraneo crollò da 35.000 a meno di 9.000 tonnellate l'anno tra il 1962 e il 1969, e il delta del Nilo si erode di circa 1,8 metri l'anno senza più sedimenti a rimpiazzarlo.</p>
+  </div>
+
+  <div class="takeaway">
+    <p>La Grande Diga di Assuan non si è limitata ad addomesticare un fiume: ha scambiato l'incertezza millenaria delle piene con un conto preciso, pagabile in limo perso, terre sommerse e un tempio spostato di sessantacinque metri.</p>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-title">Fonti dei dati</div>
+    <ul>
+      <li>Britannica, "Aswan High Dam" (consultato luglio 2026) — storia, dimensioni, capacità del lago Nasser, produzione elettrica</li>
+      <li>Institution of Civil Engineers (ICE), "Nile Water Control: Managing Africa's Lifeline"</li>
+      <li>ResearchGate, Fahim, H. (studio e successivi aggiornamenti), "Aswan High Dam Resettlement of Egyptian Nubians"</li>
+      <li>Project Unsettled, "Histories of Nubian Displacement" (dati su reinsediamento in Egitto e Sudan)</li>
+      <li>UNESCO, "International Campaign to Save the Monuments of Nubia" — relazione sulla campagna per Abu Simbel (1960-1980)</li>
+      <li>Wikipedia, "Flooding of the Nile" (consultato luglio 2026) — dati storici sulle piene annuali, anni di riferimento 1878-79 e 1913-14</li>
+      <li>Encyclopedia.com / Carleton College SERC, "The Nile River and Aswan Dam" — dati su erosione del delta e crollo della pesca di sardine</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// APPLET 1 — Timeline
+// ─────────────────────────────────────────────
+(function() {
+  const events = [
+    { date: '1899-1902', label: 'La prima diga di Assuan', detail: 'Gli inglesi costruiscono la prima diga di Assuan, ma si rivela presto troppo piccola per controllare davvero le piene del Nilo. Viene sopraelevata due volte nei decenni successivi, senza risolvere il problema.' },
+    { date: '1954', label: 'Nasser rilancia il progetto', detail: 'Gamal Abdel Nasser diventa presidente e riprende l\'idea di una diga molto più grande a monte di Assuan, per controllare il fiume, irrigare nuove terre e produrre elettricità per industrializzare il paese.' },
+    { date: '1956', label: 'Stati Uniti e Regno Unito ritirano i fondi', detail: 'Washington e Londra revocano il finanziamento promesso, in risposta agli accordi militari egiziani con il blocco sovietico. Nasser reagisce nazionalizzando il Canale di Suez per finanziare la diga con le proprie risorse: è la scintilla della crisi di Suez.' },
+    { date: '1958-1959', label: 'Arriva l\'aiuto sovietico', detail: 'L\'Unione Sovietica accetta di finanziare il progetto e fornire ingegneri e macchinari pesanti, colmando il vuoto lasciato dal ritiro occidentale.' },
+    { date: '9 gen 1960', label: 'Iniziano i lavori', detail: 'Parte la costruzione della Grande Diga di Assuan (Sadd el-Aali), un\'opera lunga 3.830 metri e alta 111 metri.' },
+    { date: '1963-1964', label: 'Comincia il trasferimento dei nubiani', detail: 'Circa 50.000 nubiani egiziani vengono trasferiti verso Kom Ombo e Nubaria, mentre in Sudan altre decine di migliaia di persone vengono reinsediate a New Halfa: in totale il lago Nasser sommergerà circa 500 km di valle abitata.' },
+    { date: '1964-1968', label: 'Si salvano i templi di Abu Simbel', detail: 'Una campagna UNESCO con squadre di oltre 50 paesi taglia i due templi in più di 1.000 blocchi fino a 30 tonnellate l\'uno, e li ricostruisce 65 metri più in alto e 200 metri più indietro rispetto al sito originale.' },
+    { date: '21 lug 1970', label: 'Fine dei lavori', detail: 'Dopo dieci anni di cantiere e circa un miliardo di dollari di spesa, la costruzione della diga si conclude. Il lago Nasser che si forma ha una capacità di 169 miliardi di metri cubi d\'acqua.' },
+    { date: '15 gen 1971', label: 'Inaugurazione ufficiale', detail: 'La diga viene inaugurata ufficialmente. Da quel momento le piene annuali del Nilo, che avevano scandito la vita in Egitto per millenni, cessano di esistere nella loro forma naturale.' }
+  ];
+
+  const wrap = document.getElementById('tlWrap');
+  events.forEach((ev, i) => {
+    const item = document.createElement('div');
+    item.className = 'tl-item';
+    item.innerHTML = `
+      <div class="tl-date">${ev.date}</div>
+      <div class="tl-line"><div class="tl-dot"></div></div>
+      <div class="tl-body">
+        <div class="tl-label">${ev.label}</div>
+        <div class="tl-detail">${ev.detail}</div>
+      </div>
+    `;
+    item.addEventListener('click', () => item.classList.toggle('open'));
+    wrap.appendChild(item);
+  });
+  wrap.children[0].classList.add('open');
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 2 — Grafico sfollati
+// ─────────────────────────────────────────────
+(function() {
+  const ctx = document.getElementById('displacedChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Nubiani egiziani\n(Kom Ombo / Nubaria)', 'Nubiani sudanesi\n(New Halfa)', 'Stima aggregata totale\n(lago Nasser)'],
+      datasets: [{
+        label: 'Persone sfollate',
+        data: [50000, 54000, 120000],
+        backgroundColor: ['#e8a79c', '#e8a79c', '#c0392b'],
+        borderRadius: 4,
+        maxBarThickness: 56
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: (c) => c.parsed.y.toLocaleString('it-IT') + ' persone circa' } } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: (v) => (v/1000) + 'k' }, grid: { color: '#f0ebe6' } },
+        x: { ticks: { font: { size: 10.5 } }, grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 3 — Comparatore piene
+// ─────────────────────────────────────────────
+(function() {
+  const data = {
+    magro: { design: 155, actual: 12, designLabel: '155 miliardi m³', actualLabel: '12 miliardi m³' },
+    grasso: { design: 12, actual: 155, designLabel: '12 miliardi m³', actualLabel: '155 miliardi m³' }
+  };
+
+  const designBar = document.getElementById('designBar');
+  const actualBar = document.getElementById('actualBar');
+  const designVal = document.getElementById('designVal');
+  const actualVal = document.getElementById('actualVal');
+  const multVal = document.getElementById('multVal');
+  const btns = document.querySelectorAll('.rain-btn');
+
+  function render(loc) {
+    const d = data[loc];
+    const maxVal = Math.max(d.design, d.actual);
+    designBar.style.width = (d.design / maxVal * 100) + '%';
+    actualBar.style.width = (d.actual / maxVal * 100) + '%';
+    designVal.textContent = d.designLabel;
+    actualVal.textContent = d.actualLabel;
+    multVal.textContent = (Math.max(d.design, d.actual) / Math.min(d.design, d.actual)).toFixed(0) + '×';
+  }
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.loc);
+    });
+  });
+
+  render('magro');
+})();
+</script>
+</body>
+</html>
