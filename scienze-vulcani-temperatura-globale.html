@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quando un vulcano erutta si abbassa la temperatura globale?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #16a085;
+    --accent-light: #d7f2ec;
+    --accent-mid: #1abc9c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p {
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  /* SIMULAZIONE COLONNA ERUTTIVA */
+  .campo-wrap { position: relative; background: #eef7f3; border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .campo-svg { display: block; width: 100%; height: auto; }
+  .campo-controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .campo-btn {
+    flex: 1;
+    min-width: 140px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .campo-btn.attivo { background: var(--accent); border-color: var(--accent); color: white; }
+  .campo-esito { font-size: 14px; color: var(--text); text-align: center; padding: 10px; min-height: 20px; }
+
+  /* CHART */
+  .chart-wrap { position: relative; height: 260px; margin-bottom: 10px; }
+
+  /* CALCOLATORE SLIDER */
+  .slider-grid { display: grid; gap: 20px; margin-bottom: 20px; }
+  .slider-riga { display: grid; gap: 8px; }
+  .slider-label { display: flex; justify-content: space-between; font-size: 14px; }
+  .slider-label strong { color: var(--text); }
+  .slider-label span { color: var(--accent); font-weight: 700; }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #f3f1ec;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+
+  .calc-result { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 16px 18px; border-radius: 0 4px 4px 0; margin-top: 8px; }
+  .calc-result .risultato-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .calc-result .risultato-txt { font-size: 14px; color: var(--text); line-height: 1.45; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .campo-btn { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Scienze</div>
+    <h1>Quando un vulcano erutta si abbassa la temperatura globale?</h1>
+    <div class="risposta-box">
+      <p>Sì, ma non per la cenere: a raffreddare il pianeta è l'anidride solforosa che raggiunge la stratosfera e vi forma aerosol riflettenti. Le eruzioni più forti hanno abbassato la temperatura globale fino a 0,6°C per uno o due anni.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Un'eruzione raffredda il pianeta solo a una condizione: che il pennacchio superi la tropopausa ed entri nella stratosfera, oltre i 15-20 km di quota. Lì l'anidride solforosa (SO₂) si trasforma in goccioline di acido solforico che restano sospese per uno-tre anni e riflettono parte della luce solare verso lo spazio. La cenere, invece, ricade al suolo in giorni o settimane e non lascia quasi traccia sul clima globale.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Dove arriva il pennacchio decide tutto</div>
+      <div class="applet-istruzione">Scegli l'altezza della colonna eruttiva e osserva quanto dura la nube.</div>
+    </div>
+    <div class="campo-controls">
+      <button class="campo-btn attivo" id="btnBassa" onclick="impostaEruzione('bassa')">Colonna bassa (si ferma in troposfera)</button>
+      <button class="campo-btn" id="btnAlta" onclick="impostaEruzione('alta')">Colonna alta (raggiunge la stratosfera)</button>
+    </div>
+    <div class="campo-wrap">
+      <svg class="campo-svg" id="vulcanoSvg" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="400" height="130" fill="#eef7f3"></rect>
+        <rect x="0" y="130" width="400" height="130" fill="#f7f4ee"></rect>
+        <line x1="0" y1="130" x2="400" y2="130" stroke="#bfe3d6" stroke-width="1.5" stroke-dasharray="4 4"></line>
+        <text x="8" y="18" font-size="10" fill="#7f8c8d">STRATOSFERA (oltre ~15 km)</text>
+        <text x="8" y="145" font-size="10" fill="#7f8c8d">TROPOSFERA</text>
+        <polygon points="170,260 230,260 200,175" fill="#c9c2b4"></polygon>
+        <g id="nubeGroup"></g>
+      </svg>
+    </div>
+    <div class="campo-esito" id="vulcanoEsito">Colonna bassa: il pennacchio non supera la tropopausa.</div>
+    <div class="applet-fonte">
+      Schema semplificato e non in scala. Quote e tempi di permanenza: USGS, <em>The Atmospheric Impact of the 1991 Mount Pinatubo Eruption</em>; Oregon State University, Volcano World, <em>Climate Cooling</em>.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La storia offre due casi da manuale. Il Tambora, in Indonesia, iniettò in stratosfera circa 60 milioni di tonnellate di SO₂ nell'aprile 1815: il 1816 passò alla storia come "l'anno senza estate", con un calo delle temperature globali di 0,4-0,7°C e carestie in mezzo emisfero nord. Il Pinatubo, nel 1991, ne rilasciò circa 17 milioni di tonnellate e raffreddò l'emisfero nord di 0,5-0,6°C per circa due anni.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Non tutte le eruzioni iniettano la stessa quantità di zolfo</div>
+      <div class="applet-istruzione">Passa il mouse (o tocca) le barre per vedere l'effetto climatico osservato in ciascun caso.</div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartSO2"></canvas></div>
+    <div class="applet-fonte">
+      SO₂ iniettata in stratosfera, milioni di tonnellate. Fonti: USGS, <em>The Atmospheric Impact of the 1991 Mount Pinatubo Eruption</em> (Pinatubo ~17 Mt, El Chichón ~7 Mt); Marshall et al., <em>Multi-model comparison of the volcanic sulfate deposition from the 1815 eruption of Mt. Tambora</em>, Atmospheric Chemistry and Physics 18 (2018), ~60 Mt; Millán et al., <em>The Hunga Tonga‐Hunga Ha'apai Hydration of the Stratosphere</em> / AGU GRL (2023), ~0,42 Mt SO₂ e ~146 Mt di vapore acqueo per Hunga Tonga.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Non basta però l'eruzione: nel 1982 l'El Chichón messicano immise 7 milioni di tonnellate di SO₂, ma un fortissimo El Niño in corso mascherò quasi del tutto il raffreddamento atteso. Nel 2022 lo Hunga Tonga ha addirittura ribaltato lo schema: pochissima SO₂ ma un'enorme quantità di vapore acqueo, un gas serra che intrappola calore invece di rifletterlo — un caso che i climatologi stanno ancora studiando.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Quanto raffredda, in teoria, una certa quantità di zolfo?</div>
+      <div class="applet-istruzione">Sposta il cursore e stima il potenziale raffreddamento atteso, a parità di altre condizioni.</div>
+    </div>
+    <div class="slider-grid">
+      <div class="slider-riga">
+        <div class="slider-label"><strong>SO₂ iniettata in stratosfera</strong><span id="so2Label">17 Mt</span></div>
+        <input type="range" id="so2Range" min="1" max="70" step="1" value="17" oninput="aggiornaCalcolo()">
+      </div>
+    </div>
+    <div class="calc-result">
+      <div class="risultato-num" id="risultatoCool">0,42°C</div>
+      <div class="risultato-txt" id="risultatoCoolTxt">raffreddamento globale potenziale stimato</div>
+    </div>
+    <div class="applet-fonte">
+      Modello didattico semplificato, non un calcolo di forcing radiativo completo: una curva logaritmica calibrata sui casi Pinatubo 1991 e Tambora 1815 sopra, che approssima la saturazione dell'effetto degli aerosol ad alte concentrazioni. Stima il potenziale fisico dell'eruzione: fattori concomitanti come un El Niño intenso (vedi El Chichón, 1982) possono mascherare parte del raffreddamento osservato nella realtà.
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>Per un paio d'anni, il clima terrestre può dipendere da quanti milioni di tonnellate di zolfo un vulcano riesce a scagliare abbastanza in alto da restarci.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Self, S., Zhao, J.-X., Holasek, R.E., Torres, R.C., King, A.J., <em>The Atmospheric Impact of the 1991 Mount Pinatubo Eruption</em>, in Fire and Mud, USGS (1996), pubs.usgs.gov/pinatubo/self/</li>
+      <li>Wikipedia, <em>Year Without a Summer</em> (calo di 0,4-0,7°C nel 1816 dopo l'eruzione del Tambora, aprile 1815)</li>
+      <li>Marshall, L. et al., <em>Multi-model comparison of the volcanic sulfate deposition from the 1815 eruption of Mt. Tambora</em>, Atmospheric Chemistry and Physics 18 (2018)</li>
+      <li>Hofmann, D.J., <em>Perturbations to the global atmosphere associated with the El Chichón volcanic eruption of 1982</em>, Reviews of Geophysics 25(4) (1987)</li>
+      <li>NOAA Climate.gov, <em>Can volcanic eruptions cause El Niño? Maybe, maybe not</em> — sul mascheramento del raffreddamento di El Chichón da parte dell'El Niño 1982-83</li>
+      <li>Millán, L. et al., <em>The Hunga Tonga-Hunga Ha'apai Hydration of the Stratosphere</em>, Geophysical Research Letters (2022); Jenkins, S. et al., <em>Tonga eruption increases chance of temporary surface temperature anomaly above 1.5°C</em>, Nature Climate Change (2022)</li>
+      <li>Oregon State University, Volcano World, <em>Climate Cooling</em></li>
+      <li>USGS, <em>Volcanoes Can Affect Climate</em></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+function impostaEruzione(tipo) {
+  document.getElementById('btnBassa').classList.toggle('attivo', tipo === 'bassa');
+  document.getElementById('btnAlta').classList.toggle('attivo', tipo === 'alta');
+  const g = document.getElementById('nubeGroup');
+  g.innerHTML = '';
+  const esito = document.getElementById('vulcanoEsito');
+
+  if (tipo === 'bassa') {
+    esito.textContent = 'Colonna bassa: il pennacchio non supera la tropopausa.';
+    const puff = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    puff.setAttribute('cx', '200');
+    puff.setAttribute('cy', '175');
+    puff.setAttribute('r', '4');
+    puff.setAttribute('fill', '#7f8c8d');
+    puff.setAttribute('opacity', '0.85');
+    g.appendChild(puff);
+    const start = performance.now();
+    function anim(ts) {
+      const t = Math.min((ts - start) / 1400, 1);
+      puff.setAttribute('cy', 175 - t * 35);
+      puff.setAttribute('r', 4 + t * 18);
+      puff.setAttribute('opacity', 0.85 * (1 - t));
+      if (t < 1) requestAnimationFrame(anim);
+      else esito.textContent = "La nube ricade al suolo in pochi giorni: nessun effetto misurabile sul clima globale.";
+    }
+    requestAnimationFrame(anim);
+  } else {
+    esito.textContent = 'Colonna alta: il pennacchio raggiunge la stratosfera.';
+    const puff = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    puff.setAttribute('cx', '200');
+    puff.setAttribute('cy', '175');
+    puff.setAttribute('rx', '4');
+    puff.setAttribute('ry', '4');
+    puff.setAttribute('fill', '#16a085');
+    puff.setAttribute('opacity', '0.75');
+    g.appendChild(puff);
+    const start = performance.now();
+    function anim(ts) {
+      const t = Math.min((ts - start) / 1600, 1);
+      puff.setAttribute('cy', 175 - t * 135);
+      puff.setAttribute('rx', 4 + t * 190);
+      puff.setAttribute('ry', 4 + t * 12);
+      puff.setAttribute('opacity', 0.7);
+      if (t < 1) requestAnimationFrame(anim);
+      else esito.textContent = "L'aerosol solforico resta in stratosfera 1-3 anni e riflette luce solare: la superficie si raffredda.";
+    }
+    requestAnimationFrame(anim);
+  }
+}
+impostaEruzione('bassa');
+
+const ctxSO2 = document.getElementById('chartSO2').getContext('2d');
+new Chart(ctxSO2, {
+  type: 'bar',
+  data: {
+    labels: ['Hunga Tonga (2022)', 'El Chichón (1982)', 'Pinatubo (1991)', 'Tambora (1815)'],
+    datasets: [{
+      data: [0.42, 7, 17, 60],
+      backgroundColor: ['#95a5a6', '#48c9b0', '#1abc9c', '#16a085'],
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => {
+        const effetti = [
+          'Soprattutto vapore acqueo, non zolfo: effetto climatico ancora dibattuto, probabilmente non di raffreddamento',
+          'Raffreddamento atteso ma mascherato da un fortissimo El Niño nel 1982-83',
+          "Raffreddamento dell'emisfero nord di 0,5-0,6°C per circa due anni",
+          'Raffreddamento globale di 0,4-0,7°C: il 1816 fu "l\'anno senza estate"'
+        ];
+        return ' ' + effetti[ctx.dataIndex];
+      } } }
+    },
+    scales: {
+      x: { beginAtZero: true, max: 65, grid: { color: '#f0ece4' }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#7f8c8d', callback: v => v + ' Mt' } },
+      y: { grid: { display: false }, ticks: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, color: '#1c1c2e' } }
+    }
+  }
+});
+
+function aggiornaCalcolo() {
+  const x = parseInt(document.getElementById('so2Range').value);
+  document.getElementById('so2Label').textContent = x + ' Mt';
+  const k = 0.146; // calibrato su Pinatubo (~17 Mt -> ~0,4-0,5°C) e Tambora (~60 Mt -> ~0,6°C)
+  const cool = k * Math.log(1 + x);
+  document.getElementById('risultatoCool').textContent = cool.toFixed(2).replace('.', ',') + '°C';
+
+  let commento;
+  if (cool < 0.2) commento = 'raffreddamento potenziale trascurabile, difficile da distinguere dalla variabilità naturale';
+  else if (cool < 0.4) commento = 'raffreddamento potenziale moderato, rilevabile nei dati ma non drammatico';
+  else if (cool < 0.6) commento = 'raffreddamento potenziale significativo, nell\'ordine del Pinatubo 1991';
+  else commento = 'raffreddamento potenziale ampio, vicino ai casi più estremi come il Tambora 1815';
+  document.getElementById('risultatoCoolTxt').textContent = commento;
+}
+aggiornaCalcolo();
+</script>
+</body>
+</html>
