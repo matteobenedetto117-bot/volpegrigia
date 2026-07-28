@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quanto è stato devastante il terremoto di Messina? — Pillola culturale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fceae8;
+    --accent-mid: #e8a79c;
+    --muted: #7f8c8d;
+    --border: #e8e4dc;
+    --max: 640px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px 80px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  .pill-header {
+    padding: 56px 0 32px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 40px;
+  }
+
+  .pill-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .pill-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 36px);
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .pill-answer {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .pill-answer p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .text-block { margin: 36px 0; }
+  .text-block p { margin-bottom: 16px; font-weight: 300; }
+
+  .applet {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 40px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .applet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .applet-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .applet-caption {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* ── TIMELINE ── */
+  .tl-wrap { display: flex; flex-direction: column; gap: 0; }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 80px 20px 1fr;
+    gap: 0;
+    cursor: pointer;
+  }
+
+  .tl-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 10px 8px 10px 0;
+  }
+
+  .tl-line { position: relative; display: flex; justify-content: center; }
+
+  .tl-line::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent-mid);
+  }
+
+  .tl-item:last-child .tl-line::before { bottom: 50%; }
+  .tl-item:first-child .tl-line::before { top: 50%; }
+
+  .tl-dot {
+    position: relative;
+    z-index: 1;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent-mid);
+    margin-top: 14px;
+    transition: all 0.15s;
+  }
+
+  .tl-item.open .tl-dot, .tl-item:hover .tl-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .tl-body { padding: 10px 0 10px 14px; }
+
+  .tl-label { font-size: 14.5px; font-weight: 600; color: var(--text); }
+
+  .tl-detail {
+    display: none;
+    font-size: 13.5px;
+    color: #555;
+    line-height: 1.55;
+    margin-top: 6px;
+    padding-right: 4px;
+  }
+
+  .tl-item.open .tl-detail { display: block; }
+  .tl-item.open .tl-label { color: var(--accent); }
+
+  /* ── CHART ── */
+  .chart-box { position: relative; height: 300px; }
+
+  .scale-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  /* ── PILLOLE BOTTONI (condivisi) ── */
+  .vg-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .vg-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* ── CITTÀ: griglia di 100 quadratini ── */
+  .city-toggle { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .city-visual { background: #faf4f3; border-radius: 10px; padding: 22px 20px 18px; }
+
+  .grid100 {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    gap: 3px;
+    margin-bottom: 18px;
+  }
+
+  .cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: #d9cfcd;
+    transition: background 0.35s ease;
+  }
+
+  .cell.dead { background: var(--accent); }
+
+  .city-legend {
+    display: flex;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .city-legend span { display: flex; align-items: center; gap: 6px; }
+
+  .swatch { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+  .city-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+
+  .stat-lab { font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+
+  /* ── MAREMOTO ── */
+  .wave-wrap { background: #f4f7f8; border-radius: 10px; padding: 20px 20px 10px; }
+
+  .wave-row { margin-bottom: 16px; cursor: pointer; }
+
+  .wave-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .wave-label span:last-child { color: #2c6b8f; font-weight: 700; }
+
+  .wave-track { height: 20px; background: #e3ebee; border-radius: 5px; overflow: hidden; }
+
+  .wave-fill {
+    height: 100%;
+    border-radius: 5px;
+    width: 0;
+    background: linear-gradient(90deg, #4a90a4, #2c6b8f);
+    transition: width 0.7s cubic-bezier(.25,.8,.3,1);
+  }
+
+  .wave-detail {
+    display: none;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin-top: 7px;
+    padding-left: 2px;
+  }
+
+  .wave-row.open .wave-detail { display: block; }
+
+  .man-ref {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 10px 0 6px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px dashed #d3dee2;
+  }
+
+  .takeaway {
+    margin: 48px 0 32px;
+    padding: 24px 28px;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .takeaway p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+
+  .footer-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .footer ul { list-style: none; }
+
+  .footer li {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .footer li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .reading-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reading-time::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav style="max-width:640px;margin:0 auto;padding:1.5rem 0 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e4dc;margin-bottom:2rem;">
+    <a href="index.html" style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#16a085;text-decoration:none;">← Tutte le domande</a>
+    <span style="font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.1em;">4 min</span>
+  </nav>
+
+  <header class="pill-header">
+    <div class="pill-tag">#Storia · #Disastri</div>
+    <h1 class="pill-title">Quanto è stato devastante il terremoto di Messina?</h1>
+    <div class="reading-time">4 minuti di lettura</div>
+    <div class="pill-answer">
+      <p>È il terremoto più mortale della storia europea: in poco più di trenta secondi, all'alba del 28 dicembre 1908, morirono circa 80.000 persone tra Messina e Reggio Calabria. A Messina restò intatto appena il 2% degli edifici, e pochi minuti dopo un maremoto con onde fino a 13 metri finì il lavoro.</p>
+    </div>
+  </header>
+
+  <div class="text-block">
+    <p>La scossa arrivò alle 5:20:27 del mattino, con epicentro nello Stretto. Magnitudo 7,1, secondo le stime convergenti dell'INGV tra registrazioni strumentali e dati macrosismici. Durò 30-40 secondi e i testimoni la descrissero divisa in due o tre fasi, l'ultima molto più violenta delle precedenti.</p>
+    <p>Il momento contò quanto la forza: le città dormivano, e chi si svegliò lo fece già sotto le macerie.</p>
+  </div>
+
+  <!-- APPLET 1: Timeline -->
+  <div class="applet">
+    <div class="applet-title">Dalle 5:20 del 28 dicembre alle norme del 1909</div>
+    <div class="applet-hint">Clicca su un momento per leggere cosa accadde.</div>
+
+    <div class="tl-wrap" id="tlWrap"></div>
+
+    <div class="applet-caption">Fonte: INGVterremoti, "La catastrofe sismica del 28 dicembre 1908"; INGV Centro Allerta Tsunami, "Il maremoto del 28 dicembre 1908 in Calabria e Sicilia"; Dipartimento della Protezione Civile, "The earthquake and tsunami in Messina and Reggio Calabria"; R.D. 18 aprile 1909 n. 193.</div>
+  </div>
+
+  <div class="text-block">
+    <p>La distruzione più grave — grado X e XI della scala Mercalli — coprì circa 600 km²: 76 località in provincia di Reggio Calabria e 14 in provincia di Messina, con il 70-100% delle costruzioni abbattute. Per capire la scala del disastro conviene metterlo accanto agli altri terremoti che l'Italia e l'Europa ricordano.</p>
+  </div>
+
+  <!-- APPLET 2: Grafico confronto -->
+  <div class="applet">
+    <div class="applet-title">Messina 1908 accanto agli altri grandi terremoti</div>
+    <div class="applet-hint">Passa alla scala logaritmica per vedere anche i sismi più recenti, altrimenti schiacciati.</div>
+
+    <div class="scale-toggle" id="scaleToggle">
+      <button class="vg-btn active" data-scale="linear">Scala reale</button>
+      <button class="vg-btn" data-scale="logarithmic">Scala logaritmica</button>
+    </div>
+
+    <div class="chart-box"><canvas id="quakeChart"></canvas></div>
+
+    <div class="applet-caption">Fonti: INGV / INGVterremoti per Messina 1908 (~80.000) e Marsica-Avezzano 1915 (30.519 secondo il Servizio Sismico Nazionale); stime storiche per Lisbona 1755 (60.000-90.000 vittime, qui indicato il valore centrale di 75.000); Archivio Storico Istituto Luce per Irpinia 1980 (2.914); bilancio definitivo per L'Aquila 2009 (309).</div>
+  </div>
+
+  <div class="text-block">
+    <p>I numeri assoluti però nascondono la cosa più impressionante: non fu una città danneggiata, fu una città cancellata. A Messina morì quasi una persona su due.</p>
+  </div>
+
+  <!-- APPLET 3: Griglia 100 abitanti -->
+  <div class="applet">
+    <div class="applet-title">Su 100 abitanti, quanti non sopravvissero</div>
+    <div class="applet-hint">Seleziona una città per confrontare. Ogni quadratino vale una persona su cento.</div>
+
+    <div class="city-toggle" id="cityToggle">
+      <button class="vg-btn active" data-city="messina">Messina</button>
+      <button class="vg-btn" data-city="reggio">Reggio Calabria</button>
+    </div>
+
+    <div class="city-visual">
+      <div class="grid100" id="grid100"></div>
+      <div class="city-legend">
+        <span><i class="swatch" style="background:#c0392b"></i> vittime</span>
+        <span><i class="swatch" style="background:#d9cfcd"></i> sopravvissuti</span>
+      </div>
+      <div class="city-stats">
+        <div><div class="stat-num" id="statPop">~140.000</div><div class="stat-lab">abitanti prima del sisma</div></div>
+        <div><div class="stat-num" id="statDead">~70.000</div><div class="stat-lab">vittime stimate in città</div></div>
+        <div><div class="stat-num" id="statPct">50%</div><div class="stat-lab">quota della popolazione</div></div>
+      </div>
+    </div>
+
+    <div class="applet-caption">Fonte: INGVterremoti e Dipartimento della Protezione Civile. Messina: popolazione stimata tra 120.000 e 140.000 abitanti, vittime in città tra 60.000 e 80.000 (qui usato il valore centrale ~70.000, pari a circa metà della popolazione). Reggio Calabria: circa 15.000 vittime su ~45.000 abitanti. Le stime storiche variano sensibilmente tra le fonti.</div>
+  </div>
+
+  <div class="text-block">
+    <p>Poi arrivò il mare. Tra i 5 e i 10 minuti dopo la scossa le onde colpirono entrambe le sponde dello Stretto: non un'unica muraglia d'acqua, ma altezze molto diverse da un punto all'altro della costa — segno che al terremoto si sommò, quasi certamente, una frana sottomarina.</p>
+  </div>
+
+  <!-- APPLET 4: Maremoto -->
+  <div class="applet">
+    <div class="applet-title">Il maremoto: quanto salì l'acqua, dove</div>
+    <div class="applet-hint">Clicca su una località per il dettaglio. Le barre sono in scala tra loro.</div>
+
+    <div class="wave-wrap" id="waveWrap"></div>
+
+    <div class="man-ref">
+      <span style="display:inline-block;width:6px;height:34px;background:#c0392b;border-radius:2px;"></span>
+      Riferimento: una persona alta 1,75 m — circa un settimo dell'onda di Pellaro.
+    </div>
+
+    <div class="applet-caption">Fonti: INGV Centro Allerta Tsunami (CAT), "Tsu-Memo: il maremoto di Reggio Calabria e Messina" — run-up massimo di 13 m a Pellaro e 11,70 m a Capo Sant'Alessio, rilievi di Mario Baratta (1910); INGVterremoti (2020) per Giardini Naxos (~8-9 m); Encyclopædia Britannica, "Messina earthquake and tsunami of 1908" per i valori nei porti di Reggio (~15 piedi) e Messina (~8 piedi) e per l'arrivo dell'onda a Malta 115 minuti dopo la scossa.</div>
+  </div>
+
+  <div class="takeaway">
+    <p>Messina non fu solo la catastrofe naturale più letale d'Europa: fu il momento in cui l'Italia scoprì che i terremoti non si possono prevedere, ma le case sì — e quattro mesi dopo scrisse la sua prima legge antisismica.</p>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-title">Fonti dei dati</div>
+    <ul>
+      <li>INGVterremoti (Istituto Nazionale di Geofisica e Vulcanologia), "I terremoti del '900: la 'catastrofe sismica' del 28 dicembre 1908" — magnitudo 7,1, ora 5:20:27, durata, area di massima distruzione (~600 km², 76 + 14 località)</li>
+      <li>INGV Centro Allerta Tsunami, "Tsu-Memo: 28 dicembre 1908, il maremoto di Reggio Calabria e Messina nelle tavole di Mario Baratta", cat.ingv.it</li>
+      <li>INGVterremoti (28 dicembre 2020), "Il maremoto del 28 dicembre 1908 in Calabria e Sicilia"</li>
+      <li>Dipartimento della Protezione Civile, "The earthquake and tsunami in Messina and Reggio Calabria", protezionecivile.gov.it</li>
+      <li>Encyclopædia Britannica, "Messina earthquake and tsunami of 1908" — altezze d'onda nei porti e tempo di arrivo a Malta</li>
+      <li>Regio Decreto 18 aprile 1909 n. 193 e Regio Decreto 15 luglio 1909 n. 542 — prime norme tecniche antisismiche obbligatorie e prima classificazione sismica del territorio italiano</li>
+      <li>INGVterremoti, "I terremoti del '900: il terremoto del 13 gennaio 1915 nella Piana del Fucino" — 30.519 vittime</li>
+      <li>Archivio Storico Istituto Luce, "L'Irpinia, l'Italia e i terremoti" — 2.914 vittime, 8.848 feriti, ~280.000 sfollati</li>
+      <li>Wikipedia, "Terremoto di Messina del 1908" e "1908 Messina earthquake" (consultati luglio 2026) — sintesi con fonti primarie citate, usata per il soccorso della Marina imperiale russa e per le stime di popolazione</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// APPLET 1 — Timeline
+// ─────────────────────────────────────────────
+(function() {
+  const events = [
+    { date: '5:20:27', label: 'La scossa: magnitudo 7,1', detail: 'L’epicentro è nello Stretto di Messina. La scossa dura 30-40 secondi e i testimoni la descrivono divisa in due o tre fasi, con l’ultima molto più violenta. È l’alba del 28 dicembre 1908: quasi tutti sono in casa e a letto.' },
+    { date: '5:25-5:30', label: 'Il mare si ritira, poi torna', detail: 'Tra i 5 e i 10 minuti dopo la scossa le prime onde di maremoto colpiscono le coste dello Stretto e la Sicilia orientale. Il run-up massimo, misurato in seguito da Mario Baratta, raggiunge i 13 metri a Pellaro, a sud di Reggio Calabria.' },
+    { date: '7:15 circa', label: 'L’onda arriva a Malta', detail: 'Il maremoto viene registrato a Malta circa 115 minuti dopo la scossa principale: la perturbazione ha attraversato tutto il canale di Sicilia.' },
+    { date: '28 dic, mattina', label: 'Messina è isolata dal mondo', detail: 'Telegrafo, acquedotto e porto sono fuori uso. Le prime notizie certe della distruzione raggiungono Roma solo attraverso navi e treni superstiti: per ore nessuno sa quanto sia grave.' },
+    { date: '29-30 dic', label: 'Arrivano i primi soccorsi via mare', detail: 'Tra i primi a intervenire ci sono le navi della Marina imperiale russa in esercitazione nel Mediterraneo — le corazzate Cesarevič e Slava e gli incrociatori Bogatyr e Ammiraglio Makarov. I marinai russi estraggono dalle macerie circa 2.500 persone e trasportano feriti verso Napoli, Palermo e Siracusa.' },
+    { date: 'Gennaio 1909', label: 'Il bilancio prende forma', detail: 'Le stime convergono su circa 80.000 vittime complessive, di cui la grande maggioranza a Messina. Alcune fonti storiche dell’epoca arrivano a parlare di 100.000-200.000 morti: le cifre più alte includono dispersi, sfollati morti nelle settimane successive e conteggi mai verificati.' },
+    { date: '18 apr 1909', label: 'La prima legge antisismica italiana', detail: 'Il Regio Decreto n. 193 impone norme tecniche obbligatorie per riparare e ricostruire nelle zone colpite: vieta di costruire su terreni franosi o paludosi, limita altezze e numero di piani, fissa larghezze minime delle strade e introduce il calcolo di forze orizzontali proporzionali alle masse. È anche la prima classificazione sismica del territorio italiano.' }
+  ];
+
+  const wrap = document.getElementById('tlWrap');
+  events.forEach((ev) => {
+    const item = document.createElement('div');
+    item.className = 'tl-item';
+    item.innerHTML = '<div class="tl-date">' + ev.date + '</div>' +
+      '<div class="tl-line"><div class="tl-dot"></div></div>' +
+      '<div class="tl-body"><div class="tl-label">' + ev.label + '</div>' +
+      '<div class="tl-detail">' + ev.detail + '</div></div>';
+    item.addEventListener('click', () => item.classList.toggle('open'));
+    wrap.appendChild(item);
+  });
+  wrap.children[0].classList.add('open');
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 2 — Grafico confronto terremoti
+// ─────────────────────────────────────────────
+(function() {
+  const labels = ['Messina e Reggio\n1908', 'Lisbona\n1755', 'Marsica-Avezzano\n1915', 'Irpinia\n1980', "L'Aquila\n2009"];
+  const values = [80000, 75000, 30519, 2914, 309];
+  const colors = ['#c0392b', '#e8a79c', '#e8a79c', '#e8a79c', '#e8a79c'];
+
+  const chart = new Chart(document.getElementById('quakeChart'), {
+    type: 'bar',
+    data: { labels: labels, datasets: [{
+      label: 'Vittime stimate',
+      data: values,
+      backgroundColor: colors,
+      borderRadius: 4,
+      maxBarThickness: 46
+    }]},
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => c.parsed.y.toLocaleString('it-IT') + ' vittime stimate' } }
+      },
+      scales: {
+        y: { type: 'linear', beginAtZero: true,
+             ticks: { callback: (v) => v >= 1000 ? (v/1000) + 'k' : v },
+             grid: { color: '#f0ebe6' } },
+        x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  document.querySelectorAll('#scaleToggle .vg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#scaleToggle .vg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const s = btn.dataset.scale;
+      chart.options.scales.y.type = s;
+      chart.options.scales.y.beginAtZero = (s === 'linear');
+      if (s === 'logarithmic') { chart.options.scales.y.min = 100; } else { delete chart.options.scales.y.min; }
+      chart.update();
+    });
+  });
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 3 — Griglia 100 abitanti
+// ─────────────────────────────────────────────
+(function() {
+  const data = {
+    messina: { pop: '~140.000', dead: '~70.000', pct: 50 },
+    reggio:  { pop: '~45.000',  dead: '~15.000', pct: 33 }
+  };
+
+  const grid = document.getElementById('grid100');
+  const cells = [];
+  for (let i = 0; i < 100; i++) {
+    const c = document.createElement('div');
+    c.className = 'cell';
+    grid.appendChild(c);
+    cells.push(c);
+  }
+
+  function render(city) {
+    const d = data[city];
+    cells.forEach((c, i) => c.classList.toggle('dead', i < d.pct));
+    document.getElementById('statPop').textContent = d.pop;
+    document.getElementById('statDead').textContent = d.dead;
+    document.getElementById('statPct').textContent = d.pct + '%';
+  }
+
+  document.querySelectorAll('#cityToggle .vg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#cityToggle .vg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.city);
+    });
+  });
+
+  render('messina');
+})();
+
+// ─────────────────────────────────────────────
+// APPLET 4 — Maremoto: run-up per località
+// ─────────────────────────────────────────────
+(function() {
+  const spots = [
+    { name: 'Pellaro (Reggio Calabria)', m: 13, detail: 'Il valore di run-up più alto misurato dopo il maremoto: 13 metri, come un palazzo di quattro piani. La frazione a sud di Reggio fu investita in pieno.' },
+    { name: 'Capo Sant’Alessio (Messina)', m: 11.7, detail: 'Sulla costa ionica messinese l’acqua salì di 11,70 metri. Altezze così diverse a pochi chilometri di distanza sono uno degli indizi che fanno pensare a una frana sottomarina come co-causa dell’onda.' },
+    { name: 'Giardini Naxos (Messina)', m: 9, detail: 'Circa 8-9 metri. Secondo le testimonianze raccolte dal geografo Mario Baratta nel 1910, il tratto tra Giardini Naxos e Taormina fu colpito in meno di cinque minuti dalla scossa.' },
+    { name: 'Porto di Reggio Calabria', m: 4.6, detail: 'Circa 15 piedi (4,6 m) secondo le fonti anglosassoni dell’epoca. L’onda penetrò per circa 200 metri nell’entroterra.' },
+    { name: 'Porto di Messina', m: 2.4, detail: 'Circa 8 piedi (2,4 m): la sponda siciliana dello Stretto fu colpita meno duramente dall’acqua — ma la città era già stata rasa al suolo dalla scossa.' }
+  ];
+
+  const wrap = document.getElementById('waveWrap');
+  const max = 13;
+
+  spots.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'wave-row';
+    row.innerHTML = '<div class="wave-label"><span>' + s.name + '</span><span>' +
+      String(s.m).replace('.', ',') + ' m</span></div>' +
+      '<div class="wave-track"><div class="wave-fill"></div></div>' +
+      '<div class="wave-detail">' + s.detail + '</div>';
+    row.addEventListener('click', () => row.classList.toggle('open'));
+    wrap.appendChild(row);
+    setTimeout(() => {
+      row.querySelector('.wave-fill').style.width = (s.m / max * 100) + '%';
+    }, 120 + i * 110);
+  });
+
+  wrap.children[0].classList.add('open');
+})();
+</script>
+</body>
+</html>
