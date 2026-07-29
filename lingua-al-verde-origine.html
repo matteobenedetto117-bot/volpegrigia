@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché si dice "sono al verde"?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #d35400;
+    --accent-light: #fbe7d6;
+    --accent-mid: #e67e22;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  /* ── APPLET 1 · SIMULAZIONE ASTA ── */
+  .asta-controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .asta-btn {
+    flex: 1;
+    min-width: 140px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .asta-btn.primario { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .asta-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .asta-scena { display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: stretch; }
+  .candela-wrap { background: #fdf4ec; border-radius: 6px; overflow: hidden; }
+  .candela-svg { display: block; width: 100%; height: auto; }
+
+  .asta-registro {
+    background: #faf8f4;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    overflow-y: auto;
+    max-height: 210px;
+  }
+  .asta-registro div { padding: 2px 0; color: var(--muted); }
+  .asta-registro div.mia { color: var(--accent); font-weight: 600; }
+  .asta-registro div.chiusa { color: var(--text); font-weight: 600; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; }
+
+  .asta-esito { font-size: 14px; color: var(--text); text-align: center; padding: 12px 4px 2px; min-height: 20px; }
+
+  /* ── APPLET 2 · IPOTESI ── */
+  .ipo-lista { display: grid; gap: 8px; margin-bottom: 18px; }
+  .ipo-btn {
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ipo-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .solidita-riga { display: grid; gap: 5px; margin-bottom: 14px; }
+  .solidita-label { display: flex; justify-content: space-between; font-size: 13px; }
+  .solidita-label strong { color: var(--text); }
+  .solidita-label span { color: var(--accent); font-weight: 700; }
+  .solidita-track { background: #f3f1ec; border-radius: 3px; height: 16px; overflow: hidden; }
+  .solidita-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 3 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto;
+    min-width: 86px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    padding: 0;
+    position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1;
+    transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 4 · LINGUE ── */
+  .lang-wrap { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .lang-btn {
+    flex: 1;
+    min-width: 92px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lang-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .lang-frase { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.25; margin-bottom: 6px; }
+  .lang-lett { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .asta-btn { min-width: 100%; }
+    .asta-scena { grid-template-columns: 110px 1fr; gap: 12px; }
+    .lang-btn { min-width: 44%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Lingua</div>
+    <h1>Perché si dice "sono al verde"?</h1>
+    <div class="risposta-box">
+      <p>La spiegazione più accreditata viene dalle aste pubbliche della Firenze del Seicento: il tempo per rilanciare si misurava con una candela tinta di verde alla base, e quando la fiamma arrivava «al verde» l'asta era chiusa. Da «la candela è al verde» si passò a «essere al verde di danari», poi contratto in «essere al verde».</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: luglio 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Oggi il verde è il colore del semaforo aperto, del numero verde, dell'ecologia. Ma per secoli è stato un colore instabile e sospetto — quello delle streghe, del veleno, del diavolo — e l'espressione che usiamo per dire «non ho più una lira» è un fossile di quell'epoca. Il punto di partenza, però, non è simbolico: è un oggetto molto concreto, una candela.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">L'asta del Magistrato del Sale</div>
+      <div class="applet-istruzione">Accendi la candela e prova a rilanciare prima che la fiamma raggiunga la base verde: quando ci arriva, l'asta si chiude.</div>
+    </div>
+    <div class="asta-controls">
+      <button class="asta-btn primario" id="btnAccendi" onclick="avviaAsta()">Accendi la candela</button>
+      <button class="asta-btn" id="btnRilancia" onclick="rilancia()" disabled>Rilancia (+5 scudi)</button>
+    </div>
+    <div class="asta-scena">
+      <div class="candela-wrap">
+        <svg class="candela-svg" id="candelaSvg" viewBox="0 0 120 260" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="120" height="260" fill="#fdf4ec"></rect>
+          <rect x="30" y="228" width="60" height="10" rx="2" fill="#c9b79a"></rect>
+          <rect id="ceraVerde" x="42" y="198" width="36" height="30" fill="#27ae60"></rect>
+          <rect id="ceraBianca" x="42" y="62" width="36" height="136" fill="#f2ece0"></rect>
+          <line id="stoppino" x1="60" y1="56" x2="60" y2="62" stroke="#4a4a4a" stroke-width="2"></line>
+          <ellipse id="fiamma" cx="60" cy="48" rx="7" ry="13" fill="#e67e22"></ellipse>
+          <ellipse id="fiammaCuore" cx="60" cy="51" rx="3" ry="7" fill="#ffd9a0"></ellipse>
+          <line x1="86" y1="213" x2="100" y2="213" stroke="#27ae60" stroke-width="1.5"></line>
+          <text x="102" y="217" font-family="sans-serif" font-size="11" fill="#27ae60">verde</text>
+        </svg>
+      </div>
+      <div class="asta-registro" id="astaRegistro">
+        <div>Appalto di un'osteria fiorentina — base d'asta 40 scudi.</div>
+        <div>La candela non è ancora accesa.</div>
+      </div>
+    </div>
+    <div class="asta-esito" id="astaEsito">Finché la fiamma brucia la cera chiara si può rilanciare.</div>
+    <div class="applet-fonte">
+      Ricostruzione della procedura descritta nelle <em>Note al Malmantile racquistato</em> di Lorenzo Lippi, firmate «Puccio Lamoni» (pseudonimo di Paolo Minucci), seconda metà del Seicento: nel Magistrato del Sale di Firenze si metteva all'incanto l'appalto delle osterie e si poteva offrire solo «nel tempo che abbrucia una piccolissima candela di cera tinta da piede di color verde». Cifre e tempi della simulazione sono illustrativi: le fonti descrivono il meccanismo, non i prezzi.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La formula originale non riguardava affatto i soldi: «la candela è al verde» voleva dire «siamo alla fine», di qualunque cosa si trattasse. Solo in un secondo momento nasce «essere al verde di danari» — cioè essere alla fine dei quattrini — che l'uso comune ha poi accorciato nell'espressione che conosciamo.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Cinque spiegazioni, non tutte uguali</div>
+      <div class="applet-istruzione">Seleziona un'ipotesi per vedere che cosa la sostiene — e quanto regge alla prova delle fonti.</div>
+    </div>
+    <div class="ipo-lista">
+      <button class="ipo-btn attivo" data-ipo="0" onclick="mostraIpotesi(0)">La candela dell'asta</button>
+      <button class="ipo-btn" data-ipo="1" onclick="mostraIpotesi(1)">Il berretto verde dei falliti</button>
+      <button class="ipo-btn" data-ipo="2" onclick="mostraIpotesi(2)">La fodera verde della borsa</button>
+      <button class="ipo-btn" data-ipo="3" onclick="mostraIpotesi(3)">Il tavolo verde da gioco</button>
+      <button class="ipo-btn" data-ipo="4" onclick="mostraIpotesi(4)">La sala verde del Pedrocchi</button>
+    </div>
+    <div class="solidita-riga">
+      <div class="solidita-label"><strong>Solidità documentaria</strong><span id="solVal">Alta</span></div>
+      <div class="solidita-track"><div class="solidita-fill" id="solBar" style="width:95%"></div></div>
+    </div>
+    <div class="box-testo" id="ipoTesto">È l'unica spiegazione che i contemporanei stessi mettono per iscritto: compare nelle note secentesche al <em>Malmantile</em> e già nella prima edizione del <em>Vocabolario della Crusca</em> (1612), che glossa il verso di Petrarca proprio con la candela «che si tiene accesa, quando il pubblico vende allo 'ncanto». Da lì è passata senza varianti a tutta la lessicografia successiva ed è quella accolta dai dizionari di oggi.</div>
+    <div class="applet-fonte">
+      Fonte: Lucilla Pizzoli, <em>Essere al verde</em>, Treccani — Magazine «Lingua italiana», 29 ottobre 2021, che riporta e discute le ipotesi (Crusca 1612, Minucci/Lamoni, Ottavio Lurati 2002, B. Monica Quartu 1993); voce <em>Essere al verde</em>, Wikipedia in italiano. La barra di «solidità documentaria» è una valutazione redazionale basata sulla presenza o assenza di attestazioni d'epoca, non un dato misurato.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Le spiegazioni alternative non sono tutte fantasie: il linguista Ottavio Lurati collega il modo di dire all'obbligo, per i falliti, di portare un cappello verde per pubblico scherno — e cita il francese <em>être safranier</em>, «essere color zafferano», legato all'usanza francese del cappello giallo. Ma nessuna di queste ipotesi ha, dietro, una fonte coeva che la dichiari.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Sette secoli di «al verde»</div>
+      <div class="applet-istruzione">Clicca una tappa per vedere dove e come l'espressione è stata registrata.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonte: Lucilla Pizzoli, <em>Essere al verde</em>, Treccani — Magazine «Lingua italiana», 29 ottobre 2021, che ricostruisce la catena delle attestazioni (Petrarca, Bellincioni, Crusca, <em>Malmantile</em>, Tommaseo-Bellini, GDLI, dizionari contemporanei). Per il <em>Malmantile</em> le fonti oscillano tra l'edizione con note del 1676 e quella del 1688: qui sono indicate entrambe.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La prima attestazione di peso è quella di Petrarca, che nel <em>Canzoniere</em> scrive di una speranza «già condotta al verde»: non parla di monete, ma di qualcosa che è arrivato al termine. È la stessa immagine — la fine di una cosa — che tre secoli dopo i lessicografi fiorentini agganceranno alla candela dell'incanto.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Fuori dall'italiano, il verde sparisce</div>
+      <div class="applet-istruzione">Scegli una lingua e leggi come si dice «essere senza soldi», con la traduzione alla lettera.</div>
+    </div>
+    <div class="lang-wrap">
+      <button class="lang-btn attivo" data-lang="0" onclick="mostraLingua(0)">Francese</button>
+      <button class="lang-btn" data-lang="1" onclick="mostraLingua(1)">Inglese</button>
+      <button class="lang-btn" data-lang="2" onclick="mostraLingua(2)">Spagnolo</button>
+      <button class="lang-btn" data-lang="3" onclick="mostraLingua(3)">Tedesco</button>
+      <button class="lang-btn" data-lang="4" onclick="mostraLingua(4)">Portoghese</button>
+    </div>
+    <div class="box-testo">
+      <div class="lang-frase" id="langFrase">ne plus avoir un radis</div>
+      <div class="lang-lett" id="langLett">Alla lettera: «non avere più un ravanello». Accanto convivono <em>être à sec</em> («essere a secco») e <em>ne plus avoir un rond</em> («non avere più un tondo», cioè una moneta): l'immagine è il cibo da poco o la moneta che manca, mai il colore.</div>
+    </div>
+    <div class="applet-fonte">
+      Fonte: voce <em>Essere al verde</em>, Wikipedia in italiano (sezione con i corrispettivi in francese, inglese, spagnolo, portoghese e tedesco); per <em>être safranier</em>, Ottavio Lurati, <em>Per modo di dire…</em>, Clueb 2002, citato da Treccani. Le glosse letterali sono nostre.
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>Dietro quasi ogni modo di dire c'è un oggetto scomparso: qui una candela che, spegnendosi, decideva chi aveva vinto — e che continua a spegnersi ogni volta che diciamo di essere al verde.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Lucilla Pizzoli, <em>Essere al verde</em>, in «Per modo di dire… Un anno di frasi fatte», Treccani — Magazine Lingua italiana, 29 ottobre 2021 — <a href="https://www.treccani.it/magazine/lingua_italiana/articoli/parole/Modi_di_dire23.html">treccani.it</a></li>
+      <li><em>Vocabolario degli Accademici della Crusca</em>, prima edizione (1612), voce che glossa il verso di Petrarca con la candela dell'incanto tinta di verde</li>
+      <li>Puccio Lamoni (pseudonimo di Paolo Minucci), <em>Note al Malmantile racquistato</em> di Lorenzo Lippi (edizioni annotate 1676 / 1688)</li>
+      <li>Ottavio Lurati, <em>Per modo di dire… Storia della lingua e antropologia nelle locuzioni italiane ed europee</em>, Clueb, Bologna 2002</li>
+      <li>B. Monica Quartu, <em>Dizionario dei modi di dire della lingua italiana</em>, Rizzoli, Milano 1993</li>
+      <li>Michel Pastoureau, <em>Verde. Storia di un colore</em>, Ponte alle Grazie, Milano 2013</li>
+      <li>Voce <em>Essere al verde</em>, Wikipedia in italiano — <a href="https://it.wikipedia.org/wiki/Essere_al_verde">it.wikipedia.org</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · SIMULAZIONE ASTA ── */
+var Y_TOP = 62, Y_VERDE = 198, DURATA = 14000;
+var astaAttiva = false, tInizio = 0, offerta = 40, ultimoOfferente = null, rafId = null, timerRivale = null;
+
+function logAsta(testo, classe) {
+  var reg = document.getElementById('astaRegistro');
+  var riga = document.createElement('div');
+  if (classe) riga.className = classe;
+  riga.innerHTML = testo;
+  reg.appendChild(riga);
+  reg.scrollTop = reg.scrollHeight;
+}
+
+function avviaAsta() {
+  if (astaAttiva) return;
+  if (rafId) cancelAnimationFrame(rafId);
+  if (timerRivale) clearInterval(timerRivale);
+  astaAttiva = true;
+  offerta = 40;
+  ultimoOfferente = null;
+  document.getElementById('astaRegistro').innerHTML = '';
+  logAsta("Appalto di un'osteria fiorentina — base d'asta 40 scudi.");
+  logAsta('Candela accesa: le offerte sono aperte.');
+  document.getElementById('btnRilancia').disabled = false;
+  document.getElementById('btnAccendi').disabled = true;
+  document.getElementById('ceraBianca').setAttribute('y', Y_TOP);
+  document.getElementById('ceraBianca').setAttribute('height', Y_VERDE - Y_TOP);
+  document.getElementById('astaEsito').textContent = 'Finché la fiamma brucia la cera chiara si può rilanciare.';
+  tInizio = performance.now();
+  rafId = requestAnimationFrame(brucia);
+  timerRivale = setInterval(offertaRivale, 2200);
+}
+
+function brucia(ts) {
+  var t = Math.min((ts - tInizio) / DURATA, 1);
+  var y = Y_TOP + t * (Y_VERDE - Y_TOP);
+  document.getElementById('ceraBianca').setAttribute('y', y);
+  document.getElementById('ceraBianca').setAttribute('height', Math.max(Y_VERDE - y, 0));
+  document.getElementById('stoppino').setAttribute('y1', y - 6);
+  document.getElementById('stoppino').setAttribute('y2', y);
+  var guizzo = Math.sin(ts / 70) * 1.2;
+  document.getElementById('fiamma').setAttribute('cy', y - 14 + guizzo);
+  document.getElementById('fiammaCuore').setAttribute('cy', y - 11 + guizzo);
+  if (t < 1) { rafId = requestAnimationFrame(brucia); } else { chiudiAsta(); }
+}
+
+function offertaRivale() {
+  if (!astaAttiva) return;
+  offerta += 3;
+  ultimoOfferente = 'rivale';
+  logAsta('Un altro oste rilancia: <strong>' + offerta + ' scudi</strong>.');
+}
+
+function rilancia() {
+  if (!astaAttiva) return;
+  offerta += 5;
+  ultimoOfferente = 'tu';
+  logAsta('La tua offerta: <strong>' + offerta + ' scudi</strong>.', 'mia');
+}
+
+function chiudiAsta() {
+  astaAttiva = false;
+  clearInterval(timerRivale);
+  document.getElementById('btnRilancia').disabled = true;
+  document.getElementById('btnAccendi').disabled = false;
+  document.getElementById('fiamma').setAttribute('ry', 0.1);
+  document.getElementById('fiammaCuore').setAttribute('ry', 0.1);
+  logAsta('La candela è al verde: nessuno può più offrire.', 'chiusa');
+  var esito;
+  if (ultimoOfferente === 'tu') esito = "L'osteria è tua per " + offerta + " scudi: la candela è al verde e l'ultima offerta era la tua.";
+  else if (ultimoOfferente === 'rivale') esito = "L'appalto va all'altro oste per " + offerta + " scudi. Tu sei rimasto al verde.";
+  else esito = "Nessuna offerta: l'osteria tornerà all'incanto un altro giorno, con una nuova candeletta.";
+  document.getElementById('astaEsito').textContent = esito;
+}
+
+/* ── APPLET 02 · IPOTESI ── */
+var ipotesi = [
+  { sol: 95, lab: 'Alta',
+    txt: "È l'unica spiegazione che i contemporanei stessi mettono per iscritto: compare nelle note secentesche al <em>Malmantile</em> e già nella prima edizione del <em>Vocabolario della Crusca</em> (1612), che glossa il verso di Petrarca proprio con la candela «che si tiene accesa, quando il pubblico vende allo 'ncanto». Da lì è passata senza varianti a tutta la lessicografia successiva ed è quella accolta dai dizionari di oggi." },
+  { sol: 60, lab: 'Ipotesi d’autore',
+    txt: "Ottavio Lurati, studioso di locuzioni nate da antiche pratiche di scherno, la fa risalire all'obbligo per i falliti di indossare un cappello verde, spesso a vita. A sostegno cita il francese <em>être safranier</em>, «essere color zafferano», legato all'usanza francese di far portare agli insolventi un cappello giallo. È una lettura argomentata, ma senza una fonte d'epoca che colleghi esplicitamente il cappello all'espressione italiana." },
+  { sol: 35, lab: 'Plausibile, non provata',
+    txt: "Riportata nel dizionario dei modi di dire di Monica Quartu: forzieri, cassette e scarselle portamonete avevano spesso l'interno verde, così aprire una borsa vuota significava vedere solo la fodera. L'immagine funziona bene, ma resta una ricostruzione a posteriori: nessun testo antico la usa per spiegare la locuzione." },
+  { sol: 20, lab: 'Spiegazione recente',
+    txt: "Il giocatore che ha perso tutte le fiche, guardando il punto dove teneva il gruzzolo, vede solo il panno verde del tavolo. È una spiegazione tarda: il tavolo da gioco verde si diffonde molto dopo le prime attestazioni letterarie dell'espressione, che sono medievali e rinascimentali." },
+  { sol: 10, lab: 'Leggenda locale',
+    txt: "A Padova si dà per certa l'origine dalla «sala verde» del Caffè Pedrocchi, dove per tradizione ci si può sedere senza consumare — rifugio di studenti e squattrinati. Il Pedrocchi apre però nel primo Ottocento, quando «essere al verde» era già in circolazione da secoli: è un caso classico di etimologia popolare costruita a posteriori." }
+];
+
+function mostraIpotesi(i) {
+  var btns = document.querySelectorAll('.ipo-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('solBar').style.width = ipotesi[i].sol + '%';
+  document.getElementById('solVal').textContent = ipotesi[i].lab;
+  document.getElementById('ipoTesto').innerHTML = ipotesi[i].txt;
+}
+
+/* ── APPLET 03 · LINEA DEL TEMPO ── */
+var tappe = [
+  { anno: 'XIV sec.', tit: 'Petrarca, Canzoniere',
+    txt: "La più antica attestazione di peso. Petrarca usa «al verde» per la speranza che è arrivata alla fine, non per il denaro: il senso originario è «essere al termine di qualcosa».",
+    cit: "«Quando mia speme già condotta al verde / giunse nel cor, non per l'usata via…»" },
+  { anno: '1493', tit: 'Bernardo Bellincioni',
+    txt: "L'espressione compare nei sonetti del poeta fiorentino Bellincioni: è ormai patrimonio della lingua letteraria toscana, e verrà poi raccolta tra gli esempi d'autore del Tommaseo-Bellini." },
+  { anno: '1612', tit: 'Vocabolario della Crusca, I edizione',
+    txt: "La Crusca cita il verso di Petrarca e lo spiega con la candela dell'incanto. È il momento in cui l'etimologia della candela entra ufficialmente nella lessicografia italiana.",
+    cit: "«…la candela che si tiene accesa, quando il pubblico vende allo 'ncanto, che all'estremo è tinta di verde. Onde proverbialmente, la candela è al verde, si dice di qualunque cosa, che sia in sul finire»" },
+  { anno: '1676 / 1688', tit: 'Note al Malmantile racquistato',
+    txt: "Puccio Lamoni — pseudonimo di Paolo Minucci — commenta un verso di Lorenzo Lippi e descrive nel dettaglio la procedura del Magistrato del Sale di Firenze: la candeletta verde alla base, l'appalto delle osterie, e il passaggio a «esser al verde di danari».",
+    cit: "«Esser' al verde. Esser' alla fine. Tratto dalle candele di sego, che per lo più son tinte di verde nel piede.»" },
+  { anno: '1865-79', tit: 'Tommaseo-Bellini',
+    txt: "Il grande dizionario ottocentesco riprende la spiegazione senza variazioni e aggiunge nuovi esempi d'autore, da Bernardo Tasso a Giovan Battista Fagiuoli. L'etimologia della candela è ormai canonica." },
+  { anno: '1961-2002', tit: 'Grande dizionario Battaglia (GDLI)',
+    txt: "Il GDLI lemmatizza direttamente «essere la candela al verde» e registra anche «essere, venire al verde con qualcosa», nel senso di averlo finito o esaurito: la locuzione non riguarda ancora solo i soldi." },
+  { anno: 'Oggi', tit: 'I dizionari contemporanei',
+    txt: "Sabatini-Coletti, Zingarelli, Nocentini, Pittàno e Treccani online riportano tutti la stessa origine. Nel frattempo il significato si è ristretto: «essere al verde» vuol dire soltanto essere senza soldi." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.setAttribute('data-tl', i);
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ── APPLET 04 · LINGUE ── */
+var lingue = [
+  { frase: 'ne plus avoir un radis', txt: "Alla lettera: «non avere più un ravanello». Accanto convivono <em>être à sec</em> («essere a secco») e <em>ne plus avoir un rond</em> («non avere più un tondo», cioè una moneta): l'immagine è il cibo da poco o la moneta che manca, mai il colore." },
+  { frase: 'to be flat broke', txt: "Alla lettera: «essere completamente rotto». Le varianti sono <em>penniless</em> («senza un penny») e <em>to be on the rocks</em> («essere sugli scogli», come una nave incagliata). Qui la metafora è il naufragio o la rottura, non un colore." },
+  { frase: 'estar sin blanca', txt: "Alla lettera: «essere senza blanca» — la <em>blanca</em> era una moneta di poco valore della Castiglia medievale. In Spagna si usa anche <em>estar tieso</em> («essere rigido, irrigidito»); in Messico <em>estar sin lana</em>, «senza lana»." },
+  { frase: 'auf den Hund kommen', txt: "Alla lettera: «finire al cane», cioè ridursi male, toccare il fondo. Il tedesco non passa né dal colore né dalla moneta: sceglie l'immagine della caduta sociale, del ridursi all'ultimo gradino." },
+  { frase: 'estar teso', txt: "Alla lettera: «essere teso, rigido» — la stessa immagine dello spagnolo <em>tieso</em>. Si affianca <em>estar liso</em>, «essere liscio», e <em>não ter um chavo</em>, «non avere un centesimo»: chi non ha nulla è piatto, liscio, senza rilievi." }
+];
+
+function mostraLingua(i) {
+  var btns = document.querySelectorAll('.lang-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('langFrase').textContent = lingue[i].frase;
+  document.getElementById('langLett').innerHTML = lingue[i].txt;
+}
+
+costruisciTimeline();
+</script>
+</body>
+</html>

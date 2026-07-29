@@ -56,6 +56,7 @@ Riusa sempre lo stesso colore per la stessa categoria. Se una pillola introduce 
 | Civica/Società | `#c0392b` |
 | Storia | `#c0392b` |
 | Salute | `#8e44ad` |
+| Lingua | `#d35400` |
 
 ## Cosa NON fare
 
