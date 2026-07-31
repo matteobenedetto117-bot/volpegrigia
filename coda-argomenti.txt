@@ -1,0 +1,32 @@
+Demografia|Quale sarà la popolazione mondiale nei prossimi 100 anni?|
+Neuroscienze|Perché non ricordiamo nulla dei primi 2-3 anni di vita?|
+Economia|Perché le banche centrali puntano al 2% di inflazione invece che a 0%?|
+Ambiente|Quanta energia serve per costruire una batteria di auto elettrica, prima ancora che parta?|
+Salute|Perché con l'età dormiamo meno e peggio?|
+Lingua|Perché a "in bocca al lupo" non si deve mai rispondere "grazie"?|
+Storia|Perché il Titanic non aveva scialuppe a sufficienza per tutti i passeggeri?|
+Scienze|Perché lo sbadiglio è contagioso?|
+Economia|Perché un caffè al bar costa 20 volte il prezzo della materia prima?|
+Ambiente|Quanta della plastica che ricicliamo viene davvero riciclata?|
+Lingua|Da dove viene "fare orecchie da mercante"?|
+Salute|Se il freddo non causa il raffreddore, perché ci si ammala di più d'inverno?|
+Storia|Perché la Groenlandia si chiama "Terra Verde" se è quasi tutta ghiacciata?|
+Fisica|Perché un aereo consuma più carburante nei primi minuti di decollo che in ore di crociera?|
+Società|Perché gli anelli olimpici hanno proprio quei cinque colori?|
+Storia|Perché Venezia è costruita su palafitte di legno che reggono da secoli?|
+Scienze|Perché il miele non scade mai?|
+Salute|Le vitamine in pillola funzionano come quelle nel cibo?|
+Ambiente|Perché alcune specie animali si stanno rimpicciolendo per il cambiamento climatico?|
+Storia|Perché l'impero romano d'Occidente cadde nel 476 ma quello d'Oriente sopravvisse altri mille anni?|
+Società|Perché in aereo si abbassano le luci in cabina durante decollo e atterraggio?|
+Storia|Perché "attraversare il Rubicone" con Giulio Cesare è diventato sinonimo di un punto di non ritorno?|
+Scienze|Perché le impronte digitali sono uniche anche nei gemelli identici?|Il DNA determina lo schema generale, ma i dettagli fini si formano nell'utero per piccole variazioni casuali di pressione del liquido amniotico e crescita della pelle — nemmeno un clone perfetto le riprodurrebbe identiche
+Economia|Perché alcune aziende regalano il "rasoio" e guadagnano sulle "lamette"?|Il modello Gillette: il prodotto base si vende quasi in perdita per creare dipendenza da un consumabile a margine altissimo — dalle stampanti alle console da gioco
+Storia|Perché Napoleone vendette la Louisiana agli Stati Uniti per una cifra ridicola?|Non fu generosità: la Francia non riusciva a difendere il territorio, la rivolta di Haiti aveva fatto saltare i piani coloniali americani, e servivano fondi urgenti per la guerra in Europa
+Fisica|Perché il cielo è blu di giorno e rosso-arancio al tramonto?|È lo stesso fenomeno, la diffusione di Rayleigh: la luce blu si disperde di più nell'atmosfera, ma al tramonto il percorso della luce è così lungo che il blu si disperde del tutto prima di arrivare ai nostri occhi
+Salute|Perché lo stress fa venire i capelli bianchi?|Non è un mito: recenti studi mostrano che lo stress acuto esaurisce le cellule staminali che producono il pigmento — e in alcuni casi il danno è irreversibile
+Ambiente|Le pale eoliche uccidono davvero così tanti uccelli come si dice?|Il numero reale è basso rispetto ad altre cause umane: gatti domestici e collisioni con edifici a vetri uccidono ordini di grandezza più uccelli ogni anno
+Lingua|Da dove viene l'espressione "avere le mani in pasta"?|Dai fornai e pasticceri medievali: chi aveva letteralmente le mani nell'impasto era coinvolto in prima persona nel lavoro, non solo a guardare — da qui il senso di essere coinvolti attivamente in qualcosa
+Società|Perché in Giappone si toglie sempre le scarpe prima di entrare in casa?|Non è solo pulizia: nella cultura tradizionale il pavimento su cui ci si siede e dorme è considerato uno spazio quasi sacro, nettamente separato dal mondo "sporco" esterno
+Scienze|Perché un uovo crudo gira in modo diverso da uno sodo?|Il liquido interno di quello crudo si muove indipendentemente dal guscio per inerzia, frenando la rotazione — quello sodo, essendo solido, ruota come un blocco unico e più a lungo
+Storia|Perché la Torre di Pisa pende, e perché non è ancora crollata?|Il terreno sotto un lato della base era più cedevole fin dalla costruzione nel 1173; paradossalmente l'inclinazione lenta e progressiva, corretta con interventi moderni, ha impedito il collasso improvviso che sarebbe avvenuto con un cedimento repentino

@@ -68,6 +68,9 @@ Riusa sempre lo stesso colore per la stessa categoria. Se una pillola introduce 
 | Storia | `#c0392b` |
 | Salute | `#8e44ad` |
 | Lingua | `#d35400` |
+| Demografia | `#7f8c8d` |
+| Neuroscienze | `#9b59b6` |
+| Fisica | `#f39c12` |
 
 ## Cosa NON fare
 
@@ -96,6 +99,8 @@ File da mantenere nel repo:
 - `style-guide.md` — questo documento, non va online
 
 **Naming convention file pillola:** `categoria-domanda-breve.html` (categoria in minuscolo, poche parole chiave della domanda separate da trattino, senza accenti). Esempi: `scienze-quando-vita.html`, `economia-cos-e-inflazione.html`.
+
+**Formato di `coda-argomenti.txt`:** una riga per argomento, campi separati da `|`: `Categoria|Domanda|Suggerimento`. Il terzo campo (suggerimento) è opzionale e può essere vuoto (`Categoria|Domanda|`): quando presente è una traccia di risposta o un punto di partenza per la ricerca fornito dall'utente, da verificare e approfondire comunque con ricerca autonoma, non da copiare così com'è. La categoria nella coda è quella da usare: se non è già nella tabella colori qui sopra, scegli un colore coerente e aggiungi la riga. Se una riga della coda fosse in un formato vecchio (solo testo, senza `|`), trattala come domanda con categoria da dedurre tu.
 
 **Home page (`index.html`):** lista di tutte le pillole in ordine cronologico inverso (la più recente in cima), un unico flusso senza sezioni per categoria. Ogni voce mostra: domanda, risposta in 2 righe, categoria (tag colorato), data, tempo di lettura, link al file.
 
