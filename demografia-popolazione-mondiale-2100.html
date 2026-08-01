@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quale sarà la popolazione mondiale nei prossimi 100 anni?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #7f8c8d;
+    --accent-light: #edefef;
+    --accent-mid: #95a5a6;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+    --su: #c0392b;
+    --giu: #2980b9;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · CONTATORE IN DIRETTA ── */
+  .cnt-griglia { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .cnt-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 12px 10px; text-align: center; }
+  .cnt-etichetta { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .cnt-numero { font-family: 'Playfair Display', serif; font-size: clamp(22px, 6vw, 30px); font-weight: 700; line-height: 1.1; }
+  .cnt-nascite .cnt-numero { color: var(--su); }
+  .cnt-morti .cnt-numero { color: var(--giu); }
+  .cnt-saldo .cnt-numero { color: var(--text); }
+  .cnt-sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  .cnt-bilancia { display: block; width: 100%; height: auto; background: #faf8f4; border-radius: 6px; }
+  .cnt-nota { font-size: 13.5px; color: var(--text); text-align: center; padding: 12px 4px 2px; }
+  .cnt-nota strong { font-weight: 600; }
+
+  /* ── APPLET 2 · MACCHINA DEMOGRAFICA ── */
+  .pir-controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .pir-btn {
+    flex: 1; min-width: 132px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 9px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .pir-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pir-azioni { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pir-azione {
+    flex: 1; min-width: 132px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: #fff; background: var(--text);
+    border: 1.5px solid var(--text); border-radius: 4px;
+    padding: 10px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .pir-azione.secondaria { background: #f3f1ec; border-color: var(--border); color: var(--muted); }
+  .pir-azione:disabled { opacity: 0.4; cursor: default; }
+  .pir-scena { display: grid; grid-template-columns: 1fr 152px; gap: 14px; align-items: start; }
+  .pir-svg { display: block; width: 100%; height: auto; background: #faf8f4; border-radius: 6px; }
+  .pir-pannello { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 12px 13px; }
+  .pir-anno { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+  .pir-tot { font-size: 20px; font-weight: 600; color: var(--text); }
+  .pir-delta { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+  .pir-legenda { font-size: 11.5px; color: var(--muted); line-height: 1.45; border-top: 1px solid var(--border); padding-top: 8px; }
+  .pir-legenda i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
+  .pir-esito { font-size: 13.5px; color: var(--text); padding: 12px 2px 0; min-height: 20px; }
+
+  /* ── APPLET 3 · TRAIETTORIE ── */
+  .tr-wrap { display: flex; gap: 7px; margin-bottom: 18px; flex-wrap: wrap; }
+  .tr-btn {
+    flex: 1; min-width: 92px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 9px 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .tr-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tr-svg { display: block; width: 100%; height: auto; background: #faf8f4; border-radius: 6px; margin-bottom: 14px; }
+  .tr-titolo { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+
+  /* ── APPLET 4 · SCENARI ── */
+  .sc-wrap { display: flex; gap: 7px; margin-bottom: 16px; flex-wrap: wrap; }
+  .sc-btn {
+    flex: 1; min-width: 108px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12.5px; font-weight: 600;
+    background: #f3f1ec; color: var(--muted);
+    border: 1.5px solid var(--border); border-left-width: 5px;
+    border-radius: 4px; padding: 8px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .sc-btn.spento { opacity: 0.4; }
+  .sc-canvas-wrap { position: relative; height: 280px; margin-bottom: 12px; }
+  .sc-divario { font-size: 13.5px; text-align: center; color: var(--text); padding-bottom: 6px; }
+
+  /* ── APPLET 5 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto; min-width: 84px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif; padding: 0; position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1; transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .pir-scena { grid-template-columns: 1fr; }
+    .pir-btn, .pir-azione { min-width: 100%; }
+    .tr-btn { min-width: 30%; }
+    .cnt-griglia { gap: 6px; }
+    .cnt-cella { padding: 10px 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Demografia</div>
+    <h1>Quale sarà la popolazione mondiale nei prossimi 100 anni?</h1>
+    <div class="risposta-box">
+      <p>Secondo l'ONU cresceremo dagli 8,2 miliardi del 2024 fino a un massimo di circa 10,3 miliardi a metà degli anni Ottanta di questo secolo, per poi iniziare a calare: 10,2 miliardi nel 2100. È la prima volta che l'ONU dà per probabile — all'80% — che il picco arrivi entro il secolo.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Per cinquant'anni la domanda è stata «quanto ancora cresceremo». Oggi è un'altra: <em>quando smetteremo di essere di più</em>. Nel <em>World Population Prospects</em> del 2019 l'ONU dava circa il 30% di probabilità che la crescita finisse entro il 2100; nella revisione del luglio 2024 quella probabilità è salita all'80%. In cinque anni il futuro demografico si è capovolto.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il bilancio del pianeta, da quando hai aperto questa pagina</div>
+      <div class="applet-istruzione">Non devi fare niente: i numeri salgono da soli. La colonna al centro è la differenza, cioè la crescita.</div>
+    </div>
+    <div class="cnt-griglia">
+      <div class="cnt-cella cnt-nascite">
+        <div class="cnt-etichetta">Nati</div>
+        <div class="cnt-numero" id="cntNascite">0</div>
+        <div class="cnt-sub">4,2 al secondo</div>
+      </div>
+      <div class="cnt-cella cnt-saldo">
+        <div class="cnt-etichetta">Saldo</div>
+        <div class="cnt-numero" id="cntSaldo">0</div>
+        <div class="cnt-sub">+2,2 al secondo</div>
+      </div>
+      <div class="cnt-cella cnt-morti">
+        <div class="cnt-etichetta">Morti</div>
+        <div class="cnt-numero" id="cntMorti">0</div>
+        <div class="cnt-sub">2,0 al secondo</div>
+      </div>
+    </div>
+    <svg class="cnt-bilancia" id="cntBilancia" viewBox="0 0 400 74" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="400" height="74" fill="#faf8f4"></rect>
+      <text x="12" y="17" font-family="sans-serif" font-size="10" fill="#7f8c8d">NASCITE IN UN ANNO · 132 MILIONI</text>
+      <rect x="12" y="22" width="376" height="12" rx="2" fill="#c0392b"></rect>
+      <text x="12" y="52" font-family="sans-serif" font-size="10" fill="#7f8c8d">MORTI IN UN ANNO · 63 MILIONI</text>
+      <rect x="12" y="57" width="179" height="12" rx="2" fill="#2980b9"></rect>
+    </svg>
+    <div class="cnt-nota">In un anno il mondo guadagna circa <strong>69 milioni</strong> di persone: quanto la popolazione della Francia, ogni dodici mesi.</div>
+    <div class="applet-fonte">
+      Ritmi calcolati sui totali annui del 2024: circa 132 milioni di nascite e 63 milioni di morti nel mondo. Fonte: Nazioni Unite, Dipartimento degli affari economici e sociali, <em>World Population Prospects 2024: Summary of Results</em>, 11 luglio 2024; Hannah Ritchie e Max Roser, <em>How many people die and how many are born each year?</em>, Our World in Data. Il contatore distribuisce quei totali in modo uniforme nel tempo: è una media, non un conteggio evento per evento.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La cosa curiosa è che questa crescita non dipende quasi più da quanti figli si fanno. Nel 1990 una donna ne aveva in media 3,3, oggi 2,3: quasi uno in meno. In più della metà dei paesi del mondo si è già sotto 2,1 — la soglia sotto la quale, senza immigrazione, una popolazione a lungo andare si riduce. Eppure siamo sempre di più.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Prova a fermare la crescita: non ci riesci</div>
+      <div class="applet-istruzione">Scegli quanti figli per donna vuoi imporre al mondo intero da domani mattina, poi fai scorrere il tempo di cinque anni alla volta e guarda che cosa succede al totale.</div>
+    </div>
+    <div class="pir-controls">
+      <button class="pir-btn attivo" data-tfr="0" onclick="scegliTfr(0)">Oggi · 2,25 figli</button>
+      <button class="pir-btn" data-tfr="1" onclick="scegliTfr(1)">Sostituzione · 2,1</button>
+      <button class="pir-btn" data-tfr="2" onclick="scegliTfr(2)">Come l'Italia · 1,2</button>
+    </div>
+    <div class="pir-azioni">
+      <button class="pir-azione" id="btnAvanza" onclick="avanza()">Avanti di 5 anni ▸</button>
+      <button class="pir-azione secondaria" onclick="riavvia()">Torna al 2025</button>
+    </div>
+    <div class="pir-scena">
+      <svg class="pir-svg" id="pirSvg" viewBox="0 0 330 300" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="pir-pannello">
+        <div class="pir-anno" id="pirAnno">2025</div>
+        <div class="pir-tot" id="pirTot">8,00 mld</div>
+        <div class="pir-delta" id="pirDelta">punto di partenza</div>
+        <div class="pir-legenda">
+          <div><i style="background:#7f8c8d"></i>fuori dall'età fertile</div>
+          <div><i style="background:#c0392b"></i>15-49 anni: è questa fascia che genera le nascite</div>
+        </div>
+      </div>
+    </div>
+    <div class="pir-esito" id="pirEsito">Anche azzerando subito la crescita della fecondità, la fascia rossa resta larghissima ancora per decenni: è il «momento d'inerzia» della popolazione.</div>
+    <div class="applet-fonte">
+      Modello a coorti quinquennali costruito per questa pagina. Struttura per età di partenza: distribuzione mondiale del 2024 arrotondata, da Nazioni Unite, <em>World Population Prospects 2024</em>. Le probabilità di sopravvivenza sono calibrate per riprodurre l'ordine di grandezza reale (circa 132 milioni di nascite e 60 milioni di morti l'anno al 2024); il modello non distingue i sessi, non tiene conto delle migrazioni e la piramide è simmetrica per costruzione. Serve a mostrare un meccanismo — l'inerzia demografica — non a produrre previsioni.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il motivo si chiama <strong>momento d'inerzia demografico</strong>: le persone in età fertile oggi sono più numerose che mai, perché sono figlie di una generazione che faceva molti più figli. Anche portando subito la fecondità mondiale a 2,1, il modello qui sopra continua a crescere per una sessantina d'anni. Nel frattempo la geografia si è spaccata in due: una persona su quattro vive già in un paese che ha superato il proprio massimo storico.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Sei paesi, sei destini opposti</div>
+      <div class="applet-istruzione">Scegli un paese e guarda dove sta il suo punto più alto: per alcuni è nel futuro, per altri è già alle spalle.</div>
+    </div>
+    <div class="tr-wrap">
+      <button class="tr-btn attivo" data-tr="0" onclick="mostraTraiettoria(0)">Mondo</button>
+      <button class="tr-btn" data-tr="1" onclick="mostraTraiettoria(1)">Cina</button>
+      <button class="tr-btn" data-tr="2" onclick="mostraTraiettoria(2)">India</button>
+      <button class="tr-btn" data-tr="3" onclick="mostraTraiettoria(3)">Nigeria</button>
+      <button class="tr-btn" data-tr="4" onclick="mostraTraiettoria(4)">RD Congo</button>
+      <button class="tr-btn" data-tr="5" onclick="mostraTraiettoria(5)">Italia</button>
+    </div>
+    <svg class="tr-svg" id="trSvg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="box-testo">
+      <div class="tr-titolo" id="trTitolo"></div>
+      <div id="trTesto"></div>
+    </div>
+    <div class="applet-fonte">
+      I punti segnati sul grafico sono valori pubblicati (scenario mediano); i segmenti che li uniscono sono un'interpolazione grafica, non dati anno per anno. Fonte per mondo, Cina, India, Nigeria e RD Congo: Nazioni Unite, <em>World Population Prospects 2024: Summary of Results</em>, 11 luglio 2024, e Pew Research Center, <em>5 facts about how the world's population is expected to change by 2100</em>, 9 luglio 2025. Fonte per l'Italia: Istat, <em>Previsioni della popolazione residente e delle famiglie</em>, base 1° gennaio 2024, scenario mediano.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il totale mondiale nasconde movimenti opposti e violentissimi. La Cina è prevista perdere 786 milioni di persone entro il 2100 — il calo più grande mai proiettato per un singolo paese —, mentre nove paesi tra cui Angola, Repubblica Centrafricana, Niger, Somalia e RD Congo raddoppieranno tra il 2024 e il 2054. «In alcuni paesi il tasso di natalità è oggi persino più basso di quanto previsto in precedenza», ha commentato Li Junhua, vicesegretario generale dell'ONU per gli affari economici e sociali, presentando il rapporto.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Quattro previsioni, quattro finali diversi</div>
+      <div class="applet-istruzione">Accendi e spegni le curve: sono tutte previsioni serie e recenti, e nel 2100 non vanno d'accordo su oltre due miliardi di persone.</div>
+    </div>
+    <div class="sc-wrap">
+      <button class="sc-btn" id="scBtn0" style="border-left-color:#7f8c8d" onclick="toggleScenario(0)">ONU 2019</button>
+      <button class="sc-btn" id="scBtn1" style="border-left-color:#95a5a6" onclick="toggleScenario(1)">ONU 2022</button>
+      <button class="sc-btn" id="scBtn2" style="border-left-color:#c0392b" onclick="toggleScenario(2)">ONU 2024</button>
+      <button class="sc-btn" id="scBtn3" style="border-left-color:#2980b9" onclick="toggleScenario(3)">Lancet 2020</button>
+    </div>
+    <div class="sc-canvas-wrap"><canvas id="scChart"></canvas></div>
+    <div class="sc-divario" id="scDivario"></div>
+    <div class="applet-fonte">
+      Curve tracciate sui valori chiave dichiarati da ciascuna previsione (i tratti tra un valore e l'altro sono interpolati). ONU 2019 e ONU 2022: revisioni del <em>World Population Prospects</em>, riportate in Hannah Ritchie, <em>The UN has made population projections for more than 50 years — how accurate have they been?</em>, Our World in Data, 20 giugno 2023. ONU 2024: <em>World Population Prospects 2024: Summary of Results</em>. Lancet 2020: Stein Emil Vollset et al., <em>Fertility, mortality, migration, and population scenarios for 195 countries and territories from 2017 to 2100</em>, «The Lancet», vol. 396, n. 10258, 2020, pp. 1285-1306 (picco di 9,73 miliardi nel 2064, 8,79 miliardi nel 2100).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La previsione più bassa non viene da un gruppo marginale: è dell'Institute for Health Metrics and Evaluation di Seattle, pubblicata su «The Lancet» nel 2020 da Stein Emil Vollset e colleghi. Scommette su un crollo della fecondità più rapido, trainato da istruzione femminile e accesso alla contraccezione, e arriva a 8,79 miliardi nel 2100: quasi un miliardo e mezzo meno dell'ONU. Nessuno dei due può essere verificato prima di ottant'anni.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">Il curriculum dei demografi</div>
+      <div class="applet-istruzione">Clicca una tappa per vedere che cosa fu previsto allora e che cosa successe davvero: è l'unico modo per sapere quanto fidarsi.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonte: Hannah Ritchie, <em>The UN has made population projections for more than 50 years — how accurate have they been?</em>, Our World in Data, 20 giugno 2023 (confronti fra revisioni ONU e stime attuali); Nico Keilman, <em>Data quality and accuracy of United Nations population projections, 1950-95</em>, «Population Studies», 55/2, 2001, pp. 149-164; Nazioni Unite, <em>World Population Prospects 2024: Summary of Results</em>, 11 luglio 2024; GBD 2021 Fertility and Forecasting Collaborators, <em>Global fertility in 204 countries and territories, 1950-2021, with forecasts to 2100</em>, «The Lancet», vol. 403, 18 maggio 2024, pp. 2057-2099.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Su una cosa però tutte le previsioni concordano, ed è quella che cambierà davvero la vita quotidiana: l'invecchiamento. Entro la fine degli anni Settanta di questo secolo gli over 65 supereranno i minori di 18 anni, e già a metà degli anni Trenta le persone oltre gli 80 saranno più numerose dei neonati sotto l'anno. Nel 2024 la speranza di vita mondiale alla nascita è risalita a 73,3 anni, dopo essere scesa a 70,9 durante la pandemia.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>La domanda giusta per i prossimi cento anni non è quanti saremo, ma quanti anni avremo: non è il secolo dell'esplosione demografica, è il primo secolo in cui l'umanità intera invecchia insieme.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>United Nations, Department of Economic and Social Affairs, Population Division, <em>World Population Prospects 2024: Summary of Results</em>, New York, 11 luglio 2024 — <a href="https://population.un.org/wpp/assets/Files/WPP2024_Summary-of-Results.pdf">population.un.org</a></li>
+      <li>UN DESA, <em>UN projects world population to peak within this century</em>, comunicato dell'11 luglio 2024, con le dichiarazioni di Li Junhua, vicesegretario generale per gli affari economici e sociali — <a href="https://www.un.org/en/UN-projects-world-population-to-peak-within-this-century">un.org</a></li>
+      <li>Stein Emil Vollset et al., <em>Fertility, mortality, migration, and population scenarios for 195 countries and territories from 2017 to 2100: a forecasting analysis for the Global Burden of Disease Study</em>, «The Lancet», vol. 396, n. 10258, 2020, pp. 1285-1306</li>
+      <li>GBD 2021 Fertility and Forecasting Collaborators, <em>Global fertility in 204 countries and territories, 1950-2021, with forecasts to 2100: a comprehensive demographic analysis for the Global Burden of Disease Study 2021</em>, «The Lancet», vol. 403, 18 maggio 2024, pp. 2057-2099</li>
+      <li>Hannah Ritchie, <em>The UN has made population projections for more than 50 years — how accurate have they been?</em>, Our World in Data, 20 giugno 2023 — <a href="https://ourworldindata.org/population-projections">ourworldindata.org</a></li>
+      <li>Nico Keilman, <em>Data quality and accuracy of United Nations population projections, 1950-95</em>, «Population Studies», 55/2, 2001, pp. 149-164</li>
+      <li>Istat, <em>Previsioni della popolazione residente e delle famiglie</em>, base 1° gennaio 2024, Roma 2025 — <a href="https://www.istat.it/en/tag/population-projections/">istat.it</a></li>
+      <li>Pew Research Center, <em>5 facts about how the world's population is expected to change by 2100</em>, 9 luglio 2025 — <a href="https://www.pewresearch.org/short-reads/2025/07/09/5-facts-about-how-the-worlds-population-is-expected-to-change-by-2100/">pewresearch.org</a></li>
+      <li>Hannah Ritchie e Max Roser, <em>How many people die and how many are born each year?</em>, Our World in Data — <a href="https://ourworldindata.org/births-and-deaths">ourworldindata.org</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════ APPLET 01 · CONTATORE ══════ */
+var NASC_SEC = 132000000 / 31557600;
+var MORT_SEC = 63000000 / 31557600;
+var tApertura = Date.now();
+
+function fmt(n) {
+  return Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+function aggiornaContatore() {
+  var s = (Date.now() - tApertura) / 1000;
+  document.getElementById('cntNascite').textContent = fmt(s * NASC_SEC);
+  document.getElementById('cntMorti').textContent = fmt(s * MORT_SEC);
+  document.getElementById('cntSaldo').textContent = '+' + fmt(s * (NASC_SEC - MORT_SEC));
+}
+setInterval(aggiornaContatore, 200);
+aggiornaContatore();
+
+/* ══════ APPLET 02 · MACCHINA DEMOGRAFICA ══════ */
+/* Struttura per età del mondo nel 2024, in milioni, per classi quinquennali
+   (arrotondata da World Population Prospects 2024). */
+var BASE = [655, 670, 662, 640, 630, 620, 620, 585, 540, 480, 440, 390, 330, 265, 200, 135, 80, 60];
+var SOPRAV = [0.993, 0.996, 0.996, 0.995, 0.994, 0.993, 0.991, 0.988, 0.983, 0.975, 0.964, 0.948, 0.925, 0.888, 0.830, 0.740, 0.600, 0.30];
+var ETICHETTE = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'];
+var TFR_OPZIONI = [2.25, 2.1, 1.2];
+var tfrScelto = 0, coorti = BASE.slice(), anno = 2025, totIniziale = 8.00, massimo = 8.00, annoMassimo = 2025;
+
+function totale(p) { var s = 0; for (var i = 0; i < p.length; i++) s += p[i]; return s / 1000; }
+
+function passo(p, tfr) {
+  var F = 0;
+  for (var i = 3; i < 10; i++) F += p[i] / 2;      /* donne 15-49: metà delle coorti */
+  var nascite = F * tfr / 7;                        /* nascite nel quinquennio */
+  var n = [];
+  n[0] = nascite * 0.985;
+  for (var k = 1; k < 17; k++) n[k] = p[k - 1] * SOPRAV[k - 1];
+  n[17] = p[16] * SOPRAV[16] + p[17] * SOPRAV[17];
+  return n;
+}
+
+function disegnaPiramide() {
+  var svg = document.getElementById('pirSvg');
+  var W = 330, H = 300, cx = 165, alt = 14, scala = 105 / 700;
+  var out = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#faf8f4"></rect>';
+  for (var i = 0; i < coorti.length; i++) {
+    var meta = Math.max(coorti[i] / 2 * scala, 0.5);
+    var y = H - 16 - (i + 1) * alt;
+    var fertile = (i >= 3 && i <= 9);
+    var col = fertile ? '#c0392b' : '#7f8c8d';
+    out += '<rect x="' + (cx - meta) + '" y="' + y + '" width="' + (meta * 2) + '" height="' + (alt - 2.5) + '" rx="1" fill="' + col + '" opacity="' + (fertile ? 0.85 : 0.6) + '"></rect>';
+    if (i % 2 === 0) out += '<text x="' + cx + '" y="' + (y + alt - 5) + '" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#fdfcf9">' + ETICHETTE[i] + '</text>';
+  }
+  out += '<text x="' + cx + '" y="' + (H - 4) + '" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#7f8c8d">larghezza = persone in quella fascia d\'età</text>';
+  svg.innerHTML = out;
+}
+
+function aggiornaPannello() {
+  var t = totale(coorti);
+  document.getElementById('pirAnno').textContent = anno;
+  document.getElementById('pirTot').textContent = t.toFixed(2).replace('.', ',') + ' mld';
+  var d = t - totIniziale;
+  document.getElementById('pirDelta').textContent = (anno === 2025) ? 'punto di partenza'
+    : (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(2).replace('.', ',') + ' mld dal 2025';
+  if (t > massimo) { massimo = t; annoMassimo = anno; }
+}
+
+function aggiornaEsito() {
+  var t = totale(coorti);
+  var e = document.getElementById('pirEsito');
+  if (anno === 2025) {
+    e.innerHTML = 'Anche azzerando subito la crescita della fecondità, la fascia rossa resta larghissima ancora per decenni: è il «momento d\'inerzia» della popolazione.';
+  } else if (tfrScelto === 1) {
+    e.innerHTML = 'Con 2,1 figli per donna <strong>imposti da oggi</strong> il mondo cresce comunque: nel ' + anno + ' siamo a ' + t.toFixed(2).replace('.', ',') + ' miliardi. Il picco del modello arriva solo intorno al 2080.';
+  } else if (tfrScelto === 2) {
+    e.innerHTML = 'Con 1,2 figli per donna — il livello dell\'Italia — la discesa comincia, ma non subito: nel ' + anno + ' il modello segna ' + t.toFixed(2).replace('.', ',') + ' miliardi.';
+  } else {
+    e.innerHTML = 'Alla fecondità di oggi (2,25 figli per donna) nel ' + anno + ' il modello segna ' + t.toFixed(2).replace('.', ',') + ' miliardi, e continua a salire.';
+  }
+}
+
+function scegliTfr(i) {
+  tfrScelto = i;
+  var b = document.querySelectorAll('.pir-btn');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  aggiornaEsito();
+}
+
+function avanza() {
+  if (anno >= 2125) return;
+  coorti = passo(coorti, TFR_OPZIONI[tfrScelto]);
+  anno += 5;
+  disegnaPiramide();
+  aggiornaPannello();
+  aggiornaEsito();
+  document.getElementById('btnAvanza').disabled = (anno >= 2125);
+}
+
+function riavvia() {
+  coorti = BASE.slice();
+  anno = 2025;
+  massimo = 8.00;
+  document.getElementById('btnAvanza').disabled = false;
+  disegnaPiramide();
+  aggiornaPannello();
+  aggiornaEsito();
+}
+
+/* ══════ APPLET 03 · TRAIETTORIE ══════ */
+var traiettorie = [
+  { nome: 'Mondo',
+    punti: [[2024, 8.2], [2050, 9.7], [2085, 10.3], [2100, 10.2]],
+    picco: 2, unita: 'mld',
+    tit: 'Il picco è a metà degli anni Ottanta',
+    txt: "Dagli 8,2 miliardi del 2024 ai 10,3 di metà anni Ottanta, poi la discesa a 10,2 nel 2100. Rispetto a quanto l'ONU stimava dieci anni prima, il totale del 2100 è più basso del 6%: <strong>700 milioni di persone in meno</strong>." },
+  { nome: 'Cina',
+    punti: [[2021, 1.43], [2024, 1.42], [2060, 1.15], [2100, 0.633]],
+    picco: 0, unita: 'mld',
+    tit: 'Il picco è già passato: era il 2021',
+    txt: "La Cina ha raggiunto il massimo nel 2021 e da allora scende. Entro il 2100 è prevista a <strong>633 milioni</strong> di abitanti: una perdita di 786 milioni di persone, il calo più grande mai proiettato per un singolo paese. Quasi un quinto dei paesi del mondo — Cina, Italia, Corea del Sud e Spagna comprese — ha oggi una fecondità «ultra-bassa», sotto 1,4 figli per donna." },
+  { nome: 'India',
+    punti: [[2024, 1.45], [2062, 1.70], [2100, 1.50]],
+    picco: 1, unita: 'mld',
+    tit: 'Il picco arriva nel 2062',
+    txt: "Il paese più popoloso del mondo dal 2023 continua a crescere fino a <strong>1,7 miliardi nel 2062</strong>, poi ripiega verso 1,5 miliardi a fine secolo. La sua fecondità è già scesa sotto la soglia di sostituzione: a spingere la crescita resta solo la struttura per età." },
+  { nome: 'Nigeria',
+    punti: [[2024, 0.233], [2060, 0.36], [2100, 0.477]],
+    picco: 2, unita: 'mld',
+    tit: 'Cresce ancora a fine secolo',
+    txt: "Da 233 milioni di abitanti nel 2024 a <strong>477 milioni nel 2100</strong>: più del doppio, e senza aver raggiunto il picco. A quel punto la Nigeria sarà il quarto paese più popoloso del pianeta." },
+  { nome: 'RD Congo',
+    punti: [[2024, 0.112], [2054, 0.224], [2100, 0.40]],
+    picco: 2, unita: 'mld',
+    tit: 'Raddoppia in trent\'anni',
+    txt: "È uno dei nove paesi — con Angola, Repubblica Centrafricana, Niger e Somalia — per cui l'ONU prevede il <strong>raddoppio della popolazione tra il 2024 e il 2054</strong>. Il valore per il 2100 qui è indicativo: è la parte di proiezione con l'incertezza più larga di tutte." },
+  { nome: 'Italia',
+    punti: [[2024, 0.059], [2050, 0.0547], [2080, 0.0458]],
+    picco: 0, unita: 'mld',
+    tit: 'Meno 13 milioni in 56 anni',
+    txt: "Lo scenario mediano dell'Istat porta l'Italia da 59 milioni di residenti nel 2024 a <strong>54,7 milioni nel 2050</strong> e 45,8 milioni nel 2080: 13,1 milioni in meno rispetto alla base di partenza, come se sparissero insieme Lombardia e Lazio." }
+];
+
+function mostraTraiettoria(i) {
+  var b = document.querySelectorAll('.tr-btn');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  var t = traiettorie[i], p = t.punti;
+  var W = 400, H = 200, ml = 46, mr = 14, mt = 22, mb = 30;
+  var xs = p.map(function (q) { return q[0]; }), ys = p.map(function (q) { return q[1]; });
+  var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+  var ymax = Math.max.apply(null, ys) * 1.18, ymin = 0;
+  function X(v) { return ml + (v - x0) / (x1 - x0) * (W - ml - mr); }
+  function Y(v) { return H - mb - (v - ymin) / (ymax - ymin) * (H - mt - mb); }
+  function etich(v) { return v >= 1 ? v.toFixed(2).replace('.', ',') + ' mld' : Math.round(v * 1000) + ' mln'; }
+
+  var s = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#faf8f4"></rect>';
+  s += '<line x1="' + ml + '" y1="' + (H - mb) + '" x2="' + (W - mr) + '" y2="' + (H - mb) + '" stroke="#e8e4de" stroke-width="1"></line>';
+  var d = '';
+  for (var j = 0; j < p.length; j++) d += (j ? ' L ' : 'M ') + X(p[j][0]).toFixed(1) + ' ' + Y(p[j][1]).toFixed(1);
+  s += '<path d="' + d + '" fill="none" stroke="#7f8c8d" stroke-width="2.5" stroke-linejoin="round"></path>';
+  for (var j2 = 0; j2 < p.length; j2++) {
+    var isP = (j2 === t.picco);
+    s += '<circle cx="' + X(p[j2][0]).toFixed(1) + '" cy="' + Y(p[j2][1]).toFixed(1) + '" r="' + (isP ? 6 : 4) + '" fill="' + (isP ? '#c0392b' : '#fdfcf9') + '" stroke="' + (isP ? '#c0392b' : '#7f8c8d') + '" stroke-width="2"></circle>';
+    var dy = (j2 === 0) ? -13 : -13;
+    s += '<text x="' + X(p[j2][0]).toFixed(1) + '" y="' + (Y(p[j2][1]) + dy).toFixed(1) + '" text-anchor="' + (j2 === p.length - 1 ? 'end' : (j2 === 0 ? 'start' : 'middle')) + '" font-family="sans-serif" font-size="10" font-weight="600" fill="' + (isP ? '#c0392b' : '#1c1c2e') + '">' + etich(p[j2][1]) + '</text>';
+    s += '<text x="' + X(p[j2][0]).toFixed(1) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#7f8c8d">' + p[j2][0] + '</text>';
+  }
+  s += '<text x="' + X(p[t.picco][0]).toFixed(1) + '" y="' + (Y(p[t.picco][1]) - 26).toFixed(1) + '" text-anchor="middle" font-family="sans-serif" font-size="9.5" font-weight="600" fill="#c0392b">PICCO</text>';
+  document.getElementById('trSvg').innerHTML = s;
+  document.getElementById('trTitolo').textContent = t.tit;
+  document.getElementById('trTesto').innerHTML = t.txt;
+}
+
+/* ══════ APPLET 04 · SCENARI ══════ */
+var ANNI = [2024, 2030, 2040, 2050, 2060, 2064, 2070, 2080, 2085, 2090, 2100];
+function interp(punti) {
+  return ANNI.map(function (a) {
+    for (var i = 0; i < punti.length - 1; i++) {
+      if (a >= punti[i][0] && a <= punti[i + 1][0]) {
+        var f = (a - punti[i][0]) / (punti[i + 1][0] - punti[i][0]);
+        return +(punti[i][1] + f * (punti[i + 1][1] - punti[i][1])).toFixed(3);
+      }
+    }
+    return null;
+  });
+}
+var scenari = [
+  { nome: 'ONU 2019', colore: '#7f8c8d', punti: [[2024, 7.95], [2050, 9.7], [2100, 10.9]] },
+  { nome: 'ONU 2022', colore: '#95a5a6', punti: [[2024, 8.0], [2050, 9.7], [2086, 10.4], [2100, 10.35]] },
+  { nome: 'ONU 2024', colore: '#c0392b', punti: [[2024, 8.2], [2050, 9.7], [2085, 10.3], [2100, 10.2]] },
+  { nome: 'Lancet 2020', colore: '#2980b9', punti: [[2024, 8.0], [2064, 9.73], [2100, 8.79]] }
+];
+var visibili = [true, true, true, true];
+var grafico;
+
+function creaGrafico() {
+  var ctx = document.getElementById('scChart').getContext('2d');
+  grafico = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ANNI,
+      datasets: scenari.map(function (s) {
+        return {
+          label: s.nome, data: interp(s.punti), borderColor: s.colore,
+          backgroundColor: s.colore, borderWidth: s.nome === 'ONU 2024' ? 3 : 2,
+          pointRadius: 0, pointHoverRadius: 4, tension: 0.3
+        };
+      })
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (c) { return c.dataset.label + ': ' + c.parsed.y.toFixed(2).replace('.', ',') + ' mld'; }
+          }
+        }
+      },
+      scales: {
+        y: { min: 7.5, max: 11.5, title: { display: true, text: 'miliardi di persone' }, ticks: { callback: function (v) { return v.toString().replace('.', ','); } } },
+        x: { title: { display: true, text: 'anno' } }
+      }
+    }
+  });
+  aggiornaDivario();
+}
+
+function toggleScenario(i) {
+  visibili[i] = !visibili[i];
+  grafico.setDatasetVisibility(i, visibili[i]);
+  grafico.update();
+  document.getElementById('scBtn' + i).classList.toggle('spento', !visibili[i]);
+  aggiornaDivario();
+}
+
+function aggiornaDivario() {
+  var vals = [];
+  for (var i = 0; i < scenari.length; i++) if (visibili[i]) vals.push(scenari[i].punti[scenari[i].punti.length - 1][1]);
+  var el = document.getElementById('scDivario');
+  if (vals.length < 2) { el.innerHTML = 'Accendi almeno due curve per vedere il divario nel 2100.'; return; }
+  var g = Math.max.apply(null, vals) - Math.min.apply(null, vals);
+  el.innerHTML = 'Divario nel 2100 tra le curve accese: <strong>' + g.toFixed(2).replace('.', ',') + ' miliardi di persone</strong>' + (g > 2 ? ' — più di tutta l\'umanità del 1930.' : '.');
+}
+
+/* ══════ APPLET 05 · LINEA DEL TEMPO ══════ */
+var tappe = [
+  { anno: '1968', tit: 'Il colpo perfetto',
+    txt: "La revisione ONU del 1968 prevedeva che nel 1980 saremmo stati 4,46 miliardi. Il dato reale fu 4,44: uno scarto di mezzo punto percentuale a dodici anni di distanza. Le previsioni demografiche a breve termine sono fra le più affidabili che esistano nelle scienze sociali." },
+  { anno: '1973', tit: 'L\'errore più grande',
+    txt: "La revisione del 1973 è quella che ha visto più alto di tutte: 6,49 miliardi di persone nel 2000. Il conteggio reale si fermò a 6,09 miliardi. <strong>410 milioni di persone di troppo</strong>, il 6% in eccesso — l'errore più grande di tutta la serie storica dal 1968 in poi." },
+  { anno: '2001', tit: 'Gli errori che si annullano',
+    txt: "Nico Keilman mostra che l'accuratezza del totale mondiale è in parte un'illusione ottica: gli errori regionali si compensano fra loro. In Europa l'ONU ha ripetutamente sovrastimato il numero futuro di bambini e sottostimato quello degli anziani.",
+    cit: "L'errore più insidioso non riguarda le ipotesi sul futuro, ma i dati di partenza: in molti paesi africani, asiatici e latinoamericani i censimenti erano incompleti, e una popolazione sbagliata all'anno zero produce una proiezione sbagliata anche con ipotesi perfette." },
+  { anno: '2019', tit: 'Nessun picco in vista',
+    txt: "La revisione del 2019 prevedeva 10,9 miliardi di persone nel 2100, <strong>ancora in crescita</strong> all'inizio del XXII secolo. La probabilità che la popolazione mondiale smettesse di crescere entro il secolo era stimata attorno al 30%." },
+  { anno: '2022', tit: 'Compare il picco',
+    txt: "Tre anni dopo lo scenario cambia: la revisione del 2022 colloca il massimo a circa 10,4 miliardi a metà degli anni Ottanta del secolo. È la prima volta che una revisione ONU mette un tetto alla curva. Il 15 novembre 2022 l'ONU celebra simbolicamente gli 8 miliardi di abitanti." },
+  { anno: '2024', tit: 'Il picco si avvicina e si abbassa',
+    txt: "L'ultima revisione porta il massimo a 10,3 miliardi e il 2100 a 10,2: il 6% in meno di quanto si prevedeva dieci anni prima. La probabilità che il picco arrivi entro il secolo sale <strong>dal 30% all'80%</strong>.",
+    cit: "«Il picco anticipato e più basso è un segnale di speranza. Potrebbe significare una minore pressione ambientale dovuta a consumi complessivi inferiori» — Li Junhua, vicesegretario generale ONU, 11 luglio 2024." },
+  { anno: '2024·b', tit: 'La conferma dalla medicina',
+    txt: "Sul «Lancet», i ricercatori del Global Burden of Disease calcolano che già nel 2050 <strong>155 paesi su 204</strong> avranno una fecondità insufficiente a mantenere costante la propria popolazione, e nel 2100 saranno 198 su 204: sopra la soglia resteranno appena sei paesi, quasi tutti nell'Africa subsahariana." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno.replace('·b', '') + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ── avvio ── */
+disegnaPiramide();
+aggiornaPannello();
+mostraTraiettoria(0);
+creaGrafico();
+costruisciTimeline();
+</script>
+</body>
+</html>
