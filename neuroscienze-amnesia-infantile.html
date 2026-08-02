@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché non ricordiamo nulla dei primi 2-3 anni di vita?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #9b59b6;
+    --accent-light: #f3e8f9;
+    --accent-mid: #c39bd3;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · GIRO DENTATO ── */
+  .gd-controls { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .gd-btn, .exp-btn {
+    flex: 1;
+    min-width: 132px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .gd-btn.attivo, .exp-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .gd-btn.primario { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .gd-btn:disabled { opacity: 0.45; cursor: default; }
+
+  .gd-scena { background: #faf6fb; border: 1px solid var(--border); border-radius: 6px; margin: 14px 0 12px; overflow: hidden; }
+  .gd-svg { display: block; width: 100%; height: auto; }
+
+  .gd-lettura { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+  .gd-lettura strong { color: var(--text); }
+  .gd-lettura span { color: var(--accent); font-weight: 700; }
+  .gd-track { background: #f3f1ec; border-radius: 3px; height: 16px; overflow: hidden; margin-bottom: 12px; }
+  .gd-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.35s ease; }
+  .gd-esito { font-size: 14px; text-align: center; color: var(--text); min-height: 22px; padding-bottom: 4px; }
+
+  /* ── APPLET 2 · ESPERIMENTO ── */
+  .exp-riga { margin-bottom: 12px; }
+  .exp-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .exp-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+  .exp-esito { display: flex; align-items: baseline; justify-content: space-between; font-size: 13px; margin: 16px 0 5px; }
+  .exp-esito strong { color: var(--text); }
+  .exp-esito span { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--accent); }
+  .exp-track { background: #f3f1ec; border-radius: 3px; height: 18px; overflow: hidden; margin-bottom: 14px; }
+  .exp-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+
+  /* ── APPLET 3 · PRIMO RICORDO ── */
+  .pr-slider { width: 100%; margin: 4px 0 10px; accent-color: var(--accent); }
+  .pr-valore { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--accent); text-align: center; margin-bottom: 4px; }
+  .pr-svg { display: block; width: 100%; height: auto; background: #faf6fb; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 14px; }
+
+  /* ── APPLET 4 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto;
+    min-width: 86px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    padding: 0;
+    position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1;
+    transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .gd-btn, .exp-btn { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Neuroscienze</div>
+    <h1>Perché non ricordiamo nulla dei primi 2-3 anni di vita?</h1>
+    <div class="risposta-box">
+      <p>Non perché il cervello dei neonati non registri: nel 2025 una risonanza magnetica su bambini svegli ha mostrato che già a un anno l'ippocampo codifica ricordi di singoli episodi. Il problema viene dopo: nell'ippocampo che cresce, migliaia di neuroni nuovi riscrivono di continuo i circuiti, e la traccia — mai messa in parole — resta lì ma non si lascia più ritrovare.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>È il buco più grande della nostra biografia: nessuno ricorda di aver imparato a camminare o a dire la prima parola, cioè le imprese più difficili della propria vita. Freud gli diede un nome nel 1905 — «amnesia infantile», quella «singolare amnesia che nella maggior parte delle persone, anche se non in tutte, nasconde i primissimi inizi della loro infanzia» — ma la spiegazione che ne diede, la rimozione di contenuti scomodi, è l'unica parte che la ricerca ha buttato via.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il circuito che si riscrive sotto il ricordo</div>
+      <div class="applet-istruzione">Scegli un cervello, registra un ricordo e guarda cosa succede mentre nel giro dentato arrivano neuroni nuovi.</div>
+    </div>
+    <div class="gd-controls">
+      <button class="gd-btn attivo" id="btnInfante" onclick="setEta('infante')">Cervello a 1 anno</button>
+      <button class="gd-btn" id="btnAdulto" onclick="setEta('adulto')">Cervello adulto</button>
+    </div>
+    <div class="gd-controls">
+      <button class="gd-btn primario" id="btnRegistra" onclick="registraRicordo()">Registra un ricordo e fai passare i mesi</button>
+    </div>
+    <div class="gd-scena">
+      <svg class="gd-svg" id="gdSvg" viewBox="0 0 340 210" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="340" height="210" fill="#faf6fb"></rect>
+        <text x="12" y="20" font-family="sans-serif" font-size="11" fill="#9b8aa3">giro dentato (schema)</text>
+        <g id="gdVecchi"></g>
+        <g id="gdLink"></g>
+        <g id="gdTraccia"></g>
+        <g id="gdNuovi"></g>
+      </svg>
+    </div>
+    <div class="gd-lettura"><strong id="gdMesi">Mesi trascorsi: 0</strong><span id="gdPerc">traccia recuperabile 100%</span></div>
+    <div class="gd-track"><div class="gd-fill" id="gdFill" style="width:100%"></div></div>
+    <div class="gd-esito" id="gdEsito">I sei nodi viola sono le cellule che hanno registrato l'episodio. I pallini verdi sono neuroni nati dopo.</div>
+    <div class="applet-fonte">
+      Schema dell'ipotesi neurogenica di Sheena Josselyn e Paul Frankland, <em>Infantile amnesia: a neurogenic hypothesis</em>, «Learning &amp; Memory» 19(9), 2012: l'aggiunta continua di nuovi granuli al giro dentato rimodella i circuiti in cui è depositata la traccia. Numero di neuroni, ritmo e percentuali qui sono illustrativi del meccanismo, non misure.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>L'ipotesi è che a cancellare non sia il tempo ma la crescita: nel giro dentato dell'ippocampo nascono neuroni nuovi per tutta la vita, ma nei primi mesi il ritmo è altissimo, e ogni cellula che si inserisce nel circuito ne ricabla le sinapsi. Katherine Akers e colleghi lo hanno verificato al contrario su topi adulti (<em>Science</em>, 2014): bastava metterli su una ruota da corsa — che moltiplica la neurogenesi — dopo l'apprendimento perché il ricordo, altrimenti stabile, svanisse.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Rifai l'esperimento di Akers (2014)</div>
+      <div class="applet-istruzione">Combina una specie e un intervento sulla neurogenesi, e guarda se il ricordo d'infanzia sopravvive.</div>
+    </div>
+    <div class="exp-riga">
+      <div class="exp-label">Specie</div>
+      <div class="exp-wrap">
+        <button class="exp-btn attivo" data-sp="topo" onclick="setSpecie('topo')">Topo (nasce inetto)</button>
+        <button class="exp-btn" data-sp="degu" onclick="setSpecie('degu')">Degu (nasce già pronto)</button>
+      </div>
+    </div>
+    <div class="exp-riga">
+      <div class="exp-label">Intervento dopo l'apprendimento</div>
+      <div class="exp-wrap">
+        <button class="exp-btn attivo" data-int="nessuno" onclick="setIntervento('nessuno')">Nessuno</button>
+        <button class="exp-btn" data-int="meno" onclick="setIntervento('meno')">Frenare la neurogenesi</button>
+        <button class="exp-btn" data-int="piu" onclick="setIntervento('piu')">Aumentarla (ruota da corsa)</button>
+      </div>
+    </div>
+    <div class="exp-esito"><strong>Esito a distanza di settimane</strong><span id="expEsito">Dimentica</span></div>
+    <div class="exp-track"><div class="exp-fill" id="expFill" style="width:12%"></div></div>
+    <div class="box-testo" id="expTesto">Un topo addestrato da cucciolo, rimesso nello stesso ambiente settimane dopo, si comporta come se non fosse mai successo niente: è l'amnesia infantile in laboratorio, la stessa che gli sperimentatori usano come punto di partenza.</div>
+    <div class="applet-fonte">
+      Fonte: Katherine G. Akers, Alonso Martinez-Canabal, Leonardo Restivo <em>et al.</em>, <em>Hippocampal neurogenesis regulates forgetting during adulthood and infancy</em>, «Science» 344(6184), 9 maggio 2014, pp. 598-602. Nelle specie precoci (degu, cavia) i granuli del giro dentato si formano quasi tutti prima della nascita e i cuccioli non mostrano oblio infantile; aumentando la neurogenesi, l'oblio compare. La barra è una resa qualitativa dell'esito riportato, non i valori di congelamento misurati.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Ma «dimenticato» non vuol dire «cancellato». Axel Guskjolen, nel 2018, ha marcato le cellule del giro dentato attive mentre topi cuccioli imparavano a temere un ambiente: novanta giorni dopo gli animali non reagivano più a quel luogo, però bastava riaccendere con la luce quelle stesse cellule perché la paura tornasse, intatta. Il ricordo era rimasto in archivio: era saltata la chiave di ricerca.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Dove cade il tuo primo ricordo</div>
+      <div class="applet-istruzione">Sposta il cursore sull'età del tuo ricordo più antico e confrontalo con quello che gli studi trovano davvero.</div>
+    </div>
+    <div class="pr-valore" id="prValore">3 anni e 2 mesi</div>
+    <input class="pr-slider" id="prSlider" type="range" min="6" max="84" value="38" step="1" oninput="aggiornaPrimoRicordo(this.value)">
+    <svg class="pr-svg" id="prSvg" viewBox="0 0 340 150" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="340" height="150" fill="#faf6fb"></rect>
+      <rect x="20" y="96" width="86" height="14" fill="#efe1f5"></rect>
+      <line x1="20" y1="110" x2="320" y2="110" stroke="#d8d2cc" stroke-width="2"></line>
+      <g id="prTacche"></g>
+      <g id="prMarker"></g>
+      <text x="20" y="132" font-family="sans-serif" font-size="9.5" fill="#9b8aa3">zona in cui i ricordi dichiarati sono per lo più ricostruiti</text>
+      <g id="prCursore">
+        <line id="prLinea" x1="140" y1="34" x2="140" y2="110" stroke="#9b59b6" stroke-width="2"></line>
+        <circle id="prPallino" cx="140" cy="110" r="6" fill="#9b59b6"></circle>
+        <text id="prEtichetta" x="140" y="28" font-family="sans-serif" font-size="11" font-weight="bold" fill="#9b59b6" text-anchor="middle">tu</text>
+      </g>
+    </svg>
+    <div class="box-testo" id="prTesto"></div>
+    <div class="applet-fonte">
+      Fonti: Shazia Akhtar, Lucy V. Justice, Catriona M. Morrison, Martin A. Conway, <em>Fictional First Memories</em>, «Psychological Science» 29(10), 2018, pp. 1612-1619 (6.313 primi ricordi datati, età media di codifica 3,15 anni; quasi 4 su 10 collocati a 2 anni o meno e giudicati dagli autori probabilmente ricostruiti — conclusione contestata da Patricia J. Bauer, Lynne Baker-Ward, Peter Krøjgaard, Carole Peterson e Qi Wang nello stesso giornale, 2019). Medie culturali: Shelley MacDonald, Kimberly Uesiliana, Harlene Hayne, <em>Cross-cultural and gender differences in childhood amnesia</em>, «Memory» 8(6), 2000, pp. 365-376.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il confine, del resto, non è biologico e basta: si sposta di anni a seconda di dove si nasce. E quello che sposta è il racconto — le madri Māori, nello studio di Elaine Reese e Harlene Hayne del 2008, raccontano ai figli la loro nascita con una ricchezza di dettagli che nelle famiglie pākehā non c'è, e proprio quella vividezza correla con la precocità dei primi ricordi dei bambini.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Centotrenta anni per capire un buco di memoria</div>
+      <div class="applet-istruzione">Clicca una tappa: ogni volta la domanda cambia forma — prima «perché rimuoviamo?», poi «perché non registriamo?», oggi «perché non ritroviamo?».</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonti delle singole tappe indicate nell'elenco in fondo alla pagina. Per l'inchiesta dei coniugi Henri: Serge Nicolas e Jacy L. Young, <em>Victor and Catherine Henri on earliest recollections</em>, «L'Année psychologique» 113(3), 2013, pp. 349-374.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Resta un ultimo problema: che cosa stiamo ricordando davvero, quando crediamo di ricordare. Jean Piaget raccontò per anni di essere stato quasi rapito a due anni sugli Champs-Élysées, con la bambinaia che si prendeva graffi per difenderlo — finché la donna, quando lui aveva quindici anni, scrisse ai suoi genitori confessando di aver inventato tutto per la ricompensa. La scena non era mai esistita, eppure Piaget la «vedeva».</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Quei tre anni non sono una pagina bianca: sono la pagina su cui era scritto tutto il resto, e che il cervello ha continuato a riscrivere finché la prima stesura non è più stata leggibile.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Tristan S. Yates, Jared Fel, Dawoon Choi, Cameron T. Ellis, Nicholas B. Turk-Browne, <em>Hippocampal encoding of memories in human infants</em>, «Science» 387(6740), 20 marzo 2025 — <a href="https://www.science.org/doi/10.1126/science.adt7570">science.org</a></li>
+      <li>Katherine G. Akers <em>et al.</em>, <em>Hippocampal neurogenesis regulates forgetting during adulthood and infancy</em>, «Science» 344(6184), 9 maggio 2014, pp. 598-602 — <a href="https://pubmed.ncbi.nlm.nih.gov/24812394/">pubmed</a></li>
+      <li>Sheena A. Josselyn, Paul W. Frankland, <em>Infantile amnesia: a neurogenic hypothesis</em>, «Learning &amp; Memory» 19(9), 2012, pp. 423-433 — <a href="https://learnmem.cshlp.org/content/19/9/423.full.pdf">learnmem.cshlp.org</a></li>
+      <li>Axel Guskjolen <em>et al.</em>, <em>Recovery of "Lost" Infant Memories in Mice</em>, «Current Biology» 28(14), 23 luglio 2018, pp. 2283-2290 — <a href="https://www.cell.com/current-biology/fulltext/S0960-9822(18)30695-X">cell.com</a></li>
+      <li>Patricia J. Bauer, Marina Larkina, <em>The onset of childhood amnesia in childhood: a prospective investigation of the course and determinants of forgetting of early-life events</em>, «Memory» 22(8), 2014</li>
+      <li>Shazia Akhtar, Lucy V. Justice, Catriona M. Morrison, Martin A. Conway, <em>Fictional First Memories</em>, «Psychological Science» 29(10), 2018, pp. 1612-1619; e la replica di P. J. Bauer, L. Baker-Ward, P. Krøjgaard, C. Peterson, Q. Wang, <em>Evidence Against Depiction as Fiction</em>, ivi, 2019</li>
+      <li>Shelley MacDonald, Kimberly Uesiliana, Harlene Hayne, <em>Cross-cultural and gender differences in childhood amnesia</em>, «Memory» 8(6), 2000, pp. 365-376</li>
+      <li>Elaine Reese, Harlene Hayne, Shelley MacDonald, <em>Looking back to the future: Māori and Pakeha mother-child birth stories</em>, «Child Development» 79(1), 2008</li>
+      <li>Sigmund Freud, <em>Tre saggi sulla teoria sessuale</em> (1905), dove compare il termine «amnesia infantile»; e <em>Ricordi di copertura</em> (1899)</li>
+      <li>Jean Piaget, <em>La formazione del simbolo nel bambino</em> (1945), il racconto del mancato rapimento sugli Champs-Élysées</li>
+      <li>Byron A. Campbell, Norman E. Spear, <em>Ontogeny of memory</em>, «Psychological Review» 79(3), 1972, pp. 215-236</li>
+      <li>Serge Nicolas, Jacy L. Young, <em>Victor and Catherine Henri on earliest recollections</em>, «L'Année psychologique» 113(3), 2013 — sull'inchiesta del 1895-97</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · IL CIRCUITO CHE SI RISCRIVE ── */
+var NODI = [[42,152],[92,106],[142,146],[196,96],[248,136],[300,88]];
+var linkVivo = [1,1,1,1,1];
+var eta = 'infante', mesi = 0, timerGd = null, inCorso = false;
+
+function setEta(v) {
+  eta = v;
+  document.getElementById('btnInfante').classList.toggle('attivo', v === 'infante');
+  document.getElementById('btnAdulto').classList.toggle('attivo', v === 'adulto');
+  registraRicordo();
+}
+
+function disegnaBase() {
+  var vecchi = document.getElementById('gdVecchi');
+  vecchi.innerHTML = '';
+  var fissi = [[24,60],[70,178],[118,64],[170,178],[214,54],[262,182],[312,150],[64,44],[152,42],[236,190],[288,44],[110,196],[192,140],[20,110],[330,120],[136,96]];
+  for (var i = 0; i < fissi.length; i++) {
+    vecchi.innerHTML += '<circle cx="' + fissi[i][0] + '" cy="' + fissi[i][1] + '" r="4" fill="#ded4e4"></circle>';
+  }
+  var trac = document.getElementById('gdTraccia');
+  trac.innerHTML = '';
+  for (var k = 0; k < NODI.length; k++) {
+    trac.innerHTML += '<circle cx="' + NODI[k][0] + '" cy="' + NODI[k][1] + '" r="7.5" fill="#9b59b6"></circle>';
+  }
+  disegnaLink();
+}
+
+function disegnaLink() {
+  var g = document.getElementById('gdLink');
+  var s = '';
+  for (var i = 0; i < 5; i++) {
+    var col = linkVivo[i] ? '#9b59b6' : '#e2ddd8';
+    var dash = linkVivo[i] ? '' : ' stroke-dasharray="3 4"';
+    s += '<line x1="' + NODI[i][0] + '" y1="' + NODI[i][1] + '" x2="' + NODI[i+1][0] + '" y2="' + NODI[i+1][1] + '" stroke="' + col + '" stroke-width="' + (linkVivo[i] ? 3 : 2) + '"' + dash + '></line>';
+  }
+  g.innerHTML = s;
+}
+
+function registraRicordo() {
+  if (timerGd) clearInterval(timerGd);
+  linkVivo = [1,1,1,1,1];
+  mesi = 0;
+  inCorso = true;
+  document.getElementById('gdNuovi').innerHTML = '';
+  document.getElementById('btnRegistra').disabled = true;
+  document.getElementById('gdEsito').textContent = eta === 'infante'
+    ? 'Ricordo depositato in un ippocampo di un anno. Ogni pallino verde è un granulo appena nato che si inserisce nel circuito.'
+    : 'Ricordo depositato in un ippocampo adulto. La neurogenesi qui continua, ma a un ritmo molto più basso.';
+  aggiornaLettura();
+  disegnaBase();
+  timerGd = setInterval(passaMese, 620);
+}
+
+function passaMese() {
+  mesi++;
+  var nuovi = eta === 'infante' ? 3 : 1;
+  var pTaglio = eta === 'infante' ? 0.55 : 0.09;
+  if (eta === 'adulto' && mesi % 2 === 0) nuovi = 0;
+  for (var n = 0; n < nuovi; n++) {
+    var vivi = [];
+    for (var i = 0; i < 5; i++) if (linkVivo[i]) vivi.push(i);
+    if (!vivi.length) break;
+    var l = vivi[Math.floor(Math.random() * vivi.length)];
+    var mx = (NODI[l][0] + NODI[l+1][0]) / 2 + (Math.random() * 26 - 13);
+    var my = (NODI[l][1] + NODI[l+1][1]) / 2 + (Math.random() * 26 - 13);
+    document.getElementById('gdNuovi').innerHTML += '<circle cx="' + mx.toFixed(1) + '" cy="' + my.toFixed(1) + '" r="4.5" fill="#27ae60" opacity="0.85"></circle>';
+    if (Math.random() < pTaglio) linkVivo[l] = 0;
+  }
+  disegnaLink();
+  aggiornaLettura();
+  if (mesi >= 12) chiudiGd();
+}
+
+function aggiornaLettura() {
+  var vivi = 0;
+  for (var i = 0; i < 5; i++) vivi += linkVivo[i];
+  var perc = Math.round(vivi / 5 * 100);
+  document.getElementById('gdMesi').textContent = 'Mesi trascorsi: ' + mesi;
+  document.getElementById('gdPerc').textContent = 'traccia recuperabile ' + perc + '%';
+  document.getElementById('gdFill').style.width = perc + '%';
+}
+
+function chiudiGd() {
+  clearInterval(timerGd);
+  inCorso = false;
+  document.getElementById('btnRegistra').disabled = false;
+  var vivi = 0;
+  for (var i = 0; i < 5; i++) vivi += linkVivo[i];
+  document.getElementById('gdEsito').textContent = eta === 'infante'
+    ? 'Dodici mesi dopo restano ' + vivi + ' collegamenti su 5: l’episodio è avvenuto, ma il circuito che lo teneva insieme è stato rimaneggiato dai nuovi arrivati.'
+    : 'Dodici mesi dopo restano ' + vivi + ' collegamenti su 5: stesso meccanismo, ritmo diverso — ed è questa la differenza tra un ricordo di quando avevi un anno e uno di ieri.';
+}
+
+/* ── APPLET 02 · ESPERIMENTO AKERS 2014 ── */
+var specie = 'topo', intervento = 'nessuno';
+var esiti = {
+  'topo|nessuno': { lab: 'Dimentica', val: 12, txt: "Un topo addestrato da cucciolo, rimesso nello stesso ambiente settimane dopo, si comporta come se non fosse mai successo niente: è l'amnesia infantile in laboratorio, la stessa che gli sperimentatori usano come punto di partenza." },
+  'topo|meno': { lab: 'Ricorda', val: 80, txt: "Riducendo la neurogenesi nei cuccioli — con interventi genetici o farmacologici subito dopo l'addestramento — l'oblio si attenua: il ricordo regge molto più a lungo del normale. È la prova più diretta che a cancellare sono i neuroni nuovi, non il tempo." },
+  'topo|piu': { lab: 'Dimentica prima', val: 6, txt: "Nei topi adulti, dove il ricordo sarebbe stabile, aumentare la neurogenesi dopo l'apprendimento (ruota da corsa o farmaci) è bastato a farlo svanire: l'oblio infantile si può indurre a qualsiasi età, se si riaccende la fabbrica di neuroni." },
+  'degu|nessuno': { lab: 'Ricorda', val: 78, txt: "Il degu e la cavia nascono con gli occhi aperti e i granuli del giro dentato quasi tutti già formati prima della nascita. Risultato: i loro cuccioli non mostrano amnesia infantile: ricordano quello che hanno imparato da piccoli." },
+  'degu|piu': { lab: 'Dimentica', val: 18, txt: "Qui sta il colpo di scena dell'esperimento: aumentando artificialmente la neurogenesi in una specie che di norma non dimentica, l'amnesia infantile compare. La stessa leva, in due direzioni opposte, produce i due comportamenti." },
+  'degu|meno': { lab: 'Non testato', val: 0, txt: "Questa combinazione non compare nello studio, e non la inventiamo: nel degu la neurogenesi postnatale è già bassissima, quindi ridurla ancora non avrebbe un effetto misurabile. Prova invece ad aumentarla." }
+};
+
+function setSpecie(s) {
+  specie = s;
+  var b = document.querySelectorAll('.exp-btn[data-sp]');
+  for (var i = 0; i < b.length; i++) b[i].classList.toggle('attivo', b[i].getAttribute('data-sp') === s);
+  mostraEsito();
+}
+
+function setIntervento(v) {
+  intervento = v;
+  var b = document.querySelectorAll('.exp-btn[data-int]');
+  for (var i = 0; i < b.length; i++) b[i].classList.toggle('attivo', b[i].getAttribute('data-int') === v);
+  mostraEsito();
+}
+
+function mostraEsito() {
+  var e = esiti[specie + '|' + intervento];
+  document.getElementById('expEsito').textContent = e.lab;
+  document.getElementById('expFill').style.width = e.val + '%';
+  document.getElementById('expTesto').innerHTML = e.txt;
+}
+
+/* ── APPLET 03 · DOVE CADE IL TUO PRIMO RICORDO ── */
+var RIF = [
+  { m: 32.6, lab: 'Māori 32,6 mesi', ry: 46 },
+  { m: 37.8, lab: 'media generale 3,15 anni', ry: 64 },
+  { m: 42, lab: 'europei NZ', ry: 82 },
+  { m: 57.8, lab: 'origine asiatica 57,8 mesi', ry: 46 }
+];
+
+function xDaMesi(m) { return 20 + (m / 84) * 300; }
+
+function disegnaAsse() {
+  var g = document.getElementById('prTacche');
+  var s = '';
+  for (var a = 0; a <= 7; a++) {
+    var x = xDaMesi(a * 12);
+    s += '<line x1="' + x.toFixed(1) + '" y1="110" x2="' + x.toFixed(1) + '" y2="116" stroke="#c9c2bb" stroke-width="1.5"></line>';
+    s += '<text x="' + x.toFixed(1) + '" y="126" font-family="sans-serif" font-size="9.5" fill="#9b8aa3" text-anchor="middle">' + a + '</text>';
+  }
+  for (var i = 0; i < RIF.length; i++) {
+    var rx = xDaMesi(RIF[i].m);
+    var ry = RIF[i].ry;
+    s += '<line x1="' + rx.toFixed(1) + '" y1="' + ry + '" x2="' + rx.toFixed(1) + '" y2="110" stroke="#c39bd3" stroke-width="1" stroke-dasharray="2 3"></line>';
+    s += '<circle cx="' + rx.toFixed(1) + '" cy="110" r="3" fill="#c39bd3"></circle>';
+    s += '<text x="' + rx.toFixed(1) + '" y="' + (ry - 4) + '" font-family="sans-serif" font-size="9.5" fill="#8e6ba0" text-anchor="middle">' + RIF[i].lab + '</text>';
+  }
+  g.innerHTML = s;
+}
+
+function aggiornaPrimoRicordo(v) {
+  var m = parseInt(v, 10);
+  var anni = Math.floor(m / 12), resto = m % 12;
+  var etichetta = anni + (anni === 1 ? ' anno' : ' anni') + (resto ? ' e ' + resto + (resto === 1 ? ' mese' : ' mesi') : '');
+  document.getElementById('prValore').textContent = etichetta;
+  var x = xDaMesi(m);
+  document.getElementById('prLinea').setAttribute('x1', x);
+  document.getElementById('prLinea').setAttribute('x2', x);
+  document.getElementById('prPallino').setAttribute('cx', x);
+  document.getElementById('prEtichetta').setAttribute('x', x);
+  var t;
+  if (m < 24) {
+    t = "Sei nella fascia che divide i ricercatori. Il 38,6% degli adulti interrogati da Akhtar e colleghi colloca lì il proprio primo ricordo, ma per gli autori a quell'età un episodio raccontabile è quasi sempre ricostruito a partire da foto e storie di famiglia. Bauer, Peterson, Wang e altri hanno replicato l'anno dopo che il criterio usato per dichiararli «finti» non regge.";
+  } else if (m < 36) {
+    t = "Presto, ma nel plausibile: è la fascia in cui cadeva la maggior parte dei 123 primi ricordi raccolti dai coniugi Victor e Catherine Henri nell'inchiesta del 1895-97, la prima mai fatta sull'argomento. È anche la media degli adulti Māori — 32,6 mesi — la più precoce mai registrata in uno studio cross-culturale.";
+  } else if (m < 48) {
+    t = "Sei nella norma statistica: la media dei 6.313 primi ricordi datati nello studio del 2018 è 3,15 anni, e gli adulti neozelandesi di origine europea si fermano intorno ai tre anni e mezzo. È il punto in cui l'amnesia infantile smette di essere totale e comincia a diventare memoria autobiografica.";
+  } else if (m < 72) {
+    t = "Più tardi della media: nello stesso studio cross-culturale gli adulti di origine asiatica dichiaravano in media 57,8 mesi, quasi due anni dopo i Māori. La differenza non è nei cervelli ma nelle conversazioni: dove il passato del bambino si racconta poco, il confine dei ricordi si sposta in avanti.";
+  } else {
+    t = "Oltre i sei anni: qui non siamo più nell'amnesia infantile ordinaria. Vale la pena notare che, nello studio prospettico di Patricia Bauer e Marina Larkina (2014), a 5, 6 e 7 anni i bambini raccontavano ancora più del 60% degli episodi vissuti a 3 anni — e a 8-9 anni meno del 40%: l'oblio, misurato dal vivo, arriva a scuola già iniziata.";
+  }
+  document.getElementById('prTesto').innerHTML = t;
+}
+
+/* ── APPLET 04 · LINEA DEL TEMPO ── */
+var tappe = [
+  { anno: '1895-97', tit: 'L’inchiesta dei coniugi Henri',
+    txt: "Victor e Catherine Henri spediscono un questionario sui primi ricordi e raccolgono 123 risposte, pubblicate su «L'Année psychologique»: nella grande maggioranza dei casi il ricordo più antico cade tra i due e i quattro anni. È la prima misura del fenomeno, prima ancora che abbia un nome." },
+  { anno: '1899-1905', tit: 'Freud gli dà il nome',
+    txt: "Nei «Ricordi di copertura» (1899) e poi nei «Tre saggi sulla teoria sessuale» (1905) Freud conia l'espressione «amnesia infantile» e la attribuisce alla rimozione. La diagnosi del fenomeno resterà; la spiegazione no.",
+    cit: "«la singolare amnesia che nella maggior parte delle persone, anche se non in tutte, nasconde i primissimi inizi della loro infanzia»" },
+  { anno: '1945', tit: 'Piaget e il rapimento mai avvenuto',
+    txt: "Ne «La formazione del simbolo nel bambino» Piaget racconta il proprio finto ricordo del tentato rapimento sugli Champs-Élysées, smontato dalla confessione della bambinaia. Introduce l'idea che i primi ricordi possano essere costruiti a partire dai racconti altrui." },
+  { anno: '1972', tit: 'Non è un problema solo umano',
+    txt: "Byron Campbell e Norman Spear, sulla «Psychological Review», mostrano che anche i ratti dimenticano molto più in fretta ciò che hanno imparato da cuccioli. L'amnesia infantile esce dalla psicoanalisi ed entra nel laboratorio di biologia." },
+  { anno: '2012', tit: 'L’ipotesi neurogenica',
+    txt: "Sheena Josselyn e Paul Frankland propongono su «Learning & Memory» che il colpevole sia la neurogenesi: il giro dentato che aggiunge neuroni a ritmo altissimo degrada le tracce già depositate. Un'ipotesi che, a differenza della rimozione, si può testare." },
+  { anno: '2014', tit: 'La prova nei degu',
+    txt: "Katherine Akers e colleghi, su «Science», frenano la neurogenesi nei topi cuccioli e il ricordo resiste; la aumentano nei degu, che di norma ricordano, e l'amnesia compare. La leva funziona in entrambe le direzioni." },
+  { anno: '2014', tit: 'L’oblio osservato dal vivo',
+    txt: "Patricia Bauer e Marina Larkina intervistano bambini di 3 anni sugli episodi appena vissuti e li riascoltano a 5, 6, 7, 8 e 9 anni: fino a 7 anni ne raccontano ancora più del 60%, a 8-9 meno del 40%. L'amnesia infantile non è un muro fisso: cala addosso ai bambini mentre crescono." },
+  { anno: '2018', tit: 'Il ricordo si può riaccendere',
+    txt: "Axel Guskjolen e colleghi marcano nel giro dentato le cellule attive durante l'apprendimento dei topi cuccioli e le riattivano con la luce fino a 90 giorni dopo: la paura torna, insieme al pattern di attività della codifica. Se si può riaccendere, non era cancellato." },
+  { anno: '2025', tit: 'I neonati nella risonanza',
+    txt: "Tristan Yates e Nicholas Turk-Browne scansionano bambini svegli tra i 4 e i 25 mesi mentre guardano foto nuove: l'attività dell'ippocampo durante la visione predice se quella foto verrà riconosciuta dopo. Da circa un anno di età l'ippocampo codifica già ricordi di singoli episodi.",
+    cit: "«la disponibilità di meccanismi di codifica per la memoria episodica in un periodo della vita che poi sparisce dal nostro archivio autobiografico implica che siano i meccanismi post-codifica, quelli per cui i ricordi dell'infanzia diventano inaccessibili al recupero, i principali responsabili dell'amnesia infantile»" }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.setAttribute('data-tl', i);
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+disegnaBase();
+mostraEsito();
+disegnaAsse();
+aggiornaPrimoRicordo(38);
+costruisciTimeline();
+</script>
+</body>
+</html>
