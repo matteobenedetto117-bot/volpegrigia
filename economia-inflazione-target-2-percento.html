@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché le banche centrali puntano al 2% di inflazione invece che a 0%?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #2980b9;
+    --accent-light: #e2eef8;
+    --accent-mid: #5499c7;
+    --rosso: #c0392b;
+    --rosso-light: #f7e3e0;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 01 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto;
+    min-width: 92px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    padding: 0;
+    position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1;
+    transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 02 · CONFRONTO BANCHE CENTRALI ── */
+  .cb-wrap { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .cb-btn {
+    flex: 1;
+    min-width: 96px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cb-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cb-scheda { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .cb-riga { display: grid; grid-template-columns: 108px 1fr; gap: 0; border-bottom: 1px solid var(--border); }
+  .cb-riga:last-child { border-bottom: none; }
+  .cb-k { background: #faf8f4; padding: 9px 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+  .cb-v { padding: 9px 12px; font-size: 14.5px; line-height: 1.55; }
+  .cb-v strong { color: var(--accent); }
+  .cb-cit { display: block; margin-top: 6px; padding-left: 10px; border-left: 3px solid var(--accent-mid); font-size: 13.5px; font-style: italic; color: var(--muted); line-height: 1.5; }
+
+  /* ── APPLET 03 · IL PAVIMENTO DELLO ZERO ── */
+  .zlb-controls { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .zlb-btn {
+    flex: 1;
+    min-width: 56px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .zlb-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .zlb-azione {
+    width: 100%;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px; font-weight: 600; color: #fff;
+    background: var(--rosso); border: 1.5px solid var(--rosso);
+    border-radius: 4px; padding: 11px; cursor: pointer; margin-bottom: 18px;
+    transition: opacity 0.15s;
+  }
+  .zlb-azione:disabled { opacity: 0.45; cursor: default; }
+  .zlb-scena { display: grid; grid-template-columns: 1fr 150px; gap: 16px; align-items: stretch; }
+  .zlb-svg { display: block; width: 100%; height: auto; background: #f7fafd; border-radius: 6px; }
+  .zlb-numeri { display: grid; align-content: start; gap: 8px; }
+  .zlb-num { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; }
+  .zlb-num span { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .zlb-num strong { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--text); }
+  .zlb-num.critico { background: var(--rosso-light); border-color: #e8c9c4; }
+  .zlb-num.critico strong { color: var(--rosso); }
+  .zlb-esito { font-size: 14px; line-height: 1.55; color: var(--text); text-align: left; padding: 14px 2px 2px; min-height: 22px; }
+
+  /* ── APPLET 04 · IL MURO DELLO ZERO ── */
+  .rig-wrap { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .rig-btn {
+    flex: 1; min-width: 56px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 4px; cursor: pointer; transition: all 0.15s;
+  }
+  .rig-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .rig-chart { display: flex; align-items: flex-end; gap: 2px; height: 190px; padding: 0 2px; border-bottom: 2px solid var(--text); }
+  .rig-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
+  .rig-ghost { width: 100%; background: #eceef0; border-radius: 2px 2px 0 0; position: absolute; bottom: 0; transition: height 0.45s ease; }
+  .rig-bar { width: 100%; background: var(--accent); position: relative; z-index: 1; transition: height 0.45s ease; }
+  .rig-extra { width: 100%; background: var(--rosso); border-radius: 2px 2px 0 0; position: relative; z-index: 1; transition: height 0.45s ease; }
+  .rig-col:not(.muro) .rig-bar { border-radius: 2px 2px 0 0; }
+  .rig-assex { display: flex; gap: 2px; padding: 6px 2px 0; }
+  .rig-tick { flex: 1; text-align: center; font-size: 10.5px; color: var(--muted); }
+  .rig-legenda { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-top: 12px; }
+  .rig-legenda i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .rig-esito { margin-top: 14px; }
+
+  /* ── APPLET 05 · LA BILANCIA ── */
+  .bil-slider-wrap { display: grid; gap: 6px; margin-bottom: 16px; }
+  .bil-valore { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--muted); }
+  .bil-valore strong { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--accent); }
+  .bil-slider { width: 100%; accent-color: var(--accent); height: 22px; }
+  .bil-svg { display: block; width: 100%; height: auto; margin-bottom: 4px; }
+  .bil-pannelli { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .bil-pannello { border: 1px solid var(--border); border-radius: 6px; padding: 12px 13px; background: #faf8f4; }
+  .bil-pannello h5 { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 9px; }
+  .bil-voce { font-size: 13.5px; line-height: 1.45; margin-bottom: 8px; color: var(--text); }
+  .bil-voce:last-child { margin-bottom: 0; }
+  .bil-voce b { display: block; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--text); }
+  .bil-pannello.freddo .bil-voce b { color: var(--accent); }
+  .bil-pannello.caldo .bil-voce b { color: var(--rosso); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .cb-btn { min-width: 44%; }
+    .cb-riga { grid-template-columns: 84px 1fr; }
+    .cb-k { padding: 8px 8px; font-size: 11px; }
+    .zlb-scena { grid-template-columns: 1fr; }
+    .zlb-numeri { grid-template-columns: 1fr 1fr; }
+    .rig-chart { height: 150px; }
+    .rig-tick { font-size: 9px; }
+    .bil-pannelli { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Economia</div>
+    <h1>Perché le banche centrali puntano al 2% di inflazione invece che a 0%?</h1>
+    <div class="risposta-box">
+      <p>Perché lo zero non lascia margine: se l'inflazione è nulla i tassi d'interesse partono così bassi che alla prima recessione la banca centrale finisce contro il pavimento dello zero, e i salari — che nessuna azienda taglia volentieri in busta paga — non riescono più ad aggiustarsi. Il 2% è un cuscinetto, non un obiettivo di prezzi alti. E non nasce da un modello: nasce da un'intervista televisiva neozelandese del 1988.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Federal Reserve, BCE, Bank of England, Banca del Giappone, Bank of Canada: tutte puntano al 2%. Nessuna equazione ha mai prodotto quel numero. Il primo a pronunciarlo in pubblico fu Roger Douglas, ministro delle Finanze neozelandese, che il 1º aprile 1988 annunciò in diretta televisiva che l'inflazione sarebbe scesa «around 0, or 0 to 1 percent» — e colse di sorpresa la sua stessa banca centrale, che lo apprese dal telegiornale.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Da un'intervista in TV a mezzo mondo</div>
+      <div class="applet-istruzione">Clicca una tappa per vedere come una frase detta a braccio è diventata la regola di quasi tutte le banche centrali.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonti: Reserve Bank of New Zealand, <em>History of the Remit and policy targets agreement</em> (aggiornato 30 aprile 2026); John McDermott e Rebecca Williams, <em>Inflation Targeting in New Zealand: An Experience in Evolution</em>, RBNZ / RBA Conference 2018; Matthew Wells, <em>The Origins of the 2 Percent Inflation Target</em>, «Econ Focus», Federal Reserve Bank of Richmond, I-II trimestre 2024, che riporta le citazioni dai verbali FOMC.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il primo motivo per non puntare a zero è che il termometro sbaglia. Il 4 dicembre 1996 la commissione presieduta da Michael Boskin consegnò al Senato americano <em>Toward a More Accurate Measure of the Cost of Living</em>: l'indice dei prezzi al consumo, concluse, sovrastimava il costo della vita di circa 1,1 punti percentuali l'anno (in una forchetta tra 0,8 e 1,6). Un 2% misurato può quindi essere un 1% reale — e uno 0% misurato sarebbe deflazione vera.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Lo stesso numero, sei regole diverse</div>
+      <div class="applet-istruzione">Scegli una banca centrale: il 2% è lo stesso, ma cambia l'indice, la banda, la scadenza e persino chi decide.</div>
+    </div>
+    <div class="cb-wrap">
+      <button class="cb-btn attivo" data-cb="0" onclick="mostraBanca(0)">Fed</button>
+      <button class="cb-btn" data-cb="1" onclick="mostraBanca(1)">BCE</button>
+      <button class="cb-btn" data-cb="2" onclick="mostraBanca(2)">Regno Unito</button>
+      <button class="cb-btn" data-cb="3" onclick="mostraBanca(3)">Giappone</button>
+      <button class="cb-btn" data-cb="4" onclick="mostraBanca(4)">Canada</button>
+      <button class="cb-btn" data-cb="5" onclick="mostraBanca(5)">Nuova Zelanda</button>
+    </div>
+    <div class="cb-scheda" id="cbScheda"></div>
+    <div class="applet-fonte">
+      Fonti puntuali per ciascuna scheda: FOMC, <em>Statement on Longer-Run Goals and Monetary Policy Strategy</em>, 25 gennaio 2012 e revisione dell'agosto 2020; BCE, <em>The ECB's monetary policy strategy statement</em>, 8 luglio 2021; House of Lords, Economic Affairs Committee, <em>Making an independent Bank of England work better</em> (2023), per il passaggio da RPIX 2,5% a CPI 2% del dicembre 2003 e per la regola della lettera aperta; Bank of Japan, <em>The "Price Stability Target" under the Framework for the Conduct of Monetary Policy</em>, 22 gennaio 2013; Bank of Canada, <em>Agreements on the Monetary Policy Framework</em>; Reserve Bank of New Zealand, <em>Monetary Policy Committee Remit</em>, dicembre 2023.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il secondo motivo è aritmetica pura. Il tasso d'interesse che una banca centrale può fissare è nominale: vale grosso modo il tasso reale d'equilibrio più l'inflazione attesa. Con un obiettivo dello 0% si parte da quasi zero e non c'è nulla da tagliare. È l'argomento con cui Ben Bernanke, il 17 ottobre 2003 a St. Louis, difese proprio il 2%: il tasso più basso «for which the risk of the funds rate hitting the lower bound appears to be "acceptably small"».</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Il pavimento dello zero</div>
+      <div class="applet-istruzione">Scegli l'obiettivo d'inflazione, poi fai arrivare la recessione: guarda quanto della manovra necessaria resta sotto il pavimento.</div>
+    </div>
+    <div class="zlb-controls">
+      <button class="zlb-btn" data-zlb="0" onclick="scegliTarget(0)">0%</button>
+      <button class="zlb-btn" data-zlb="1" onclick="scegliTarget(1)">1%</button>
+      <button class="zlb-btn attivo" data-zlb="2" onclick="scegliTarget(2)">2%</button>
+      <button class="zlb-btn" data-zlb="3" onclick="scegliTarget(3)">3%</button>
+      <button class="zlb-btn" data-zlb="4" onclick="scegliTarget(4)">4%</button>
+    </div>
+    <button class="zlb-azione" id="zlbGo" onclick="avviaRecessione()">Arriva la recessione (serve un taglio di 5 punti)</button>
+    <div class="zlb-scena">
+      <svg class="zlb-svg" id="zlbSvg" viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="7" stroke="#c0392b" stroke-width="2.5" opacity="0.35"></line>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="300" height="250" fill="#f7fafd"></rect>
+        <g id="zlbGriglia"></g>
+        <rect x="0" y="156.3" width="300" height="93.7" fill="#efe4e2"></rect>
+        <rect x="0" y="156.3" width="300" height="93.7" fill="url(#hatch)"></rect>
+        <rect id="zlbMancante" x="96" y="156.3" width="86" height="0" fill="#c0392b" opacity="0.55"></rect>
+        <rect id="zlbColonna" x="96" y="60" width="86" height="96" fill="#2980b9" opacity="0.85"></rect>
+        <line x1="0" y1="156.3" x2="300" y2="156.3" stroke="#c0392b" stroke-width="2.5"></line>
+        <text x="190" y="152" font-family="sans-serif" font-size="11" font-weight="bold" fill="#c0392b">pavimento 0%</text>
+        <line id="zlbMarker" x1="88" y1="60" x2="196" y2="60" stroke="#1c1c2e" stroke-width="3"></line>
+        <text id="zlbMarkerLab" x="202" y="64" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1c1c2e">2,5%</text>
+        <text id="zlbNeutraleLab" x="202" y="44" font-family="sans-serif" font-size="10" fill="#7f8c8d">tasso neutrale</text>
+        <line id="zlbNeutraleLine" x1="88" y1="56" x2="196" y2="56" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="4 3"></line>
+      </svg>
+      <div class="zlb-numeri">
+        <div class="zlb-num"><span>Tasso di partenza</span><strong id="numPartenza">2,5%</strong></div>
+        <div class="zlb-num"><span>Taglio possibile</span><strong id="numPossibile">2,5 pt</strong></div>
+        <div class="zlb-num critico"><span>Manovra mancante</span><strong id="numMancante">2,5 pt</strong></div>
+      </div>
+    </div>
+    <div class="zlb-esito" id="zlbEsito">Con un obiettivo del 2% la banca centrale parte da un tasso nominale del 2,5%: può tagliare 2,5 punti sui 5 che servono. Il resto va cercato altrove — acquisti di titoli, promesse sui tassi futuri, politica di bilancio.</div>
+    <div class="applet-fonte">
+      Il taglio di 5 punti è l'ordine di grandezza documentato da Michael T. Kiley, <em>Monetary Policy Space in a Recession: Some Simple Interest Rate Arithmetic</em>, FEDS Notes, Federal Reserve Board, 8 gennaio 2020: nelle recessioni del 1990, 2001 e 2008-09 il tasso sui federal funds è sceso in media di 4,4 punti dal picco del ciclo e di 5,1 punti contando i sei mesi precedenti. Il tasso reale d'equilibrio è fissato qui allo 0,5%, un valore coerente con le stime Holston-Laubach-Williams pubblicate dalla Fed di New York; è un'ipotesi della simulazione, non un dato misurato.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il terzo motivo sta nelle buste paga. Nessuna azienda taglia lo stipendio nominale: licenzia, semmai. Lo mostrarono George Akerlof, William Dickens e George Perry in <em>The Macroeconomics of Low Inflation</em> (Brookings, 1996), sostenendo che un po' d'inflazione «ingrassa gli ingranaggi» del mercato del lavoro. I dati confermano la rigidità: la quota di lavoratori americani con lo stesso identico stipendio da un anno all'altro salì dall'11,2% del 2007 a circa il 16% di fine 2011.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Il muro dello zero in busta paga</div>
+      <div class="applet-istruzione">Cambia il regime d'inflazione e guarda la torre rossa: ogni barra è una classe di un punto di aumento salariale annuo, le barre grigie sono gli aggiustamenti che le imprese vorrebbero fare, quelle colorate ciò che riescono davvero a fare.</div>
+    </div>
+    <div class="rig-wrap">
+      <button class="rig-btn" data-rig="0" onclick="scegliRegime(0)">0%</button>
+      <button class="rig-btn" data-rig="1" onclick="scegliRegime(1)">1%</button>
+      <button class="rig-btn attivo" data-rig="2" onclick="scegliRegime(2)">2%</button>
+      <button class="rig-btn" data-rig="3" onclick="scegliRegime(3)">3%</button>
+      <button class="rig-btn" data-rig="4" onclick="scegliRegime(4)">4%</button>
+    </div>
+    <div class="rig-chart" id="rigChart"></div>
+    <div class="rig-assex" id="rigAsse"></div>
+    <div class="rig-legenda">
+      <span><i style="background:#eceef0"></i>variazione desiderata dall'impresa</span>
+      <span><i style="background:#2980b9"></i>variazione effettiva</span>
+      <span><i style="background:#c0392b"></i>massa respinta dal muro dello zero</span>
+    </div>
+    <div class="rig-esito box-testo" id="rigEsito"></div>
+    <div class="applet-fonte">
+      La distribuzione è illustrativa: una normale con deviazione standard di 2 punti, centrata sul tasso d'inflazione scelto, con tutte le variazioni negative spinte a zero dal muro. È calibrata in modo che a inflazione 2% la quota bloccata sia circa il 16%, il valore che il <em>Wage Rigidity Meter</em> della Federal Reserve Bank of San Francisco misura a fine 2011 (era l'11,2% nel 2007). Il meccanismo — l'accumulo di massa esattamente a zero — è quello descritto in George A. Akerlof, William T. Dickens e George L. Perry, <em>The Macroeconomics of Low Inflation</em>, «Brookings Papers on Economic Activity», 1996:1, pp. 1-76.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che succede quando si sbaglia dal lato basso lo ha mostrato il Giappone: il 22 gennaio 2013 la Banca del Giappone ha adottato il target del 2% con un comunicato congiunto col governo intitolato, senza giri di parole, «sul superamento della deflazione». Anche la BCE ha sbagliato in quella direzione: tra il 2013 e il 2019 l'inflazione dell'area euro ha viaggiato in media all'1,1%, molto sotto l'obiettivo.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">Perché proprio 2, e non 1 o 4</div>
+      <div class="applet-istruzione">Sposta il cursore: il piatto sinistro pesa il costo di stare troppo bassi, il destro quello di stare troppo alti. Cerca il punto in cui la bilancia si ferma in piano.</div>
+    </div>
+    <div class="bil-slider-wrap">
+      <div class="bil-valore"><span>Obiettivo d'inflazione</span><strong id="bilVal">2,0%</strong></div>
+      <input class="bil-slider" id="bilSlider" type="range" min="0" max="5" step="0.5" value="2" oninput="aggiornaBilancia(this.value)">
+    </div>
+    <svg class="bil-svg" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+      <g id="bilTrave">
+        <line x1="45" y1="46" x2="275" y2="46" stroke="#1c1c2e" stroke-width="4" stroke-linecap="round"></line>
+        <line x1="60" y1="46" x2="60" y2="74" stroke="#7f8c8d" stroke-width="1.5"></line>
+        <line x1="260" y1="46" x2="260" y2="74" stroke="#7f8c8d" stroke-width="1.5"></line>
+        <path d="M32 74 h56 l-10 20 h-36 z" fill="#2980b9" opacity="0.85"></path>
+        <path d="M232 74 h56 l-10 20 h-36 z" fill="#c0392b" opacity="0.85"></path>
+        <text x="60" y="112" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#7f8c8d">troppo bassa</text>
+        <text x="260" y="112" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#7f8c8d">troppo alta</text>
+      </g>
+      <line x1="160" y1="46" x2="160" y2="118" stroke="#1c1c2e" stroke-width="3"></line>
+      <path d="M148 122 h24 l-12 -14 z" fill="#1c1c2e"></path>
+      <circle cx="160" cy="46" r="5" fill="#1c1c2e"></circle>
+    </svg>
+    <div class="bil-pannelli">
+      <div class="bil-pannello freddo">
+        <h5>Costo di stare bassi</h5>
+        <div class="bil-voce"><b id="bilManovra">2,5 pt</b>margine di taglio dei tassi prima del pavimento (ne servono 5)</div>
+        <div class="bil-voce"><b id="bilBloccati">16%</b>lavoratori con stipendio bloccato allo stesso identico livello</div>
+      </div>
+      <div class="bil-pannello caldo">
+        <h5>Costo di stare alti</h5>
+        <div class="bil-voce"><b id="bilRaddoppio">35 anni</b>per il raddoppio del livello dei prezzi</div>
+        <div class="bil-voce"><b id="bilPotere">45%</b>del potere d'acquisto perso in 30 anni da chi tiene i soldi fermi</div>
+      </div>
+    </div>
+    <div class="box-testo" id="bilVerdetto"></div>
+    <div class="applet-fonte">
+      Raddoppio dei prezzi e perdita di potere d'acquisto sono calcolati esattamente per capitalizzazione composta. Il margine di manovra usa lo stesso schema dell'applet 03 (tasso reale d'equilibrio 0,5%, taglio necessario 5 punti; Kiley, FEDS Notes, 2020). L'inclinazione della bilancia è una sintesi redazionale dei due costi, non una grandezza misurata. Per il dibattito su obiettivi più alti: Olivier Blanchard, Giovanni Dell'Ariccia e Paolo Mauro, <em>Rethinking Macroeconomic Policy</em>, IMF Staff Position Note SPN/10/03, 12 febbraio 2010, che discute con favore un obiettivo del 4%; e la stima di un ottimo tra l'1,5% e il 4% in Akerlof, Dickens e Perry (2000).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Nessuno oggi vuole spostare quel numero, e il motivo non è tecnico. Un bersaglio funziona finché tutti credono che resterà fermo: cambiarlo proprio mentre lo si sta mancando equivarrebbe ad ammettere che si sposta quando fa comodo. Nemmeno l'ondata inflazionistica del 2021-2023 ha scardinato le attese: secondo la Fed di Cleveland le aspettative d'inflazione a lungo termine non sono mai salite sopra il 2,5%.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il 2% non è una legge di natura: è una cifra buttata lì in diretta televisiva da un ministro neozelandese e poi tenuta in vita da tre generazioni di banchieri centrali — perché a un bersaglio, per funzionare davvero, serve soprattutto che nessuno sospetti che verrà spostato.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Reserve Bank of New Zealand, <em>History of the Remit and policy targets agreement</em>, aggiornato al 30 aprile 2026 — primo Policy Targets Agreement del 1990 (0-2% entro dicembre 1992), banda 0-3% nel 1996, 1-3% nel 2002, punto centrale del 2% dal 2012 — <a href="https://www.rbnz.govt.nz/monetary-policy/about-monetary-policy/history-of-the-remit-and-policy-targets-agreement">rbnz.govt.nz</a></li>
+      <li>John McDermott e Rebecca Williams, <em>Inflation Targeting in New Zealand: An Experience in Evolution</em>, Reserve Bank of New Zealand, relazione alla conferenza della Reserve Bank of Australia, 12 aprile 2018 — per l'annuncio televisivo di Roger Douglas del 1º aprile 1988 e il suo effetto sulle aspettative</li>
+      <li>Matthew Wells, <em>The Origins of the 2 Percent Inflation Target</em>, «Econ Focus», Federal Reserve Bank of Richmond, I-II trimestre 2024 — per il consenso interno del FOMC del luglio 1996, la frase di Alan Greenspan sul segreto del 2%, le posizioni di Al Broaddus, Janet Yellen, Marvin Goodfriend e Jeffrey Lacker — <a href="https://www.richmondfed.org/publications/research/econ_focus/2024/q1_q2_federal_reserve">richmondfed.org</a></li>
+      <li>Federal Open Market Committee, <em>Statement on Longer-Run Goals and Monetary Policy Strategy</em>, 25 gennaio 2012 (rivisto nell'agosto 2020) — <a href="https://www.federalreserve.gov/monetarypolicy/files/FOMC_LongerRunGoals_201201.pdf">federalreserve.gov</a></li>
+      <li>Advisory Commission to Study the Consumer Price Index (commissione Boskin), <em>Toward a More Accurate Measure of the Cost of Living</em>, rapporto finale al Senate Finance Committee, 4 dicembre 1996 — sovrastima del costo della vita di 1,1 punti l'anno, forchetta 0,8-1,6 — <a href="https://www.ssa.gov/history/reports/boskinrpt.html">ssa.gov</a></li>
+      <li>Ben S. Bernanke, <em>Panel Discussion</em>, 28ª conferenza annuale «Inflation Targeting: Prospects and Problems», Federal Reserve Bank of St. Louis, 17 ottobre 2003 — il 2% come tasso più basso con un rischio «acceptably small» di toccare il limite inferiore</li>
+      <li>Michael T. Kiley, <em>Monetary Policy Space in a Recession: Some Simple Interest Rate Arithmetic</em>, FEDS Notes, Board of Governors of the Federal Reserve System, 8 gennaio 2020 — <a href="https://www.federalreserve.gov/econres/notes/feds-notes/monetary-policy-space-in-a-recession-20200108.html">federalreserve.gov</a></li>
+      <li>George A. Akerlof, William T. Dickens e George L. Perry, <em>The Macroeconomics of Low Inflation</em>, «Brookings Papers on Economic Activity», 1996:1, pp. 1-76</li>
+      <li>Federal Reserve Bank of San Francisco, <em>Wage Rigidity Meter</em>, e Mary Daly, Bart Hobijn, Brian Lucking, <em>Why Has Wage Growth Stayed Strong?</em>, «FRBSF Economic Letter» 2012-10, 2 aprile 2012 — quota di lavoratori con variazione salariale nulla dall'11,2% del 2007 al 16% di fine 2011</li>
+      <li>Banca centrale europea, <em>The ECB's monetary policy strategy statement</em> e comunicato stampa dell'8 luglio 2021 — obiettivo simmetrico del 2% a medio termine; inflazione media dell'1,1% tra il 2013 e il 2019 — <a href="https://www.ecb.europa.eu/press/pr/date/2021/html/ecb.pr210708~dc78cc4b0d.en.html">ecb.europa.eu</a></li>
+      <li>Bank of Japan, <em>The "Price Stability Target" under the Framework for the Conduct of Monetary Policy</em> e <em>Joint Statement of the Government and the Bank of Japan on Overcoming Deflation and Achieving Sustainable Economic Growth</em>, 22 gennaio 2013 — <a href="https://www.boj.or.jp/en/mopo/outline/target.htm">boj.or.jp</a></li>
+      <li>Bank of Canada, <em>Agreements on the Monetary Policy Framework</em> — primo accordo del 1991 (3% nel 1992, 2% dal 1995, banda di un punto per lato), rinnovato di norma ogni cinque anni — <a href="https://www.bankofcanada.ca/core-functions/monetary-policy/agreement-inflation-control-target/">bankofcanada.ca</a></li>
+      <li>House of Lords, Economic Affairs Committee, <em>Making an independent Bank of England work better</em>, 1º rapporto, sessione 2023-24, cap. 2 — passaggio dal 2,5% sull'RPIX al 2% sul CPI annunciato il 10 dicembre 2003 e regola della lettera aperta oltre il punto di scostamento — <a href="https://publications.parliament.uk/pa/ld5804/ldselect/ldeconaf/10/1005.htm">parliament.uk</a></li>
+      <li>Olivier Blanchard, Giovanni Dell'Ariccia e Paolo Mauro, <em>Rethinking Macroeconomic Policy</em>, IMF Staff Position Note SPN/10/03, 12 febbraio 2010 — <a href="https://www.imf.org/external/pubs/ft/spn/2010/spn1003.PDF">imf.org</a></li>
+      <li>Federal Reserve Bank of Cleveland, <em>Inflation Expectations</em> — aspettative a lungo termine mai salite sopra il 2,5% durante l'ondata inflazionistica del 2021-2023, come riportato in Wells (2024)</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════════ APPLET 01 · LINEA DEL TEMPO ══════════ */
+var tappe = [
+  { anno: '1º apr. 1988', tit: 'Un ministro parla alla TV neozelandese',
+    txt: "Roger Douglas, ministro delle Finanze della Nuova Zelanda, annuncia in diretta che nel giro di un paio d'anni l'inflazione — allora ancora a due cifre in molti anni recenti — sarà portata quasi a zero. Non era una politica concordata: la Reserve Bank of New Zealand lo scopre insieme a tutti gli altri. L'obiettivo di Douglas era proprio quello, colpire le aspettative per abbassare il costo della disinflazione.",
+    cit: "«around 0, or 0 to 1 percent»" },
+  { anno: '1989-90', tit: 'La frase diventa legge',
+    txt: "Il Reserve Bank of New Zealand Act del 1989 rende la banca centrale indipendente e le assegna un obiettivo scritto di stabilità dei prezzi. Nelle settimane di lavoro tecnico i funzionari aggiungono un margine per gli errori di misura dell'indice dei prezzi, e lo «zero» di Douglas diventa una forchetta. Nel marzo 1990 il primo Policy Targets Agreement, firmato dal governatore Don Brash, fissa l'inflazione tra lo 0% e il 2% entro dicembre 1992: obiettivo centrato, dal 1991 la Nuova Zelanda viaggia intorno al 2%." },
+  { anno: '1991-92', tit: 'Canada e Regno Unito copiano',
+    txt: "Nel 1991 il Canada è il secondo paese al mondo ad adottare un obiettivo d'inflazione: 3% per il 1992, in discesa al 2% nel 1995, con una banda di un punto per lato. L'anno dopo tocca a Londra, ma per necessità: il 16 settembre 1992 la sterlina è espulsa dal meccanismo di cambio europeo e tre settimane più tardi il governo annuncia che la politica monetaria britannica si baserà su un obiettivo esplicito d'inflazione, per ricostruire da zero la credibilità perduta." },
+  { anno: 'lug. 1996', tit: 'Il FOMC sceglie il 2% e lo tiene segreto',
+    txt: "Nella riunione del luglio 1996 il comitato di politica monetaria della Fed converge su un obiettivo del 2%, dopo un dibattito iniziato nel 1994 tra Al Broaddus (a favore) e Janet Yellen (allora contraria, perché temeva che l'obiettivo d'inflazione schiacciasse quello sull'occupazione). Alan Greenspan chiude la discussione ricordando ai presenti l'obbligo di riservatezza. Passeranno sedici anni prima che quel numero sia reso pubblico.",
+    cit: "«I will tell you that if the 2 percent inflation figure gets out of this room, it is going to create more problems for us than I think any of you might anticipate.» — Alan Greenspan, verbale FOMC, luglio 1996" },
+  { anno: 'dic. 1996', tit: 'Il termometro è tarato male',
+    txt: "Il 4 dicembre 1996 la commissione presieduta dall'economista Michael Boskin consegna al Senate Finance Committee il rapporto <em>Toward a More Accurate Measure of the Cost of Living</em>: l'indice dei prezzi al consumo americano sovrastima il vero aumento del costo della vita di circa 1,1 punti percentuali l'anno (forchetta 0,8-1,6), e di circa 1,3 punti prima del 1996. È l'argomento che trasforma il cuscinetto tecnico dei neozelandesi in una tesi economica: un obiettivo di zero misurato sarebbe deflazione vera." },
+  { anno: '1998-2003', tit: 'La BCE e il «sotto, ma vicino»',
+    txt: "Alla nascita, nel 1998, la BCE definisce la stabilità dei prezzi come un aumento dell'indice armonizzato «inferiore al 2%»: un tetto, non un bersaglio. Nel riesame della strategia del 2003 il Consiglio direttivo mantiene la definizione ma precisa di mirare a un'inflazione «below, but close to, 2%» — una formula ambigua che per quasi vent'anni lascia il dubbio se un'inflazione all'1,1% sia un successo o un fallimento." },
+  { anno: 'gen. 2012', tit: 'La Fed lo dice ad alta voce',
+    txt: "Il 25 gennaio 2012 il FOMC pubblica per la prima volta la sua <em>Statement on Longer-Run Goals and Monetary Policy Strategy</em>, redatta da un sottocomitato guidato da Janet Yellen — la stessa che nel 1995 aveva argomentato contro. Il documento sceglie un punto singolo e non una banda: si temeva che una forchetta suggerisse che qualunque valore al suo interno andasse bene. Solo il governatore Daniel Tarullo si astiene.",
+    cit: "«The Committee judges that inflation at the rate of 2 percent, as measured by the annual change in the price index for personal consumption expenditures, is most consistent over the longer run with the Federal Reserve's statutory mandate.»" },
+  { anno: '2013-2021', tit: 'Tokyo e Francoforte chiudono il cerchio',
+    txt: "Il 22 gennaio 2013 la Banca del Giappone adotta un «price stability target» del 2%, annunciato in un comunicato congiunto col governo intitolato <em>Joint Statement… on Overcoming Deflation</em>: è l'unico caso in cui il 2% nasce per far salire l'inflazione, non per abbassarla. L'8 luglio 2021 la BCE chiude la partita adottando un obiettivo del 2% dichiaratamente <em>simmetrico</em>: scostamenti in su e in giù sono «altrettanto indesiderabili»." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ══════════ APPLET 02 · CONFRONTO BANCHE CENTRALI ══════════ */
+var banche = [
+  { nome: 'Federal Reserve', indice: 'Indice PCE (spesa per consumi personali), <strong>non</strong> l’indice dei prezzi al consumo: un paniere i cui pesi si aggiornano molto più in fretta, e che storicamente cresce un po’ meno del CPI.',
+    forma: 'Punto singolo, <strong>nessuna banda</strong>. Fu una scelta deliberata: una forchetta avrebbe suggerito che qualunque valore al suo interno andasse bene.',
+    data: 'Pubblico dal <strong>25 gennaio 2012</strong>, ma deciso in privato già nel luglio 1996.',
+    extra: 'Dall’agosto 2020 il documento aggiunge che, dopo periodi sotto il 2%, l’inflazione potrà stare «moderatamente sopra il 2% per un certo tempo».',
+    cit: '«inflation at the rate of 2 percent, as measured by the annual change in the price index for personal consumption expenditures»' },
+  { nome: 'Banca centrale europea', indice: 'Indice armonizzato dei prezzi al consumo (IPCA/HICP), lo stesso per tutti i paesi dell’area euro.',
+    forma: 'Punto singolo <strong>simmetrico</strong>: scostamenti in su e in giù sono dichiarati «altrettanto indesiderabili». Nessuna banda e nessuna scadenza — «a medio termine» non è definito in mesi.',
+    data: '<strong>8 luglio 2021</strong>. Prima: «below, but close to, 2%» dal 2003, e semplicemente «inferiore al 2%» dal 1998.',
+    extra: 'Il cambio del 2021 nasce da un dato preciso: tra il 2013 e il 2019 l’inflazione dell’area euro è stata in media dell’1,1%, e la vecchia formula non chiariva se fosse un problema.',
+    cit: '«a symmetric 2% inflation target over the medium term»' },
+  { nome: 'Bank of England', indice: 'Indice dei prezzi al consumo (CPI). Fino al <strong>10 dicembre 2003</strong> l’obiettivo era il 2,5% sull’RPIX: il numero fu abbassato di mezzo punto proprio perché i due indici si misurano in modo diverso.',
+    forma: 'Punto singolo, ma con una sanzione reputazionale esplicita: se l’inflazione si scosta di <strong>più di un punto</strong> in su o in giù, il governatore deve scrivere una lettera aperta al Cancelliere per spiegare perché.',
+    data: 'Obiettivo d’inflazione dall’ottobre 1992, tre settimane dopo l’uscita della sterlina dallo SME.',
+    extra: 'È l’unico dei sei in cui il numero <strong>non lo sceglie la banca centrale</strong>: glielo scrive ogni anno il Cancelliere dello Scacchiere nella lettera di mandato.' },
+  { nome: 'Bank of Japan', indice: 'Indice dei prezzi al consumo <em>headline</em>, quello completo, senza esclusioni di alimentari ed energia.',
+    forma: 'Punto singolo, con l’impegno a raggiungerlo «al più presto possibile».',
+    data: '<strong>22 gennaio 2013</strong>, dopo quindici anni di prezzi sostanzialmente fermi o in calo.',
+    extra: 'È l’unico dei sei nato per <strong>far salire</strong> l’inflazione: fu annunciato con un comunicato congiunto col governo intitolato «sul superamento della deflazione e il conseguimento di una crescita sostenibile».',
+    cit: '«Joint Statement of the Government and the Bank of Japan on Overcoming Deflation and Achieving Sustainable Economic Growth»' },
+  { nome: 'Bank of Canada', indice: 'Indice dei prezzi al consumo complessivo.',
+    forma: '2% definito come <strong>punto centrale di una banda 1-3%</strong>: la banda non è un’alternativa al punto, è il margine di tolleranza intorno ad esso.',
+    data: 'Dal <strong>1991</strong>: 3% per il 1992, in discesa al 2% nel 1995. Il Canada fu il secondo paese al mondo, dopo la Nuova Zelanda.',
+    extra: 'Peculiarità istituzionale: non è una legge ma un <strong>accordo con il governo che scade</strong> e va rinnovato, di norma ogni cinque anni. Ogni rinnovo riapre formalmente la discussione sul numero — e ogni volta il 2% è stato confermato.' },
+  { nome: 'Reserve Bank of New Zealand', indice: 'Indice dei prezzi al consumo.',
+    forma: 'Banda <strong>1-3% a medio termine, «with a focus on the 2% mid-point»</strong>: il punto centrale fu aggiunto nel 2012 perché senza di esso le aspettative rischiavano di scivolare verso un estremo o l’altro della forchetta.',
+    data: 'La prima al mondo, dal <strong>marzo 1990</strong>.',
+    extra: 'È anche quella che ha cambiato bersaglio più volte: 0-2% nel 1990, 0-3% nel 1996, 1-3% nel 2002, punto centrale del 2% dal 2012. Nel dicembre 2023 l’obiettivo sull’occupazione, aggiunto nel 2018, è stato tolto.' }
+];
+
+function mostraBanca(i) {
+  var btns = document.querySelectorAll('.cb-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var b = banche[i];
+  var html = '';
+  html += '<div class="cb-riga"><div class="cb-k">Banca</div><div class="cb-v"><strong>' + b.nome + '</strong></div></div>';
+  html += '<div class="cb-riga"><div class="cb-k">Su quale indice</div><div class="cb-v">' + b.indice + '</div></div>';
+  html += '<div class="cb-riga"><div class="cb-k">Che forma ha</div><div class="cb-v">' + b.forma + '</div></div>';
+  html += '<div class="cb-riga"><div class="cb-k">Da quando</div><div class="cb-v">' + b.data + '</div></div>';
+  html += '<div class="cb-riga"><div class="cb-k">Il dettaglio</div><div class="cb-v">' + b.extra + (b.cit ? '<em class="cb-cit">' + b.cit + '</em>' : '') + '</div></div>';
+  document.getElementById('cbScheda').innerHTML = html;
+}
+
+/* ══════════ APPLET 03 · IL PAVIMENTO DELLO ZERO ══════════ */
+var R_STAR = 0.5, TAGLIO = 5.0;
+var targetSel = 2, animId = null;
+
+function yDi(r) { return 30 + (6 - r) * (200 / 9.5); }
+var Y_ZERO = yDi(0);
+
+function costruisciGriglia() {
+  var g = document.getElementById('zlbGriglia'), h = '';
+  var livelli = [6, 4, 2, 0, -2];
+  for (var i = 0; i < livelli.length; i++) {
+    var y = yDi(livelli[i]);
+    h += '<line x1="26" y1="' + y.toFixed(1) + '" x2="300" y2="' + y.toFixed(1) + '" stroke="#dfe6ec" stroke-width="1"></line>';
+    h += '<text x="22" y="' + (y + 4).toFixed(1) + '" text-anchor="end" font-family="sans-serif" font-size="10" fill="#7f8c8d">' + livelli[i] + '%</text>';
+  }
+  g.innerHTML = h;
+}
+
+function fmt(x) { return x.toFixed(1).replace('.', ','); }
+
+function disegnaZlb(tassoOra, mostraMancante) {
+  var neutrale = R_STAR + targetSel;
+  var yN = yDi(neutrale), yO = yDi(tassoOra);
+  var col = document.getElementById('zlbColonna');
+  col.setAttribute('y', yN);
+  col.setAttribute('height', Math.max(yO - yN, 0));
+  document.getElementById('zlbMarker').setAttribute('y1', yO);
+  document.getElementById('zlbMarker').setAttribute('y2', yO);
+  document.getElementById('zlbMarkerLab').setAttribute('y', yO + 4);
+  document.getElementById('zlbMarkerLab').textContent = fmt(tassoOra) + '%';
+  document.getElementById('zlbNeutraleLine').setAttribute('y1', yN);
+  document.getElementById('zlbNeutraleLine').setAttribute('y2', yN);
+  document.getElementById('zlbNeutraleLab').setAttribute('y', yN - 6);
+  var manc = document.getElementById('zlbMancante');
+  if (mostraMancante) {
+    var yFondo = yDi(neutrale - TAGLIO);
+    manc.setAttribute('y', Y_ZERO);
+    manc.setAttribute('height', Math.max(yFondo - Y_ZERO, 0));
+  } else {
+    manc.setAttribute('height', 0);
+  }
+}
+
+function aggiornaNumeri(possibile, mancante) {
+  document.getElementById('numPartenza').textContent = fmt(R_STAR + targetSel) + '%';
+  document.getElementById('numPossibile').textContent = fmt(possibile) + ' pt';
+  document.getElementById('numMancante').textContent = fmt(mancante) + ' pt';
+}
+
+var esiti = [
+  "Con obiettivo zero il tasso nominale di partenza è appena lo 0,5%: la banca centrale esaurisce le munizioni al primo colpo e 4,5 punti di manovra su 5 semplicemente non esistono. È la situazione in cui il Giappone si è trovato per decenni.",
+  "All'1% il margine resta minimo: 1,5 punti su 5. Ogni recessione anche moderata finisce contro il pavimento, e la politica monetaria deve affidarsi a strumenti d'emergenza fin dal primo giorno.",
+  "Con un obiettivo del 2% si parte da un tasso nominale del 2,5%: la metà della manovra necessaria è disponibile con lo strumento ordinario. Il resto va cercato altrove — acquisti di titoli, promesse sui tassi futuri, politica di bilancio. È il compromesso scelto da tutte le grandi banche centrali.",
+  "Al 3% restano scoperti 1,5 punti su 5: il pavimento si tocca solo nelle recessioni gravi. In cambio, però, i prezzi raddoppiano in poco più di vent'anni e l'inflazione smette di essere un rumore di fondo ignorabile.",
+  "Al 4% la manovra ordinaria copre quasi tutto il taglio necessario. È l'obiettivo che Blanchard, Dell'Ariccia e Mauro discussero con favore nel 2010 — e che nessuna banca centrale ha adottato, perché cambiare bersaglio significa ammettere che il bersaglio si può cambiare."
+];
+
+function scegliTarget(t) {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  targetSel = t;
+  var btns = document.querySelectorAll('.zlb-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === t);
+  var neutrale = R_STAR + t;
+  disegnaZlb(neutrale, false);
+  aggiornaNumeri(Math.min(TAGLIO, neutrale), Math.max(0, TAGLIO - neutrale));
+  document.getElementById('zlbGo').disabled = false;
+  document.getElementById('zlbGo').textContent = 'Arriva la recessione (serve un taglio di 5 punti)';
+  document.getElementById('zlbEsito').textContent = esiti[t];
+}
+
+function avviaRecessione() {
+  if (animId) cancelAnimationFrame(animId);
+  var neutrale = R_STAR + targetSel;
+  var arrivo = Math.max(0, neutrale - TAGLIO);
+  var t0 = performance.now(), durata = 1500;
+  document.getElementById('zlbGo').disabled = true;
+  document.getElementById('zlbGo').textContent = 'Taglio in corso…';
+  function passo(ts) {
+    var p = Math.min((ts - t0) / durata, 1);
+    var e = 1 - Math.pow(1 - p, 3);
+    disegnaZlb(neutrale + (arrivo - neutrale) * e, false);
+    if (p < 1) { animId = requestAnimationFrame(passo); }
+    else {
+      animId = null;
+      disegnaZlb(arrivo, true);
+      document.getElementById('zlbGo').disabled = false;
+      document.getElementById('zlbGo').textContent = 'Ripeti la recessione';
+    }
+  }
+  animId = requestAnimationFrame(passo);
+}
+
+/* ══════════ APPLET 04 · IL MURO DELLO ZERO ══════════ */
+var BUCKETS = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8];
+var SD = 2, SCALA = 0.72, regimeSel = 2;
+
+function cdfNorm(x, mu) { return 0.5 * (1 + erf((x - mu) / (SD * Math.SQRT2))); }
+
+function costruisciIstogramma() {
+  var ch = document.getElementById('rigChart'), ax = document.getElementById('rigAsse'), h = '', a = '';
+  for (var i = 0; i < BUCKETS.length; i++) {
+    h += '<div class="rig-col" data-b="' + i + '"><div class="rig-ghost"></div><div class="rig-extra"></div><div class="rig-bar"></div></div>';
+    a += '<div class="rig-tick">' + (BUCKETS[i] > 0 ? '+' : '') + BUCKETS[i] + '</div>';
+  }
+  ch.innerHTML = h; ax.innerHTML = a;
+  scegliRegime(2);
+}
+
+function scegliRegime(pi) {
+  regimeSel = pi;
+  var btns = document.querySelectorAll('.rig-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === pi);
+
+  var desid = [], somma = 0, i;
+  for (i = 0; i < BUCKETS.length; i++) {
+    desid[i] = cdfNorm(BUCKETS[i] + 1, pi) - cdfNorm(BUCKETS[i], pi);
+    somma += desid[i];
+  }
+  for (i = 0; i < BUCKETS.length; i++) desid[i] = desid[i] / somma;
+
+  var iZero = BUCKETS.indexOf(0), bloccati = 0;
+  for (i = 0; i < iZero; i++) bloccati += desid[i];
+
+  var cols = document.querySelectorAll('.rig-col');
+  for (i = 0; i < cols.length; i++) {
+    var negativa = BUCKETS[i] < 0;
+    var hBlu = negativa ? 0 : desid[i];
+    var hRosso = (i === iZero) ? bloccati : 0;
+    cols[i].classList.toggle('muro', i === iZero && bloccati > 0.02);
+    cols[i].querySelector('.rig-ghost').style.height = (Math.min(desid[i] / SCALA, 1) * 100) + '%';
+    cols[i].querySelector('.rig-bar').style.height = (Math.min(hBlu / SCALA, 1) * 100) + '%';
+    cols[i].querySelector('.rig-extra').style.height = (Math.min(hRosso / SCALA, 1) * 100) + '%';
+  }
+
+  var pct = Math.round(bloccati * 100);
+  var testi = [
+    "Con prezzi fermi met\u00e0 delle imprese vorrebbe ridurre il salario reale, e l\u2019unico modo sarebbe tagliare la cifra scritta in busta paga. Quasi nessuna lo fa: la massa si accumula tutta sullo zero, e l\u2019aggiustamento che non passa dai salari passa dai licenziamenti.",
+    "All\u20191% il muro \u00e8 ancora altissimo: circa un lavoratore su tre resta inchiodato allo stesso identico stipendio, e per l\u2019impresa l\u2019unica leva rimasta \u00e8 ridurre le ore o il numero di dipendenti.",
+    "Al 2% la quota bloccata scende intorno al 16% \u2014 esattamente il valore che la Fed di San Francisco misurava a fine 2011, dopo la crisi. Le imprese che devono risparmiare congelano lo stipendio: il numero in busta paga non si muove, il potere d\u2019acquisto scende di due punti, e nessuno deve firmare un taglio.",
+    "Al 3% il muro quasi sparisce: meno di un lavoratore su dieci resta fermo, e l\u2019aggiustamento dei salari reali avviene quasi tutto in silenzio, senza licenziamenti.",
+    "Al 4% il muro non morde pi\u00f9: praticamente ogni impresa pu\u00f2 ridurre il costo reale del lavoro semplicemente non aumentando gli stipendi. Ma \u00e8 anche il livello a cui i lavoratori cominciano a chiedere l\u2019indicizzazione, e il trucco smette di funzionare."
+  ];
+  document.getElementById('rigEsito').innerHTML = '<strong>' + pct + '% dei lavoratori senza alcun aumento nominale.</strong> ' + testi[pi];
+}
+
+/* ══════════ APPLET 05 · LA BILANCIA ══════════ */
+function aggiornaBilancia(v) {
+  var pi = parseFloat(v);
+  document.getElementById('bilVal').textContent = pi.toFixed(1).replace('.', ',') + '%';
+
+  var neutrale = R_STAR + pi;
+  var manovra = Math.min(TAGLIO, neutrale);
+  document.getElementById('bilManovra').textContent = manovra.toFixed(1).replace('.', ',') + ' pt';
+
+  var bloc = 0.5 * (1 - erf(pi / (SD * Math.SQRT2)));
+  document.getElementById('bilBloccati').textContent = Math.round(bloc * 100) + '%';
+
+  var radd = pi > 0.05 ? Math.round(Math.log(2) / Math.log(1 + pi / 100)) : null;
+  document.getElementById('bilRaddoppio').textContent = radd ? (radd + ' anni') : 'mai';
+
+  var perso = 1 - Math.pow(1 + pi / 100, -30);
+  document.getElementById('bilPotere').textContent = Math.round(perso * 100) + '%';
+
+  var cFreddo = 100 * Math.pow(Math.max(0, Math.min(1, (3 - pi) / 3)), 1.3);
+  var cCaldo = 100 * Math.pow(Math.max(0, Math.min(1, (pi - 1) / 4)), 1.3);
+  var ang = Math.max(-16, Math.min(16, (cCaldo - cFreddo) * 0.16));
+  document.getElementById('bilTrave').setAttribute('transform', 'rotate(' + ang.toFixed(2) + ' 160 46)');
+
+  var v2;
+  if (pi < 1) v2 = "<strong>Zona di pericolo.</strong> Sotto l’1% il pavimento dei tassi è a un passo, il muro dei salari blocca un lavoratore su tre o più, e — visto che l’indice sovrastima il costo della vita di circa un punto (commissione Boskin, 1996) — quello che si misura come inflazione quasi nulla è probabilmente già deflazione.";
+  else if (pi < 1.75) v2 = "<strong>Ancora stretto.</strong> Il cuscinetto esiste ma è sottile. È la zona in cui l’area euro ha viaggiato dal 2013 al 2019, con una media dell’1,1%: nessuna catastrofe, ma anche nessuna munizione quando è arrivata la pandemia.";
+  else if (pi <= 2.5) v2 = "<strong>Il compromesso scelto da tutti.</strong> Abbastanza alto da lasciare margine ai tassi e da far scivolare i salari reali senza tagli nominali; abbastanza basso perché nessuno pensi ogni giorno all’inflazione. Non è un ottimo dimostrato: è il punto in cui i due costi diventano entrambi sopportabili.";
+  else if (pi <= 4) v2 = "<strong>La proposta eretica.</strong> Blanchard, Dell’Ariccia e Mauro discussero con favore un obiettivo del 4% nel 2010, e Akerlof, Dickens e Perry stimarono l’ottimo tra l’1,5% e il 4%. Il problema non è il numero: è che spostarlo insegnerebbe a tutti che si può spostare.";
+  else v2 = "<strong>Troppo.</strong> Oltre il 4-5% i prezzi raddoppiano in meno di quindici anni, i contratti cominciano a indicizzarsi e l’inflazione smette di essere ignorabile: il vantaggio sui salari svanisce, perché nessuno accetta più un aumento nominale sotto l’inflazione senza accorgersene.";
+  document.getElementById('bilVerdetto').innerHTML = v2;
+}
+
+/* approssimazione di Abramowitz-Stegun 7.1.26 per la funzione errore */
+function erf(x) {
+  var s = x < 0 ? -1 : 1; x = Math.abs(x);
+  var t = 1 / (1 + 0.3275911 * x);
+  var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return s * y;
+}
+
+/* ══════════ AVVIO ══════════ */
+costruisciTimeline();
+mostraBanca(0);
+costruisciGriglia();
+scegliTarget(2);
+costruisciIstogramma();
+aggiornaBilancia(2);
+</script>
+</body>
+</html>
