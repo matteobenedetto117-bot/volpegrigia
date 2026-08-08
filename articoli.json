@@ -1,5 +1,12 @@
 [
   {
+    "file": "ambiente-energia-batteria-auto-elettrica.html",
+    "domanda": "Quanta energia serve per costruire una batteria di auto elettrica, prima ancora che parta?",
+    "risposta_breve": "Tra 20 e 40 kWh di energia per ogni kWh di cella prodotta, senza contare i materiali: per un pacco da 75 kWh fanno 1.500-3.000 kWh, cioè da mezzo anno a un anno intero di elettricità di una famiglia italiana. Aggiungendo miniere e raffinazione si arriva a 61-106 kg di CO2 equivalente per kWh di batteria — un debito che, secondo l'ICCT, l'auto ripaga in circa 17.000 km.",
+    "categoria": "Ambiente",
+    "data": "Agosto 2026"
+  },
+  {
     "file": "economia-inflazione-target-2-percento.html",
     "domanda": "Perché le banche centrali puntano al 2% di inflazione invece che a 0%?",
     "risposta_breve": "Perché lo zero non lascia margine: se l'inflazione è nulla i tassi d'interesse partono così bassi che alla prima recessione la banca centrale finisce contro il pavimento dello zero, e i salari — che nessuna azienda taglia volentieri in busta paga — non riescono più ad aggiustarsi. Il 2% è un cuscinetto, non un obiettivo di prezzi alti. E non nasce da un modello: nasce da un'intervista televisiva neozelandese del 1988.",

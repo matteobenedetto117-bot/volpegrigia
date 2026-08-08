@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quanta energia serve per costruire una batteria di auto elettrica?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #27ae60;
+    --accent-light: #e4f4ea;
+    --accent-mid: #2ecc71;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · LINEA DI PRODUZIONE ── */
+  .linea-controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .linea-btn {
+    flex: 1; min-width: 150px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .linea-btn.primario { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .linea-scroll { overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; background: #f7fbf8; border-radius: 6px; }
+  .linea-svg { display: block; min-width: 880px; height: auto; }
+  .linea-svg .staz { cursor: pointer; }
+  .rep-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .rep-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .rep-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .rep-energia { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .rep-pallini { display: inline-flex; gap: 4px; }
+  .rep-pallini i { width: 10px; height: 10px; border-radius: 50%; background: #e3ded6; display: block; }
+  .rep-pallini i.on { background: var(--accent); }
+
+  /* ── APPLET 2 · CONTATORE ── */
+  .calc-riga { margin-bottom: 16px; }
+  .calc-label { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--muted); margin-bottom: 6px; }
+  .calc-label strong { color: var(--text); font-size: 15px; }
+  .calc-slider { width: 100%; accent-color: var(--accent); }
+  .fab-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .fab-btn {
+    flex: 1; min-width: 100px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .fab-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .calc-out { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 900; color: var(--accent); line-height: 1.1; }
+  .calc-out-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 16px; }
+  .equiv { display: grid; gap: 8px; }
+  .equiv-riga { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; }
+  .equiv-icona { font-size: 20px; text-align: center; line-height: 1.2; }
+  .equiv-testo { font-size: 14px; line-height: 1.5; }
+  .equiv-testo b { color: var(--accent); }
+
+  /* ── APPLET 3 · DUE LEVE ── */
+  .leva-tit { font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  .leva-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .leva-btn {
+    flex: 1; min-width: 96px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .leva-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .stack { display: flex; height: 40px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); background: #f3f1ec; margin-bottom: 8px; }
+  .stack-mat { background: #7f8c8d; transition: width 0.4s ease; }
+  .stack-fab { background: var(--accent); transition: width 0.4s ease; }
+  .stack-legenda { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .stack-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .stack-legenda i { width: 11px; height: 11px; border-radius: 2px; display: block; }
+  .tot-riga { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 14px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 4px 4px 0; }
+  .tot-num { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; color: var(--accent); }
+  .tot-lab { font-size: 13.5px; color: var(--text); text-align: right; }
+
+  /* ── APPLET 4 · ODOMETRO ── */
+  .scen-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .scen-btn {
+    flex: 1; min-width: 150px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .scen-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .odo-svg { display: block; width: 100%; height: auto; background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; }
+  .odo-slider { width: 100%; accent-color: var(--accent); margin: 14px 0 6px; }
+  .odo-letture { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .odo-cell { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+  .odo-cell .k { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; margin-bottom: 2px; }
+  .odo-cell .v { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+  .odo-cell.bev { border-color: var(--accent); }
+  .odo-cell.bev .k { color: var(--accent); }
+  .odo-cell.ice .k { color: #c0392b; }
+  .odo-esito { font-size: 14.5px; line-height: 1.6; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .linea-btn { min-width: 100%; }
+    .fab-btn, .leva-btn { min-width: 45%; }
+    .scen-btn { min-width: 100%; }
+    .odo-letture { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Ambiente</div>
+    <h1>Quanta energia serve per costruire una batteria di auto elettrica, prima ancora che parta?</h1>
+    <div class="risposta-box">
+      <p>Tra 20 e 40 kWh di energia per ogni kWh di cella prodotta, senza contare i materiali: per un pacco da 75 kWh fanno 1.500-3.000 kWh, cioè da mezzo anno a un anno intero di elettricità di una famiglia italiana. Aggiungendo miniere e raffinazione si arriva a 61-106 kg di CO<sub>2</sub> equivalente per kWh di batteria — un debito che, secondo l'ICCT, l'auto ripaga in circa 17.000 km.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Un'auto elettrica esce dalla fabbrica con un debito già acceso. Nel 2023 il gruppo di Florian Degen (Fraunhofer FFB e Università di Münster) l'ha quantificato su «Nature Energy»: servono <strong>dai 20 ai 40 kWh di energia per produrre una cella da un kWh</strong>, e questo <em>senza</em> contare i materiali. Se tutte le gigafactory previste nel mondo lavorassero con la tecnologia di oggi, nel 2040 chiederebbero 130.000 GWh l'anno: l'intero consumo elettrico della Norvegia o della Svezia.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">La linea di produzione, reparto per reparto</div>
+      <div class="applet-istruzione">Premi «Avvia la linea» per far scorrere il nastro di elettrodo, oppure clicca direttamente un reparto per vedere cosa succede lì dentro.</div>
+    </div>
+    <div class="linea-controls">
+      <button class="linea-btn primario" id="btnLinea" onclick="avviaLinea()">Avvia la linea</button>
+      <button class="linea-btn" onclick="fermaLinea()">Ferma</button>
+    </div>
+    <div class="linea-scroll">
+      <svg class="linea-svg" id="lineaSvg" viewBox="0 0 880 190" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="880" height="190" fill="#f7fbf8"></rect>
+        <line x1="18" y1="122" x2="862" y2="122" stroke="#d8d3ca" stroke-width="3"></line>
+        <g id="stazioni"></g>
+        <rect id="foglio" x="20" y="112" width="26" height="20" rx="2" fill="#1c1c2e" opacity="0.85"></rect>
+      </svg>
+    </div>
+    <div class="rep-dettaglio" id="repDettaglio"></div>
+    <div class="applet-fonte">
+      Sequenza dei reparti e tempi da David L. Wood III, Jianlin Li, Seong Jin An, <em>Formation Challenges of Lithium-Ion Battery Manufacturing</em>, «Joule» 3(12), dicembre 2019, pp. 2884-2888 (bagnatura e formazione 3-7 giorni, invecchiamento fino a due settimane, fino al 25% della superficie di stabilimento). Il peso energetico relativo dei reparti — indicato con i pallini — riflette la gerarchia descritta da F. Degen, M. Winter, D. Bendig, J. Tübke, <em>Energy consumption of current and future production of lithium-ion and post lithium-ion battery cells</em>, «Nature Energy» 8, 28 settembre 2023 (essiccazione, camera secca e riscaldamento come voci dominanti): è una scala qualitativa, non una misura percentuale.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il reparto più affamato non è quello che ci si immagina. Non è l'assemblaggio, ma <strong>l'essiccazione degli elettrodi</strong> — forni lunghi decine di metri in cui evapora il solvente NMP, che va poi recuperato — e la <strong>camera secca</strong>, tenuta a un punto di rugiada fino a −40 °C perché il litio reagisce con l'umidità dell'aria. La formazione, cioè le prime cariche lentissime che costruiscono lo strato protettivo SEI, consuma meno energia ma costa tempo e spazio: Wood, Li e An calcolano che bagnatura, formazione e invecchiamento arrivino a occupare <strong>un quarto della superficie dello stabilimento</strong>.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Il contatore della batteria</div>
+      <div class="applet-istruzione">Sposta la capacità del pacco e scegli quanto è efficiente la fabbrica: il contatore dice quanta energia è già stata spesa quando l'auto arriva in concessionaria.</div>
+    </div>
+    <div class="calc-riga">
+      <div class="calc-label"><span>Capacità del pacco batteria</span><strong><span id="capVal">75</span> kWh</strong></div>
+      <input type="range" class="calc-slider" id="capSlider" min="30" max="120" step="5" value="75" oninput="aggiornaCalc()">
+    </div>
+    <div class="leva-tit">Efficienza dello stabilimento</div>
+    <div class="fab-wrap">
+      <button class="fab-btn" data-fab="0" onclick="setFabbrica(0)">Al meglio<br>20 kWh/kWh</button>
+      <button class="fab-btn attivo" data-fab="1" onclick="setFabbrica(1)">Tipica<br>30 kWh/kWh</button>
+      <button class="fab-btn" data-fab="2" onclick="setFabbrica(2)">Energivora<br>40 kWh/kWh</button>
+    </div>
+    <div class="calc-out" id="calcOut">2.250 kWh</div>
+    <div class="calc-out-sub">di energia consumata dallo stabilimento per fabbricare le celle — materiali esclusi.</div>
+    <div class="equiv">
+      <div class="equiv-riga">
+        <div class="equiv-icona">🏠</div>
+        <div class="equiv-testo" id="eqCasa"></div>
+      </div>
+      <div class="equiv-riga">
+        <div class="equiv-icona">🛣️</div>
+        <div class="equiv-testo" id="eqKm"></div>
+      </div>
+      <div class="equiv-riga">
+        <div class="equiv-icona">🔌</div>
+        <div class="equiv-testo" id="eqCicli"></div>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      Intervallo 20-40 kWh per kWh di cella: F. Degen, M. Winter, D. Bendig, J. Tübke, «Nature Energy» 8, 2023 (valore riferito alla sola produzione della cella, materiali esclusi). Consumo della «famiglia tipo» italiana: 2.700 kWh l'anno con 3 kW impegnati, indice di riferimento ARERA. Percorrenza calcolata a 17 kWh/100 km, consumo reale medio di un'elettrica di segmento C. La ricarica completa equivalente considera un pacco pieno pari alla capacità selezionata.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>L'elettricità dello stabilimento, però, è solo un pezzo del conto. Nel dicembre 2019 Erik Emilsson e Lisbeth Dahllöf, dell'istituto svedese IVL, hanno rifatto i calcoli per l'Agenzia svedese per l'energia: <strong>61-106 kg di CO<sub>2</sub> equivalente per kWh di batteria</strong>, che salgono a 146 includendo i dati meno trasparenti. Due anni prima lo stesso istituto stimava 150-200: il crollo non viene da una tecnologia nuova, ma da fabbriche finalmente grandi e a pieno regime. Di quel totale, circa <strong>59 kg per kWh nascono a monte</strong>, nelle miniere e nelle raffinerie, prima ancora che una cella esista.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Due leve, non una</div>
+      <div class="applet-istruzione">Cambia la chimica della cella e la presa di corrente della fabbrica: la barra si ricompone e mostra quanto pesa ciascuna delle due scelte.</div>
+    </div>
+    <div class="leva-tit">Leva 1 · Chimica della cella</div>
+    <div class="leva-wrap">
+      <button class="leva-btn" data-chim="0" onclick="setChimica(0)">LFP<br>ferro-fosfato</button>
+      <button class="leva-btn attivo" data-chim="1" onclick="setChimica(1)">NMC 622</button>
+      <button class="leva-btn" data-chim="2" onclick="setChimica(2)">NMC 811</button>
+    </div>
+    <div class="leva-tit">Leva 2 · Elettricità della fabbrica</div>
+    <div class="leva-wrap">
+      <button class="leva-btn" data-luogo="0" onclick="setLuogo(0)">Rete a carbone</button>
+      <button class="leva-btn attivo" data-luogo="1" onclick="setLuogo(1)">Mix europeo</button>
+      <button class="leva-btn" data-luogo="2" onclick="setLuogo(2)">Quasi<br>fossil-free</button>
+    </div>
+    <div class="stack">
+      <div class="stack-mat" id="stackMat" style="width:60%"></div>
+      <div class="stack-fab" id="stackFab" style="width:25%"></div>
+    </div>
+    <div class="stack-legenda">
+      <span><i style="background:#7f8c8d"></i> Materiali a monte: <strong id="valMat">59</strong>&nbsp;kg/kWh</span>
+      <span><i style="background:#27ae60"></i> Produzione della cella: <strong id="valFab">25</strong>&nbsp;kg/kWh</span>
+    </div>
+    <div class="tot-riga">
+      <div class="tot-num" id="totNum">84</div>
+      <div class="tot-lab">kg CO<sub>2</sub>e per kWh di batteria<br><span id="totPacco"></span></div>
+    </div>
+    <div class="box-testo" id="boxLeve" style="margin-top:14px;"></div>
+    <div class="applet-fonte">
+      Ancoraggi: E. Emilsson, L. Dahllöf, <em>Lithium-Ion Vehicle Battery Production</em>, IVL Svenska Miljöinstitutet, rapporto C 444 per la Swedish Energy Agency, dicembre 2019 — totale 61-106 kg CO<sub>2</sub>e/kWh, di cui circa 59 dai materiali a monte e 0-60 dalla produzione della cella a seconda dell'elettricità usata. Differenze fra chimiche da Y. Wang et al., <em>Carbon Footprint of China's Typical Electric Vehicle Batteries: A Data-Driven Approach</em>, «World Electric Vehicle Journal» 17(4), 2026: LFP 49,4 — NMC 811 63,1 — NMC 622 64,9 kg CO<sub>2</sub>e/kWh. La scomposizione fra le due leve è una ricostruzione redazionale a partire da questi due studi: i valori intermedi (mix europeo, quasi fossil-free) sono interpolazioni all'interno dell'intervallo dichiarato da IVL, non misure dirette.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il nichel spiega bene perché la prima leva conti tanto. Gran parte del nichel «di classe 1» per batterie arriva oggi dalle lateriti indonesiane, lavorate con il processo HPAL dentro parchi industriali alimentati da centrali a carbone <em>captive</em>: 72 unità per 15.405 MW installati fra Sulawesi e Maluku settentrionale. L'HPAL emette circa <strong>19 tonnellate di CO<sub>2</sub> per tonnellata di nichel</strong>, la via RKEF verso la matte arriva a 59, contro le 10 del vecchio minerale solforoso. È anche per questo che l'LFP, che di nichel e cobalto non ne contiene, nel 2025 ha superato il <strong>55% delle batterie per auto elettriche vendute nel mondo</strong>.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Quando il debito è ripagato</div>
+      <div class="applet-istruzione">Trascina l'odometro e guarda le due curve accumularsi: il sorpasso è il momento in cui l'elettrica ha restituito tutta l'energia spesa per costruirla.</div>
+    </div>
+    <div class="scen-wrap">
+      <button class="scen-btn attivo" data-scen="0" onclick="setScenario(0)">ICCT 2025<br>auto media in UE</button>
+      <button class="scen-btn" data-scen="1" onclick="setScenario(1)">Polestar 2 vs Volvo XC40<br>a benzina</button>
+    </div>
+    <svg class="odo-svg" id="odoSvg" viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg"></svg>
+    <input type="range" class="odo-slider" id="odoSlider" min="0" max="200000" step="1000" value="60000" oninput="aggiornaOdo()">
+    <div class="odo-letture">
+      <div class="odo-cell bev"><div class="k">Elettrica</div><div class="v" id="odoBev">—</div></div>
+      <div class="odo-cell ice"><div class="k">Benzina</div><div class="v" id="odoIce">—</div></div>
+    </div>
+    <div class="odo-esito" id="odoEsito"></div>
+    <div class="applet-fonte">
+      Scenario 1: ICCT, <em>Life-cycle greenhouse gas emissions from passenger cars in the European Union: A 2025 update and key factors to consider</em>, luglio 2025 — elettrica 63 g CO<sub>2</sub>e/km e benzina 235 g CO<sub>2</sub>e/km sull'intero ciclo di vita, emissioni di produzione dell'elettrica superiori di circa il 40%, pareggio «dopo circa 17.000 km». Scenario 2: Polestar, <em>Life cycle assessment — Carbon footprint of Polestar 2</em>, settembre 2020 — 26,2 tonnellate di CO<sub>2</sub>e alla fabbrica per la Polestar 2 Long range Dual motor contro circa 14 della Volvo XC40 a benzina, pareggio a 78.000 km con il mix elettrico europeo. Le curve sono ricostruite dai due dati pubblicati (emissioni di produzione e chilometraggio di pareggio) su una vita utile di 200.000 km; i valori intermedi sono interpolazioni lineari nostre, non dati degli autori.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che i due scenari diano 17.000 e 78.000 km non è una contraddizione: è la prova che in queste analisi <strong>conta più il metodo del risultato</strong>. L'ICCT calcola su un'auto media di segmento C, su vent'anni di vita e su una rete elettrica europea che nel frattempo si decarbonizza; Polestar confronta un SUV elettrico bimotore con un SUV a benzina su 200.000 km e a mix elettrico fermo. Dal 2025 il conto smette comunque di essere un'opinione: il regolamento europeo 2023/1542 impone la <strong>dichiarazione dell'impronta di carbonio in kg CO<sub>2</sub>e per kWh</strong>, con risoluzione al grammo, per ogni modello di batteria e per ogni stabilimento che lo produce.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Un'auto elettrica non parte da zero: parte da qualche migliaio di chilowattora già bruciati. La domanda utile non è se quel debito esista — esiste — ma quanti chilometri servano a estinguerlo, e con quale corrente.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Florian Degen, Martin Winter, David Bendig, Jens Tübke, <em>Energy consumption of current and future production of lithium-ion and post lithium-ion battery cells</em>, «Nature Energy» 8, 28 settembre 2023, pp. 1284-1295 — <a href="https://www.nature.com/articles/s41560-023-01355-z">nature.com</a></li>
+      <li>Fraunhofer FFB, comunicato stampa <em>Nature Study Takes a Close Look at the Optimization of the Energy Consumption of Battery Cell Factories</em>, 28 settembre 2023 (20-40 kWh per kWh di cella; 130.000 GWh l'anno nel 2040; risparmio potenziale fino al 66%) — <a href="https://www.ffb.fraunhofer.de/en/press/news/nature_study_energy_consumption_of_battery_cell_factories.html">ffb.fraunhofer.de</a></li>
+      <li>Erik Emilsson, Lisbeth Dahllöf, <em>Lithium-Ion Vehicle Battery Production. Status 2019 on Energy Use, CO<sub>2</sub> Emissions, Use of Metals, Products Environmental Footprint, and Recycling</em>, rapporto C 444, IVL Svenska Miljöinstitutet per la Swedish Energy Agency, dicembre 2019 — <a href="https://www.ivl.se/english/ivl/press/press-releases/2019-12-04-new-report-on-climate-impact-of-electric-car-batteries.html">ivl.se</a></li>
+      <li>Mia Romare, Lisbeth Dahllöf, <em>The Life Cycle Energy Consumption and Greenhouse Gas Emissions from Lithium-Ion Batteries</em>, rapporto C 243, IVL, maggio 2017 (la stima precedente di 150-200 kg CO<sub>2</sub>e/kWh)</li>
+      <li>David L. Wood III, Jianlin Li, Seong Jin An, <em>Formation Challenges of Lithium-Ion Battery Manufacturing</em>, «Joule» 3(12), dicembre 2019, pp. 2884-2888 — <a href="https://www.cell.com/joule/fulltext/S2542-4351(19)30532-X">cell.com</a></li>
+      <li>Qiang Dai, Jarod C. Kelly, Linda Gaines, Michael Wang, <em>Life Cycle Analysis of Lithium-Ion Batteries for Automotive Applications</em>, «Batteries» 5(2), 2019 (170 MJ, cioè 47 kWh, per kWh di cella in impianti cinesi da circa 2 GWh l'anno; dati recepiti nel modello GREET di Argonne)</li>
+      <li>ICCT, <em>Life-cycle greenhouse gas emissions from passenger cars in the European Union: A 2025 update and key factors to consider</em>, luglio 2025 — <a href="https://theicct.org/publication/electric-cars-life-cycle-analysis-emissions-europe-jul25/">theicct.org</a></li>
+      <li>Polestar, <em>Life cycle assessment — Carbon footprint of Polestar 2</em>, 15 settembre 2020 — <a href="https://www.polestar.com/dato-assets/11286/1600176185-20200915polestarlcafinala.pdf">polestar.com</a></li>
+      <li>Asosiasi Energi dan Ekonomi Rakyat (AEER), <em>Decarbonization of the Nickel Industry — Nickel End of Year Report 2025</em> (HPAL 19 tCO<sub>2</sub>/tNi, RKEF-matte 59, solforoso 10; 72 unità di carbone captive per 15.405 MW nei parchi del nichel indonesiani)</li>
+      <li>IEA, <em>Global EV Outlook 2025 — Electric vehicle batteries</em> (LFP oltre il 55% delle batterie EV immesse sul mercato mondiale nel 2025) — <a href="https://www.iea.org/reports/global-ev-outlook-2025/electric-vehicle-batteries">iea.org</a></li>
+      <li>Regolamento (UE) 2023/1542 relativo alle batterie e ai rifiuti di batterie, art. 7 e allegato II (dichiarazione dell'impronta di carbonio in kg CO<sub>2</sub>e per kWh, con risoluzione di 0,001 kg, per modello e per stabilimento) — <a href="https://eur-lex.europa.eu/eli/reg/2023/1542/oj/eng">eur-lex.europa.eu</a></li>
+      <li>ARERA, indice di riferimento della «famiglia tipo»: 2.700 kWh l'anno con 3 kW di potenza impegnata</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══ APPLET 01 · LINEA DI PRODUZIONE ══ */
+var reparti = [
+  { nome: 'Miscelazione', breve: 'Impasto',
+    txt: "Le polveri del materiale attivo, il carbone conduttivo e il legante vengono impastati in un solvente — per il catodo quasi sempre NMP — fino a ottenere una pasta densa e omogenea. Un grumo di pochi micron basta a creare un punto debole nella cella.", lvl: 2 },
+  { nome: 'Rivestimento', breve: 'Coating',
+    txt: "La pasta viene stesa in strato sottilissimo su fogli metallici che scorrono in continuo: alluminio per il catodo, rame per l'anodo. La tolleranza sullo spessore è di pochi micron su nastri larghi quasi un metro.", lvl: 2 },
+  { nome: 'Essiccazione', breve: 'Forni',
+    txt: "Il nastro entra in forni lunghi decine di metri dove il solvente evapora e viene poi recuperato per condensazione. È il reparto più energivoro dell'intera fabbrica: è qui che si concentra la ricerca su essiccazione laser e rivestimento a secco.", lvl: 4 },
+  { nome: 'Calandratura', breve: 'Rulli',
+    txt: "Rulli in acciaio comprimono l'elettrodo per portarlo alla densità voluta: più il materiale è compatto, più energia entra nello stesso volume, ma se si esagera l'elettrolita non riesce più a bagnare i pori.", lvl: 1 },
+  { nome: 'Taglio', breve: 'Slitting',
+    txt: "Il nastro viene rifilato e tagliato nelle dimensioni dell'elettrodo finito. Ogni bava metallica sul bordo è un potenziale cortocircuito interno, quindi il taglio è controllato otticamente pezzo per pezzo.", lvl: 1 },
+  { nome: 'Camera secca', breve: 'Dry room',
+    txt: "L'assemblaggio avviene in ambienti tenuti a un punto di rugiada che può arrivare a −40 °C, perché il litio reagisce con l'umidità dell'aria. Deumidificare quel volume 24 ore su 24 è la seconda voce energetica dello stabilimento.", lvl: 4 },
+  { nome: 'Elettrolita', breve: 'Riempimento',
+    txt: "La cella viene riempita di elettrolita e lasciata bagnare: il liquido deve penetrare in tutti i pori dell'elettrodo compattato. Bagnatura e formazione insieme richiedono da tre a sette giorni.", lvl: 2 },
+  { nome: 'Formazione', breve: 'Prime cariche',
+    txt: "Le prime cariche e scariche, lentissime, costruiscono sull'anodo lo strato protettivo chiamato SEI: senza di esso la cella si degraderebbe in poche settimane. Consuma meno energia dei forni, ma immobilizza migliaia di cicler in parallelo.", lvl: 2 },
+  { nome: 'Invecchiamento', breve: 'Aging',
+    txt: "Le celle restano in sosta anche due settimane mentre si misurano le correnti di dispersione: chi perde tensione viene scartato. Formazione e invecchiamento insieme possono occupare fino a un quarto della superficie della fabbrica.", lvl: 1 }
+];
+
+var LX0 = 40, LDX = 92, repAttivo = 0, animId = null, timerLinea = null, fogliox = 20;
+
+function costruisciLinea() {
+  var g = document.getElementById('stazioni');
+  var ns = 'http://www.w3.org/2000/svg';
+  for (var i = 0; i < reparti.length; i++) {
+    var x = LX0 + i * LDX;
+    var grp = document.createElementNS(ns, 'g');
+    grp.setAttribute('class', 'staz');
+    grp.setAttribute('data-i', i);
+    var r = document.createElementNS(ns, 'rect');
+    r.setAttribute('x', x - 34); r.setAttribute('y', 46);
+    r.setAttribute('width', 68); r.setAttribute('height', 52);
+    r.setAttribute('rx', 5);
+    r.setAttribute('fill', '#ffffff');
+    r.setAttribute('stroke', '#d8d3ca');
+    r.setAttribute('stroke-width', '1.5');
+    r.setAttribute('id', 'box' + i);
+    var n = document.createElementNS(ns, 'text');
+    n.setAttribute('x', x); n.setAttribute('y', 68);
+    n.setAttribute('text-anchor', 'middle');
+    n.setAttribute('font-family', 'sans-serif'); n.setAttribute('font-size', '13');
+    n.setAttribute('font-weight', 'bold'); n.setAttribute('fill', '#7f8c8d');
+    n.setAttribute('id', 'num' + i);
+    n.textContent = (i + 1);
+    var l = document.createElementNS(ns, 'text');
+    l.setAttribute('x', x); l.setAttribute('y', 87);
+    l.setAttribute('text-anchor', 'middle');
+    l.setAttribute('font-family', 'sans-serif'); l.setAttribute('font-size', '10.5');
+    l.setAttribute('fill', '#7f8c8d');
+    l.setAttribute('id', 'lab' + i);
+    l.textContent = reparti[i].breve;
+    var st = document.createElementNS(ns, 'line');
+    st.setAttribute('x1', x); st.setAttribute('y1', 98);
+    st.setAttribute('x2', x); st.setAttribute('y2', 122);
+    st.setAttribute('stroke', '#d8d3ca'); st.setAttribute('stroke-width', '1.5');
+    var nm = document.createElementNS(ns, 'text');
+    nm.setAttribute('x', x); nm.setAttribute('y', 148);
+    nm.setAttribute('text-anchor', 'middle');
+    nm.setAttribute('font-family', 'sans-serif'); nm.setAttribute('font-size', '11');
+    nm.setAttribute('fill', '#9a938a');
+    nm.textContent = reparti[i].nome;
+    grp.appendChild(r); grp.appendChild(n); grp.appendChild(l);
+    grp.appendChild(st); grp.appendChild(nm);
+    grp.onclick = (function (k) { return function () { fermaLinea(); mostraReparto(k); }; })(i);
+    g.appendChild(grp);
+  }
+  mostraReparto(0);
+}
+
+function mostraReparto(i) {
+  repAttivo = i;
+  for (var k = 0; k < reparti.length; k++) {
+    var attivo = (k === i);
+    document.getElementById('box' + k).setAttribute('fill', attivo ? '#27ae60' : '#ffffff');
+    document.getElementById('box' + k).setAttribute('stroke', attivo ? '#27ae60' : '#d8d3ca');
+    document.getElementById('num' + k).setAttribute('fill', attivo ? '#ffffff' : '#7f8c8d');
+    document.getElementById('lab' + k).setAttribute('fill', attivo ? '#ffffff' : '#7f8c8d');
+  }
+  muoviFoglio(LX0 + i * LDX - 13);
+  var r = reparti[i];
+  var pall = '';
+  for (var p = 1; p <= 4; p++) pall += '<i class="' + (p <= r.lvl ? 'on' : '') + '"></i>';
+  var etichette = { 1: 'basso', 2: 'medio', 3: 'alto', 4: 'molto alto' };
+  document.getElementById('repDettaglio').innerHTML =
+    '<h4>' + (i + 1) + '. ' + r.nome + '</h4><p>' + r.txt + '</p>' +
+    '<div class="rep-energia"><span>Peso energetico nel reparto:</span><span class="rep-pallini">' + pall + '</span><span>' + etichette[r.lvl] + '</span></div>';
+}
+
+function muoviFoglio(target) {
+  if (animId) cancelAnimationFrame(animId);
+  function step() {
+    var d = target - fogliox;
+    if (Math.abs(d) < 0.8) { fogliox = target; document.getElementById('foglio').setAttribute('x', fogliox); return; }
+    fogliox += d * 0.18;
+    document.getElementById('foglio').setAttribute('x', fogliox);
+    animId = requestAnimationFrame(step);
+  }
+  step();
+}
+
+function avviaLinea() {
+  fermaLinea();
+  document.getElementById('btnLinea').textContent = 'Linea in funzione…';
+  var i = repAttivo;
+  timerLinea = setInterval(function () {
+    i = (i + 1) % reparti.length;
+    mostraReparto(i);
+  }, 2600);
+}
+
+function fermaLinea() {
+  if (timerLinea) { clearInterval(timerLinea); timerLinea = null; }
+  document.getElementById('btnLinea').textContent = 'Avvia la linea';
+}
+
+/* ══ APPLET 02 · CONTATORE ══ */
+var fabbriche = [20, 30, 40], fabSel = 1;
+
+function setFabbrica(i) {
+  fabSel = i;
+  var b = document.querySelectorAll('.fab-btn');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  aggiornaCalc();
+}
+
+function fmt(n) { return Math.round(n).toLocaleString('it-IT'); }
+
+function aggiornaCalc() {
+  var cap = parseInt(document.getElementById('capSlider').value, 10);
+  document.getElementById('capVal').textContent = cap;
+  var kwh = cap * fabbriche[fabSel];
+  document.getElementById('calcOut').textContent = fmt(kwh) + ' kWh';
+  var anni = kwh / 2700;
+  var testoAnni = anni < 1
+    ? '<b>' + Math.round(anni * 12) + ' mesi</b> di consumo elettrico della «famiglia tipo» ARERA (2.700 kWh l’anno).'
+    : '<b>' + anni.toFixed(1).replace('.', ',') + ' anni</b> di consumo elettrico della «famiglia tipo» ARERA (2.700 kWh l’anno).';
+  document.getElementById('eqCasa').innerHTML = testoAnni;
+  var km = kwh / 0.17;
+  document.getElementById('eqKm').innerHTML = 'Con la stessa energia, quell’auto percorrerebbe <b>' + fmt(km) + ' km</b> — a 17 kWh ogni 100 km.';
+  document.getElementById('eqCicli').innerHTML = 'Equivale a <b>' + fmt(kwh / cap) + ' ricariche complete</b> dello stesso pacco: la fabbrica ne ha «bruciate» tante prima ancora della prima.';
+}
+
+/* ══ APPLET 03 · DUE LEVE ══ */
+var chimiche = [
+  { nome: 'LFP', mat: 35, nota: "Il ferro-fosfato non contiene né nichel né cobalto: sparisce l’anello più pesante della catena, quello dell’estrazione e della raffinazione dei metalli. In cambio serve più volume e più peso per la stessa autonomia." },
+  { nome: 'NMC 622', mat: 59, nota: "È la chimica su cui l’IVL ha costruito la stima dei 59 kg per kWh dai materiali a monte: sei parti di nichel, due di manganese, due di cobalto. Il cobalto pesa poco in massa e moltissimo nel dibattito sulle miniere." },
+  { nome: 'NMC 811', mat: 55, nota: "Otto parti di nichel su dieci: meno cobalto, più densità di energia, ma anche più dipendenza dal nichel di classe 1 — che oggi arriva in larga parte da laterite indonesiana lavorata con elettricità da carbone." }
+];
+var luoghi = [
+  { nome: 'rete a carbone', fab: 60, nota: "Con una rete quasi interamente a carbone la sola produzione della cella può pesare quanto tutti i materiali messi insieme: è il limite superiore dell’intervallo IVL." },
+  { nome: 'mix elettrico europeo', fab: 25, nota: "Con il mix medio europeo la fabbrica pesa circa un terzo del totale: contano molto il paese e persino la provincia in cui sorge lo stabilimento." },
+  { nome: 'elettricità quasi fossil-free', fab: 3, nota: "Con idroelettrico ed eolico la voce «fabbrica» quasi sparisce, e resta il pavimento dei materiali: sotto i 60 kg per kWh, avvertono gli autori IVL, non si scende senza intervenire su miniere e riciclo." }
+];
+var chimSel = 1, luogoSel = 1;
+
+function setChimica(i) {
+  chimSel = i;
+  var b = document.querySelectorAll('.leva-btn[data-chim]');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  aggiornaLeve();
+}
+function setLuogo(i) {
+  luogoSel = i;
+  var b = document.querySelectorAll('.leva-btn[data-luogo]');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  aggiornaLeve();
+}
+function aggiornaLeve() {
+  var m = chimiche[chimSel].mat, f = luoghi[luogoSel].fab, tot = m + f;
+  var scala = 125;
+  document.getElementById('stackMat').style.width = (m / scala * 100) + '%';
+  document.getElementById('stackFab').style.width = (f / scala * 100) + '%';
+  document.getElementById('valMat').textContent = m;
+  document.getElementById('valFab').textContent = f;
+  document.getElementById('totNum').textContent = tot;
+  document.getElementById('totPacco').textContent = 'ossia ' + (tot * 75 / 1000).toFixed(1).replace('.', ',') + ' tonnellate per un pacco da 75 kWh';
+  document.getElementById('boxLeve').innerHTML =
+    '<strong>' + chimiche[chimSel].nome + ', ' + luoghi[luogoSel].nome + '.</strong> ' +
+    chimiche[chimSel].nota + ' ' + luoghi[luogoSel].nota;
+}
+
+/* ══ APPLET 04 · ODOMETRO ══ */
+var scenari = [
+  { nome: 'ICCT 2025 — auto media in UE',
+    prodBev: 9.5, prodIce: 6.8, useBev: 0.026, useIce: 0.207,
+    coda: "L’ICCT arriva a un pareggio dichiarato di «circa 17.000 km»: la ricostruzione qui sopra, che parte dalle stesse emissioni di produzione, cade nello stesso ordine di grandezza." },
+  { nome: 'Polestar 2 vs Volvo XC40 benzina',
+    prodBev: 26.2, prodIce: 14.0, useBev: 0.049, useIce: 0.205,
+    coda: "Polestar dichiara il pareggio a 78.000 km con il mix elettrico europeo: un SUV bimotore contro un SUV a benzina, con la rete elettrica congelata ai valori del 2020." }
+];
+var scenSel = 0;
+
+function setScenario(i) {
+  scenSel = i;
+  var b = document.querySelectorAll('.scen-btn');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  disegnaOdo();
+  aggiornaOdo();
+}
+
+function cum(s, tipo, km) {
+  return tipo === 'bev' ? s.prodBev + s.useBev * km / 1000 : s.prodIce + s.useIce * km / 1000;
+}
+
+function disegnaOdo() {
+  var s = scenari[scenSel];
+  var W = 620, H = 300, ml = 46, mr = 16, mt = 18, mb = 42;
+  var KMAX = 200000;
+  var ymax = Math.max(cum(s, 'bev', KMAX), cum(s, 'ice', KMAX)) * 1.08;
+  var px = function (km) { return ml + (km / KMAX) * (W - ml - mr); };
+  var py = function (t) { return H - mb - (t / ymax) * (H - mt - mb); };
+  var h = '';
+  for (var g = 0; g <= 4; g++) {
+    var tv = ymax * g / 4, y = py(tv);
+    h += '<line x1="' + ml + '" y1="' + y + '" x2="' + (W - mr) + '" y2="' + y + '" stroke="#e8e4de" stroke-width="1"></line>';
+    h += '<text x="' + (ml - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-family="sans-serif" font-size="10.5" fill="#9a938a">' + tv.toFixed(0) + ' t</text>';
+  }
+  for (var k = 0; k <= 200000; k += 50000) {
+    h += '<text x="' + px(k) + '" y="' + (H - mb + 18) + '" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#9a938a">' + (k / 1000) + 'k</text>';
+  }
+  h += '<line x1="' + ml + '" y1="' + py(0) + '" x2="' + (W - mr) + '" y2="' + py(0) + '" stroke="#d8d3ca" stroke-width="1.5"></line>';
+  h += '<line x1="' + px(0) + '" y1="' + py(cum(s, 'ice', 0)) + '" x2="' + px(KMAX) + '" y2="' + py(cum(s, 'ice', KMAX)) + '" stroke="#c0392b" stroke-width="2.5"></line>';
+  h += '<line x1="' + px(0) + '" y1="' + py(cum(s, 'bev', 0)) + '" x2="' + px(KMAX) + '" y2="' + py(cum(s, 'bev', KMAX)) + '" stroke="#27ae60" stroke-width="2.5"></line>';
+  var kbe = (s.prodBev - s.prodIce) / (s.useIce - s.useBev) * 1000;
+  h += '<line x1="' + px(kbe) + '" y1="' + py(0) + '" x2="' + px(kbe) + '" y2="' + mt + '" stroke="#1c1c2e" stroke-width="1" stroke-dasharray="3 3" opacity="0.45"></line>';
+  h += '<circle cx="' + px(kbe) + '" cy="' + py(cum(s, 'bev', kbe)) + '" r="5" fill="#1c1c2e"></circle>';
+  h += '<text x="' + Math.min(px(kbe) + 9, W - mr - 130) + '" y="' + (mt + 12) + '" font-family="sans-serif" font-size="11" font-weight="bold" fill="#1c1c2e">sorpasso: ' + Math.round(kbe / 1000) + '.000 km</text>';
+  h += '<line id="odoMark" x1="0" y1="' + mt + '" x2="0" y2="' + py(0) + '" stroke="#27ae60" stroke-width="1.5" opacity="0.55"></line>';
+  h += '<circle id="odoPtBev" cx="0" cy="0" r="4.5" fill="#27ae60"></circle>';
+  h += '<circle id="odoPtIce" cx="0" cy="0" r="4.5" fill="#c0392b"></circle>';
+  h += '<text x="' + (W - mr) + '" y="' + (H - 6) + '" text-anchor="end" font-family="sans-serif" font-size="10.5" fill="#9a938a">chilometri percorsi — tonnellate di CO2e accumulate</text>';
+  document.getElementById('odoSvg').innerHTML = h;
+  document.getElementById('odoSvg')._geo = { px: px, py: py };
+}
+
+function aggiornaOdo() {
+  var s = scenari[scenSel];
+  var km = parseInt(document.getElementById('odoSlider').value, 10);
+  var geo = document.getElementById('odoSvg')._geo;
+  var bev = cum(s, 'bev', km), ice = cum(s, 'ice', km);
+  document.getElementById('odoMark').setAttribute('x1', geo.px(km));
+  document.getElementById('odoMark').setAttribute('x2', geo.px(km));
+  document.getElementById('odoPtBev').setAttribute('cx', geo.px(km));
+  document.getElementById('odoPtBev').setAttribute('cy', geo.py(bev));
+  document.getElementById('odoPtIce').setAttribute('cx', geo.px(km));
+  document.getElementById('odoPtIce').setAttribute('cy', geo.py(ice));
+  document.getElementById('odoBev').textContent = bev.toFixed(1).replace('.', ',') + ' t';
+  document.getElementById('odoIce').textContent = ice.toFixed(1).replace('.', ',') + ' t';
+  var kbe = (s.prodBev - s.prodIce) / (s.useIce - s.useBev) * 1000;
+  var testo;
+  if (km < kbe) {
+    testo = 'A <strong>' + fmt(km) + ' km</strong> l’elettrica è ancora in debito di <strong>' + (bev - ice).toFixed(1).replace('.', ',') + ' tonnellate</strong>. Il sorpasso arriva a ' + fmt(Math.round(kbe / 1000) * 1000) + ' km.';
+  } else {
+    testo = 'A <strong>' + fmt(km) + ' km</strong> il debito è estinto: l’elettrica ha già evitato <strong>' + (ice - bev).toFixed(1).replace('.', ',') + ' tonnellate</strong> rispetto alla benzina.';
+  }
+  document.getElementById('odoEsito').innerHTML = testo + ' ' + s.coda;
+}
+
+/* ══ AVVIO ══ */
+costruisciLinea();
+aggiornaCalc();
+aggiornaLeve();
+disegnaOdo();
+aggiornaOdo();
+</script>
+</body>
+</html>
