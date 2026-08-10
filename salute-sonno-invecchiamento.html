@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché con l'età dormiamo meno e peggio?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #8e44ad;
+    --accent-light: #f2e7f8;
+    --accent-mid: #a569bd;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── comandi comuni ── */
+  .btn-riga { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .btn-eta {
+    flex: 1;
+    min-width: 96px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-eta.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ── APPLET 1 · IPNOGRAMMA ── */
+  .hyp-wrap { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 10px 8px 4px; }
+  .hyp-svg { display: block; width: 100%; height: auto; }
+  .hyp-seg { cursor: pointer; }
+  .hyp-seg:hover { opacity: 0.65; }
+  .hyp-dettaglio { margin-top: 14px; font-size: 14.5px; line-height: 1.6; }
+  .hyp-dettaglio strong { color: var(--accent); }
+  .hyp-stat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+  .hyp-stat div { background: #faf8f4; border: 1px solid var(--border); border-radius: 4px; padding: 8px 6px; text-align: center; }
+  .hyp-stat b { display: block; font-family: 'Playfair Display', serif; font-size: 19px; color: var(--accent); line-height: 1.2; }
+  .hyp-stat span { font-size: 11px; color: var(--muted); line-height: 1.25; display: block; margin-top: 3px; }
+
+  /* ── APPLET 2 · GRAFICO ── */
+  .ck-box { position: relative; height: 260px; }
+  .ck-nota { font-size: 13.5px; line-height: 1.55; color: var(--text); margin-top: 14px; background: #faf8f4; border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; }
+
+  /* ── APPLET 3 · OROLOGIO CIRCADIANO ── */
+  .orb-scena { display: grid; grid-template-columns: 1fr 150px; gap: 16px; align-items: center; }
+  .orb-svg { display: block; width: 100%; height: auto; background: #faf8f4; border-radius: 6px; }
+  .orb-dati div { border-bottom: 1px dashed var(--border); padding: 7px 0; font-size: 13px; color: var(--muted); }
+  .orb-dati div:last-child { border-bottom: none; }
+  .orb-dati b { display: block; font-family: 'Playfair Display', serif; font-size: 17px; color: var(--accent); }
+  .orb-legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .orb-legenda span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .orb-legenda .l-sonno::before { background: #6c3483; }
+  .orb-legenda .l-mel::before { background: #a569bd; }
+  .orb-legenda .l-luce::before { background: #f0c419; }
+
+  /* ── APPLET 4 · DUE LETTURE ── */
+  .deb-lista { display: grid; gap: 8px; margin-bottom: 18px; }
+  .deb-btn {
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .deb-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .deb-fatto { font-size: 14.5px; line-height: 1.6; background: #faf8f4; border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; margin-bottom: 12px; }
+  .deb-colonne { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .deb-col { border-radius: 4px; padding: 12px 14px; font-size: 13.5px; line-height: 1.55; }
+  .deb-col h5 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .deb-a { background: #f4f6f6; border-left: 3px solid var(--muted); }
+  .deb-a h5 { color: var(--muted); }
+  .deb-b { background: var(--accent-light); border-left: 3px solid var(--accent); }
+  .deb-b h5 { color: var(--accent); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .btn-eta { min-width: 44%; }
+    .hyp-stat { grid-template-columns: repeat(2, 1fr); }
+    .orb-scena { grid-template-columns: 1fr; }
+    .deb-colonne { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Salute</div>
+    <h1>Perché con l'età dormiamo meno e peggio?</h1>
+    <div class="risposta-box">
+      <p>Perché invecchiano due cose diverse: il cervello che <em>fabbrica</em> il sonno profondo e l'orologio che decide <em>quando</em> dormire. Il sonno a onde lente crolla prestissimo — dal 18,9% della notte tra i 16 e i 25 anni al 3,4% già tra i 36 e i 50 — mentre solo dopo i 50 si aggiungono 28 minuti di veglia notturna per ogni decennio. Il bisogno di dormire, con ogni probabilità, resta: è la capacità di produrre sonno che si consuma.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>La lamentela è vecchia quanto la vecchiaia, ma è anche misurata: la meta-analisi di Maurice Ohayon e colleghi, che nel 2004 ha rimesso insieme 65 studi polisonnografici su 3.577 persone sane dai 5 ai 102 anni, trova che con l'età calano tempo totale di sonno, sonno profondo e sonno REM, e crescono latenza d'addormentamento, stadi leggeri e minuti svegli dopo essersi addormentati. Con un dettaglio decisivo: dopo i 60 anni l'unico parametro che continua a peggiorare in modo significativo è l'efficienza del sonno, cioè quanto della notte passata a letto è davvero sonno.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Due notti a confronto, minuto per minuto</div>
+      <div class="applet-istruzione">Cambia età e clicca un blocco dell'ipnogramma per vedere in che stadio si trova il dormiente e a che ora.</div>
+    </div>
+    <div class="btn-riga">
+      <button class="btn-eta attivo" data-hyp="0" onclick="mostraNotte(0)">Una notte a 25 anni</button>
+      <button class="btn-eta" data-hyp="1" onclick="mostraNotte(1)">Una notte a 75 anni</button>
+    </div>
+    <div class="hyp-wrap">
+      <svg class="hyp-svg" id="hypSvg" viewBox="0 0 620 250" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="hyp-dettaglio" id="hypDettaglio"></div>
+    <div class="hyp-stat" id="hypStat"></div>
+    <div class="applet-fonte">
+      Ipnogrammi ricostruiti: la successione dei singoli cicli è illustrativa, ma le proporzioni fra stadi riproducono i valori medi misurati con polisonnografia da E. Van Cauter, R. Leproult, L. Plat, <em>Age-related changes in slow wave sleep and REM sleep and relationship with growth hormone and cortisol levels in healthy men</em>, JAMA 284(7), 2000 (149 uomini sani da 16 a 83 anni) e da M. M. Ohayon, M. A. Carskadon, C. Guilleminault, M. V. Vitiello, <em>Meta-Analysis of Quantitative Sleep Parameters From Childhood to Old Age in Healthy Individuals</em>, Sleep 27(7), 2004. Le statistiche sotto il grafico sono calcolate dai blocchi disegnati.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il primo crollo arriva molto prima di quanto si creda. Van Cauter, Leproult e Plat, misurando 149 uomini sani fra i 16 e gli 83 anni, hanno trovato che la percentuale di sonno profondo scende dal 18,9% della notte nella prima età adulta (16-25 anni) al <strong>3,4% già fra i 36 e i 50</strong>, sostituita da stadi leggeri, senza che la notte sia ancora più frammentata e senza perdita di REM. In parallelo la secrezione notturna di ormone della crescita — che avviene proprio durante le onde lente — cala di 372 microgrammi per decennio: a quarant'anni il sonno profondo è già quasi finito, e quasi nessuno se ne accorge.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Due declini, due epoche diverse</div>
+      <div class="applet-istruzione">Scegli una grandezza e confronta quanto cambia nella prima metà della vita adulta e quanto nella seconda.</div>
+    </div>
+    <div class="btn-riga">
+      <button class="btn-eta attivo" data-ck="0" onclick="mostraMetrica(0)">Sonno profondo</button>
+      <button class="btn-eta" data-ck="1" onclick="mostraMetrica(1)">Veglia notturna</button>
+      <button class="btn-eta" data-ck="2" onclick="mostraMetrica(2)">Ormone della crescita</button>
+    </div>
+    <div class="ck-box"><canvas id="ckCanvas"></canvas></div>
+    <div class="ck-nota" id="ckNota"></div>
+    <div class="applet-fonte">
+      Tutti i valori sono presi da E. Van Cauter, R. Leproult, L. Plat, <em>Age-related changes in slow wave sleep and REM sleep…</em>, JAMA 284(7), 2000, pp. 861-868, che confronta tre fasce d'età (16-25, 36-50, 71-83 anni). Nello studio il passaggio dalla mezza età alla vecchiaia «non comporta un'ulteriore diminuzione significativa del sonno a onde lente» ma un aumento del tempo di veglia di 28 minuti per decennio, a spese del sonno non-REM leggero (-24 minuti per decennio) e del REM (-10 minuti per decennio).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il secondo declino è di tutt'altra natura: non si perde più profondità, si perde continuità. Dopo i 50 anni il cortisolo serale sale di 19,3 nmol/l per decennio e la notte si spezza. Una parte dell'hardware è deteriorata: nel nucleo preottico ventrolaterale dell'ipotalamo — l'interruttore che tiene giù il sistema della veglia — i neuroni che esprimono galanina diminuiscono con l'età, e nello studio autoptico di Andrew Lim e Clifford Saper del 2014 il numero di quelle cellule prediceva quanto frammentato fosse stato il sonno degli stessi anziani, misurato con l'attigrafo negli anni precedenti la morte.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">L'orologio che va avanti (e la luce che non arriva più)</div>
+      <div class="applet-istruzione">Scegli un'età e guarda come ruotano la finestra del sonno e quella della melatonina sul quadrante delle 24 ore.</div>
+    </div>
+    <div class="btn-riga">
+      <button class="btn-eta attivo" data-orb="0" onclick="mostraOrologio(0)">25 anni</button>
+      <button class="btn-eta" data-orb="1" onclick="mostraOrologio(1)">55 anni</button>
+      <button class="btn-eta" data-orb="2" onclick="mostraOrologio(2)">75 anni</button>
+    </div>
+    <div class="orb-scena">
+      <svg class="orb-svg" id="orbSvg" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="orb-dati" id="orbDati"></div>
+    </div>
+    <div class="orb-legenda">
+      <span class="l-sonno">finestra di sonno</span>
+      <span class="l-mel">melatonina in circolo</span>
+      <span class="l-luce">luce utile che raggiunge la retina</span>
+    </div>
+    <div class="applet-fonte">
+      Gli orari sul quadrante sono una ricostruzione illustrativa della direzione e dell'ordine di grandezza dell'anticipo di fase descritto da J. F. Duffy, J. M. Zeitzer, D. W. Rimmer, E. B. Klerman, D.-J. Dijk, C. A. Czeisler, <em>Peak of circadian melatonin rhythm occurs later within the sleep of older subjects</em>, American Journal of Physiology — Endocrinology and Metabolism 282(2), 2002, pp. E297-E303, e da T. H. Monk, <em>Aging human circadian rhythms</em>, 2005. Le percentuali di luce sono le stime di P. L. Turner, M. A. Mainster, <em>Circadian photoreception: ageing and the eye's important role in systemic health</em>, British Journal of Ophthalmology 92(11), 2008: quota della luce necessaria a stimolare pienamente il sistema circadiano che arriva ai fotorecettori (50% a 45 anni, 37% a 55, 17% a 75).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Anche l'orologio interno invecchia due volte. Da un lato degenerano nel nucleo soprachiasmatico i neuroni che esprimono il peptide VIP, e con loro si appiattisce l'ampiezza del ritmo; dall'altro il cristallino ingiallisce e la pupilla si restringe, così che — secondo le stime di Turner e Mainster — a 45 anni ai fotorecettori arriva metà della luce necessaria a stimolare pienamente il sistema circadiano, a 75 il 17%. Un anziano che passa la giornata in casa vive di fatto in una penombra biologica: l'orologio, senza luce forte, resta sregolato. A questo si sommano cause del tutto meccaniche — fra gli over 70 le rassegne epidemiologiche stimano che dal 28% al 62% si alzi almeno due volte a notte per urinare.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Serve meno sonno, o non si riesce più a produrlo?</div>
+      <div class="applet-istruzione">Scegli un'osservazione sperimentale e leggi le due interpretazioni opposte che gli studiosi ne danno.</div>
+    </div>
+    <div class="deb-lista">
+      <button class="deb-btn attivo" data-deb="0" onclick="mostraDibattito(0)">Con 16 ore a letto dormono comunque meno</button>
+      <button class="deb-btn" data-deb="1" onclick="mostraDibattito(1)">Dopo una privazione, il rimbalzo è più piccolo</button>
+      <button class="deb-btn" data-deb="2" onclick="mostraDibattito(2)">Si dichiarano meno assonnati</button>
+      <button class="deb-btn" data-deb="3" onclick="mostraDibattito(3)">Peggiorano meno nei test dopo una notte in bianco</button>
+    </div>
+    <div class="deb-fatto" id="debFatto"></div>
+    <div class="deb-colonne">
+      <div class="deb-col deb-a"><h5>Serve meno sonno</h5><div id="debA"></div></div>
+      <div class="deb-col deb-b"><h5>Il sonno non si riesce più a generarlo</h5><div id="debB"></div></div>
+    </div>
+    <div class="applet-fonte">
+      Le quattro osservazioni e le due letture contrapposte sono riprese dalla sezione conclusiva («Do Older Adults Need Less Sleep?») di B. A. Mander, J. R. Winer, M. P. Walker, <em>Sleep and Human Aging</em>, Neuron 94(1), 5 aprile 2017, pp. 19-36, che cita fra gli altri E. B. Klerman, D.-J. Dijk (Current Biology, 2008), D.-J. Dijk et al. (2010), H. P. A. Van Dongen et al. (2003), K. Adam et al. (2006), A. S. Lim et al. (Brain, 2014) e M. Meyer et al. (2007).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che il risveglio precoce dell'anziano sia solo un guasto, però, non è affatto certo. Nel 2017 David Samson e Charles Nunn hanno messo l'attigrafo a 33 Hadza, cacciatori-raccoglitori della Tanzania, per 20 giorni: nell'arco di tutte quelle notti c'è stato un totale di appena <strong>18 minuti</strong> in cui l'intero gruppo risultava addormentato allo stesso momento, e per il 99,8% del tempo almeno una persona era sveglia o in sonno leggero. Le differenze di cronotipo che producono questa staffetta variano proprio con l'età: chi ha più anni si addormenta e si sveglia prima. È l'ipotesi della sentinella — quello che oggi chiamiamo insonnia senile potrebbe essere il residuo di un turno di guardia. Il che non toglie che apnee notturne, insonnia cronica e depressione siano malattie da curare, non «l'età che avanza»: la differenza è che si riconoscono dai sintomi diurni, non dal numero di risvegli.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Invecchiando non smettiamo di aver bisogno del sonno profondo: smettiamo di saperlo fabbricare — e continuiamo, ogni notte, a montare la guardia a un accampamento che non c'è più.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Maurice M. Ohayon, Mary A. Carskadon, Christian Guilleminault, Michael V. Vitiello, <em>Meta-Analysis of Quantitative Sleep Parameters From Childhood to Old Age in Healthy Individuals: Developing Normative Sleep Values Across the Human Lifespan</em>, «Sleep», vol. 27, n. 7, ottobre 2004, pp. 1255-1273 — <a href="https://academic.oup.com/sleep/article/27/7/1255/2696819">academic.oup.com</a></li>
+      <li>Eve Van Cauter, Rachel Leproult, Laurence Plat, <em>Age-Related Changes in Slow Wave Sleep and REM Sleep and Relationship With Growth Hormone and Cortisol Levels in Healthy Men</em>, «JAMA», vol. 284, n. 7, 16 agosto 2000, pp. 861-868 — <a href="https://pubmed.ncbi.nlm.nih.gov/10938176/">pubmed.ncbi.nlm.nih.gov</a></li>
+      <li>Bryce A. Mander, Joseph R. Winer, Matthew P. Walker, <em>Sleep and Human Aging</em>, «Neuron», vol. 94, n. 1, 5 aprile 2017, pp. 19-36 — <a href="https://pubmed.ncbi.nlm.nih.gov/28384471/">pubmed.ncbi.nlm.nih.gov</a></li>
+      <li>Elizabeth B. Klerman, Derk-Jan Dijk, <em>Age-Related Reduction in the Maximal Capacity for Sleep — Implications for Insomnia</em>, «Current Biology», vol. 18, n. 15, 2008, pp. 1118-1123 (18 anziani e 35 giovani, con opportunità di sonno estesa a 16 ore al giorno per 3-7 giorni)</li>
+      <li>Andrew S. P. Lim, Brian A. Ellison, Joshua L. Wang, Lei Yu, Julie A. Schneider, Aron S. Buchman, David A. Bennett, Clifford B. Saper, <em>Sleep is related to neuron numbers in the ventrolateral preoptic/intermediate nucleus in older adults with and without Alzheimer's disease</em>, «Brain», vol. 137, n. 10, 2014, pp. 2847-2861</li>
+      <li>Jeanne F. Duffy, Jamie M. Zeitzer, David W. Rimmer, Elizabeth B. Klerman, Derk-Jan Dijk, Charles A. Czeisler, <em>Peak of circadian melatonin rhythm occurs later within the sleep of older subjects</em>, «American Journal of Physiology — Endocrinology and Metabolism», vol. 282, n. 2, febbraio 2002, pp. E297-E303 — <a href="https://journals.physiology.org/doi/full/10.1152/ajpendo.00268.2001">journals.physiology.org</a></li>
+      <li>Patrick L. Turner, Martin A. Mainster, <em>Circadian photoreception: ageing and the eye's important role in systemic health</em>, «British Journal of Ophthalmology», vol. 92, n. 11, novembre 2008, pp. 1439-1444 — <a href="https://pubmed.ncbi.nlm.nih.gov/18757473/">pubmed.ncbi.nlm.nih.gov</a></li>
+      <li>David R. Samson, Alyssa N. Crittenden, Ibrahim A. Mabulla, Audax Z. P. Mabulla, Charles L. Nunn, <em>Chronotype variation drives night-time sentinel-like behaviour in hunter-gatherers</em>, «Proceedings of the Royal Society B», vol. 284, n. 1858, 12 luglio 2017, 20170967 — <a href="https://royalsocietypublishing.org/rspb/article/284/1858/20170967/78582/Chronotype-variation-drives-night-time-sentinel">royalsocietypublishing.org</a></li>
+      <li>Jan L. H. R. Bosch, Jeffrey P. Weiss, <em>The Prevalence and Causes of Nocturia</em>, «The Journal of Urology», vol. 184, n. 2, 2010, pp. 440-446 (rassegna delle stime di prevalenza per fascia d'età)</li>
+      <li>Daniel J. Foley et al., <em>Frequent napping is associated with excessive daytime sleepiness, depression, pain, and nocturia in older adults</em>, «The American Journal of Geriatric Psychiatry», 2007 (frequenza dei sonnellini diurni: 10% fra i 55-64 anni, 25% fra i 75-84)</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════════ APPLET 01 · IPNOGRAMMI ══════════ */
+var STADI = {
+  W:   { nome: 'Veglia',             y: 0, col: '#c0392b' },
+  REM: { nome: 'Sonno REM',          y: 1, col: '#a569bd' },
+  N1:  { nome: 'Stadio 1 (torpore)', y: 2, col: '#aeb6bf' },
+  N2:  { nome: 'Stadio 2 (leggero)', y: 3, col: '#7f8c8d' },
+  N3:  { nome: 'Sonno profondo',     y: 4, col: '#6c3483' }
+};
+
+var SPIEGA = {
+  W:   'Veglia. Nei giovani i risvegli notturni sono pochi e brevissimi, e al mattino non se ne ricorda quasi nessuno; oltre i cinquant\'anni si allungano fino a essere ricordati come «notti insonni».',
+  REM: 'Sonno REM: il cervello è attivo quasi come da svegli, i muscoli sono paralizzati, è la fase in cui si sogna di più. Occupa circa un quarto della notte a vent\'anni e cala di una decina di minuti per decennio dopo i cinquanta.',
+  N1:  'Stadio 1: il passaggio fra veglia e sonno, pochi minuti per volta. Con l\'età aumenta, perché ogni risveglio costringe a ricominciare da qui.',
+  N2:  'Stadio 2: il sonno leggero, con i fusi del sonno — raffiche di onde a 12-15 Hz. È lo stadio che «eredita» il tempo tolto al sonno profondo.',
+  N3:  'Sonno profondo a onde lente: le onde ampie e lente durante le quali si secerne la maggior parte dell\'ormone della crescita e si consolidano i ricordi. È il primo a sparire, e sparisce presto.'
+};
+
+var NOTTI = [
+  { eta: '25 anni', inizio: 23 * 60 + 20,
+    segs: [['N1',6],['N2',21],['N3',35],['N2',10],['REM',15],['N2',18],['N3',32],['N2',12],['REM',18],['W',4],['N2',30],['N3',15],['N2',14],['REM',22],['N2',45],['N3',10],['N2',23],['REM',25],['N2',40],['W',6],['N2',29],['REM',35],['N1',7],['W',8]] },
+  { eta: '75 anni', inizio: 22 * 60 + 10,
+    segs: [['N1',14],['N2',26],['N3',12],['N2',12],['W',8],['N1',6],['N2',17],['REM',14],['W',13],['N1',8],['N2',24],['N3',8],['N2',18],['W',8],['N2',22],['REM',20],['W',10],['N1',6],['N2',26],['N3',5],['N2',22],['W',15],['N2',24],['REM',22],['W',12],['N1',6],['N2',24],['REM',20],['W',14],['N2',18],['N1',8],['W',20]] }
+];
+
+var nottaCorrente = 0;
+
+function oraDa(min) {
+  var m = ((min % 1440) + 1440) % 1440;
+  var h = Math.floor(m / 60), mm = m % 60;
+  return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm;
+}
+
+function disegnaNotte(i) {
+  var n = NOTTI[i], svg = document.getElementById('hypSvg');
+  var X0 = 96, X1 = 606, Y0 = 26, RIGA = 40;
+  var tot = 0, k;
+  for (k = 0; k < n.segs.length; k++) tot += n.segs[k][1];
+  var scala = (X1 - X0) / tot;
+  var html = '';
+
+  var chiavi = ['W', 'REM', 'N1', 'N2', 'N3'];
+  for (k = 0; k < chiavi.length; k++) {
+    var y = Y0 + STADI[chiavi[k]].y * RIGA;
+    html += '<line x1="' + X0 + '" y1="' + y + '" x2="' + X1 + '" y2="' + y + '" stroke="#e8e4de" stroke-width="1"></line>';
+    html += '<text x="' + (X0 - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-family="sans-serif" font-size="11" fill="#7f8c8d">' + STADI[chiavi[k]].nome + '</text>';
+  }
+
+  var cum = 0;
+  for (k = 0; k < n.segs.length; k++) {
+    var st = n.segs[k][0], dur = n.segs[k][1];
+    var x = X0 + cum * scala, w = Math.max(dur * scala, 1.2);
+    var yy = Y0 + STADI[st].y * RIGA;
+    html += '<rect class="hyp-seg" x="' + x.toFixed(1) + '" y="' + (yy - 7) + '" width="' + w.toFixed(1) + '" height="14" rx="2" fill="' + STADI[st].col + '" ' +
+            'onclick="dettaglioSeg(' + i + ',' + k + ',' + cum + ')"></rect>';
+    if (k > 0) {
+      var prev = n.segs[k - 1][0];
+      var yprev = Y0 + STADI[prev].y * RIGA;
+      html += '<line x1="' + x.toFixed(1) + '" y1="' + yprev + '" x2="' + x.toFixed(1) + '" y2="' + yy + '" stroke="' + STADI[st].col + '" stroke-width="1.4" opacity="0.5"></line>';
+    }
+    cum += dur;
+  }
+
+  var ore = Math.ceil(tot / 60);
+  for (k = 0; k <= ore; k++) {
+    var xt = X0 + Math.min(k * 60, tot) * scala;
+    html += '<line x1="' + xt.toFixed(1) + '" y1="' + (Y0 + 4 * RIGA + 10) + '" x2="' + xt.toFixed(1) + '" y2="' + (Y0 + 4 * RIGA + 16) + '" stroke="#c9c4bc" stroke-width="1"></line>';
+    html += '<text x="' + xt.toFixed(1) + '" y="' + (Y0 + 4 * RIGA + 30) + '" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#7f8c8d">' + oraDa(n.inizio + Math.min(k * 60, tot)) + '</text>';
+  }
+  html += '<text x="' + X0 + '" y="14" font-family="sans-serif" font-size="11.5" fill="#8e44ad">' + n.eta + ' — a letto dalle ' + oraDa(n.inizio) + ' alle ' + oraDa(n.inizio + tot) + '</text>';
+
+  svg.innerHTML = html;
+
+  var conta = { W: 0, REM: 0, N1: 0, N2: 0, N3: 0 }, risvegli = 0;
+  for (k = 0; k < n.segs.length; k++) {
+    conta[n.segs[k][0]] += n.segs[k][1];
+    if (n.segs[k][0] === 'W' && k > 0 && k < n.segs.length - 1) risvegli++;
+  }
+  var dormito = tot - conta.W;
+  document.getElementById('hypStat').innerHTML =
+    '<div><b>' + (conta.N3 / tot * 100).toFixed(1) + '%</b><span>della notte in sonno profondo</span></div>' +
+    '<div><b>' + conta.W + '</b><span>minuti svegli a letto</span></div>' +
+    '<div><b>' + risvegli + '</b><span>risvegli dopo l\'addormentamento</span></div>' +
+    '<div><b>' + Math.round(dormito / tot * 100) + '%</b><span>efficienza del sonno</span></div>';
+
+  dettaglioSeg(i, 0, 0);
+}
+
+function dettaglioSeg(i, k, cum) {
+  var n = NOTTI[i], st = n.segs[k][0], dur = n.segs[k][1];
+  document.getElementById('hypDettaglio').innerHTML =
+    '<strong>' + STADI[st].nome + '</strong> — dalle ' + oraDa(n.inizio + cum) + ' alle ' + oraDa(n.inizio + cum + dur) +
+    ' (' + dur + ' minuti). ' + SPIEGA[st];
+}
+
+function mostraNotte(i) {
+  nottaCorrente = i;
+  var b = document.querySelectorAll('[data-hyp]');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  disegnaNotte(i);
+}
+
+/* ══════════ APPLET 02 · GRAFICO ══════════ */
+var METRICHE = [
+  { lab: 'Sonno profondo, % della notte',
+    dati: [-15.5, 0],
+    fmt: function (v) { return (v === 0 ? 'invariato' : v.toFixed(1) + ' punti'); },
+    asse: 'variazione in punti percentuali',
+    nota: 'Fra i 16-25 anni e i 36-50 il sonno a onde lente passa dal <strong>18,9%</strong> al <strong>3,4%</strong> della notte: quindici punti e mezzo persi prima dei cinquant\'anni. Dai 36-50 ai 71-83 anni, invece, lo studio non rileva nessuna ulteriore riduzione significativa — non perché il sonno migliori, ma perché di sonno profondo non ne era rimasto quasi più.' },
+  { lab: 'Veglia notturna, minuti in più per decennio',
+    dati: [0, 28],
+    fmt: function (v) { return (v === 0 ? 'nessun aumento significativo' : '+' + v + ' min/decennio'); },
+    asse: 'minuti per decennio',
+    nota: 'Il tempo passato svegli a letto non aumenta in modo significativo mentre crolla il sonno profondo: comincia a crescere dopo, di <strong>28 minuti per decennio</strong>, sottratti al sonno leggero (-24 minuti) e al REM (-10 minuti). Sono due orologi diversi: uno che smette di produrre profondità a quarant\'anni, uno che smette di tenere insieme la notte a sessanta.' },
+  { lab: 'Ormone della crescita, µg secreti in meno per decennio',
+    dati: [-372, -43],
+    fmt: function (v) { return v + ' µg/decennio'; },
+    asse: 'microgrammi per decennio',
+    nota: 'L\'ormone della crescita si secerne quasi tutto durante le onde lente, e segue il sonno profondo come un\'ombra: <strong>-372 microgrammi per decennio</strong> nella prima fase, poi appena -43 nella seconda. Indipendentemente dall\'età anagrafica, la quantità secreta risulta associata alla quantità di sonno profondo.' }
+];
+
+var ckChart = null, metricaCorrente = 0;
+
+function mostraMetrica(i) {
+  metricaCorrente = i;
+  var b = document.querySelectorAll('[data-ck]');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  var m = METRICHE[i];
+  document.getElementById('ckNota').innerHTML = m.nota;
+  if (ckChart) ckChart.destroy();
+  ckChart = new Chart(document.getElementById('ckCanvas').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Dai 16-25 ai 36-50 anni', 'Dai 36-50 ai 71-83 anni'],
+      datasets: [{
+        label: m.lab,
+        data: m.dati,
+        backgroundColor: ['#8e44ad', '#c9a8db'],
+        borderRadius: 3,
+        barPercentage: 0.55
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function (c) { return m.fmt(c.parsed.y); } } },
+        title: { display: true, text: m.lab, color: '#1c1c2e', font: { size: 13, weight: '600' } }
+      },
+      scales: {
+        y: { title: { display: true, text: m.asse, color: '#7f8c8d', font: { size: 11 } },
+             grid: { color: '#efece6' }, ticks: { color: '#7f8c8d', font: { size: 11 } } },
+        x: { grid: { display: false }, ticks: { color: '#7f8c8d', font: { size: 11.5 } } }
+      }
+    }
+  });
+}
+
+/* ══════════ APPLET 03 · OROLOGIO CIRCADIANO ══════════ */
+var ETA_ORB = [
+  { eta: '25 anni', sonno: [23 * 60 + 20, 7 * 60 + 20], mel: [22 * 60, 7 * 60], picco: 3 * 60 + 45, luce: 100, luceLab: 'riferimento' },
+  { eta: '55 anni', sonno: [22 * 60 + 45, 6 * 60 + 30], mel: [21 * 60 + 20, 6 * 60 + 35], picco: 3 * 60 + 5, luce: 37, luceLab: '37%' },
+  { eta: '75 anni', sonno: [22 * 60 + 10, 6 * 60 + 10], mel: [20 * 60 + 45, 6 * 60 + 40], picco: 3 * 60 + 5, luce: 17, luceLab: '17%' }
+];
+
+function puntoOrb(cx, cy, r, min) {
+  var a = (min / 1440) * 2 * Math.PI;
+  return [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+}
+
+function arcoOrb(cx, cy, r, da, a, col, sp) {
+  var durata = ((a - da) + 1440) % 1440;
+  var p1 = puntoOrb(cx, cy, r, da), p2 = puntoOrb(cx, cy, r, a);
+  var grande = durata > 720 ? 1 : 0;
+  return '<path d="M ' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1) + ' A ' + r + ' ' + r + ' 0 ' + grande + ' 1 ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1) +
+         '" fill="none" stroke="' + col + '" stroke-width="' + sp + '" stroke-linecap="round"></path>';
+}
+
+function mostraOrologio(i) {
+  var b = document.querySelectorAll('[data-orb]');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  var d = ETA_ORB[i], cx = 170, cy = 170;
+  var h = '';
+
+  h += '<circle cx="170" cy="170" r="150" fill="#fff" stroke="#e8e4de" stroke-width="1"></circle>';
+  for (k = 0; k < 24; k++) {
+    var p1 = puntoOrb(cx, cy, k % 6 === 0 ? 138 : 145, k * 60);
+    var p2 = puntoOrb(cx, cy, 150, k * 60);
+    h += '<line x1="' + p1[0].toFixed(1) + '" y1="' + p1[1].toFixed(1) + '" x2="' + p2[0].toFixed(1) + '" y2="' + p2[1].toFixed(1) + '" stroke="#d8d3ca" stroke-width="1"></line>';
+  }
+  var etichette = [[0, '24'], [360, '06'], [720, '12'], [1080, '18']];
+  for (k = 0; k < etichette.length; k++) {
+    var pe = puntoOrb(cx, cy, 124, etichette[k][0]);
+    h += '<text x="' + pe[0].toFixed(1) + '" y="' + (pe[1] + 4).toFixed(1) + '" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7f8c8d">' + etichette[k][1] + '</text>';
+  }
+
+  h += arcoOrb(cx, cy, 108, d.mel[0], d.mel[1], '#a569bd', 14);
+  h += arcoOrb(cx, cy, 86, d.sonno[0], d.sonno[1], '#6c3483', 18);
+
+  var pp = puntoOrb(cx, cy, 108, d.picco);
+  h += '<circle cx="' + pp[0].toFixed(1) + '" cy="' + pp[1].toFixed(1) + '" r="6" fill="#fff" stroke="#8e44ad" stroke-width="3"></circle>';
+  var pt = puntoOrb(cx, cy, 132, d.picco);
+  h += '<text x="' + pt[0].toFixed(1) + '" y="' + (pt[1] + 4).toFixed(1) + '" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#8e44ad">picco</text>';
+
+  var ps = puntoOrb(cx, cy, 86, d.sonno[1]);
+  h += '<circle cx="' + ps[0].toFixed(1) + '" cy="' + ps[1].toFixed(1) + '" r="5" fill="#c0392b"></circle>';
+  var pst = puntoOrb(cx, cy, 62, d.sonno[1]);
+  h += '<text x="' + pst[0].toFixed(1) + '" y="' + (pst[1] + 4).toFixed(1) + '" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#c0392b">sveglia</text>';
+
+  h += arcoOrb(cx, cy, 128, 8 * 60, 18 * 60, '#f7e9b0', 9);
+  h += arcoOrb(cx, cy, 128, 8 * 60, 8 * 60 + Math.round(600 * d.luce / 100), '#f0c419', 9);
+
+  h += '<text x="170" y="166" text-anchor="middle" font-family="Georgia, serif" font-size="21" fill="#1c1c2e">' + d.eta + '</text>';
+  h += '<text x="170" y="188" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#7f8c8d">luce utile alla retina: ' + d.luceLab + '</text>';
+
+  document.getElementById('orbSvg').innerHTML = h;
+
+  var durSonno = ((d.sonno[1] - d.sonno[0]) + 1440) % 1440;
+  var piccoDaInizio = ((d.picco - d.sonno[0]) + 1440) % 1440;
+  var piccoASveglia = ((d.sonno[1] - d.picco) + 1440) % 1440;
+  document.getElementById('orbDati').innerHTML =
+    '<div><b>' + oraDa(d.sonno[0]) + ' → ' + oraDa(d.sonno[1]) + '</b>finestra di sonno</div>' +
+    '<div><b>' + Math.round(piccoDaInizio / durSonno * 100) + '%</b>della notte già trascorso quando la melatonina tocca il picco</div>' +
+    '<div><b>' + Math.floor(piccoASveglia / 60) + 'h ' + (piccoASveglia % 60) + '\'</b>dal picco di melatonina alla sveglia</div>' +
+    '<div><b>' + (dentroFinestra(d.sonno[1], d.mel) ? 'sì' : 'no') + '</b>ci si sveglia con la melatonina ancora in circolo</div>';
+}
+
+function dentroFinestra(t, fin) {
+  var da = ((t - fin[0]) + 1440) % 1440;
+  var len = ((fin[1] - fin[0]) + 1440) % 1440;
+  return da < len;
+}
+
+/* ══════════ APPLET 04 · DUE LETTURE ══════════ */
+var DIBATTITO = [
+  { fatto: 'Klerman e Dijk (2008) hanno tenuto 18 anziani e 35 giovani in laboratorio con un\'opportunità di sonno estesa a 16 ore al giorno — 12 di notte più 4 nel pomeriggio — per 3-7 giorni di fila. Entrambi i gruppi hanno allungato il sonno di circa un\'ora rispetto al basale, ma gli anziani hanno dormito comunque meno dei giovani.',
+    a: 'È il test più pulito possibile del bisogno «a volontà»: tolte sveglie, impegni e orari sociali, il tetto massimo di sonno che un anziano riesce a raggiungere è più basso. Se dorme meno pur potendo dormire quanto vuole, evidentemente gli serve meno.',
+    b: 'Quel tetto misura la capacità di generare sonno, non il bisogno. Se l\'apparato che produce e mantiene il sonno è deteriorato — meno neuroni galaninergici nel nucleo preottico, meno recettori dell\'adenosina — il limite osservato è un guasto della macchina, non una richiesta ridotta.' },
+  { fatto: 'Dopo una privazione di sonno, o dopo la soppressione selettiva delle onde lente, gli anziani sani mostrano un rimbalzo di sonno profondo e di attività a onde lente più piccolo di quello dei giovani (Dijk e colleghi, 2010; Münch e colleghi, 2004).',
+    a: 'Il rimbalzo è la misura classica della pressione omeostatica accumulata. Un rimbalzo piccolo significa che la pressione era piccola: il debito di sonno di un anziano privato del sonno è minore di quello di un ventenne.',
+    b: 'L\'adenosina extracellulare — il marcatore molecolare di quella pressione — negli anziani è più alta, non più bassa. A mancare sono i recettori A1 su cui l\'adenosina agisce, che si perdono in corteccia, talamo, ippocampo e striato: il segnale c\'è, il ricevitore no.' },
+  { fatto: 'Interrogati con questionari, gli anziani in buona salute si dichiarano meno assonnati di giorno dei giovani, anche dopo notti brevi.',
+    a: 'Se non sentono sonnolenza, il loro fabbisogno è soddisfatto: la sonnolenza soggettiva è il segnale con cui l\'organismo chiede il sonno che gli manca.',
+    b: 'Van Dongen e colleghi (2003) hanno mostrato che nella restrizione cronica la sonnolenza percepita risale ai livelli iniziali dopo pochi giorni, mentre le prestazioni oggettive continuano a peggiorare. Chi dorme male da vent\'anni ha semplicemente smesso di accorgersene.' },
+  { fatto: 'Sottoposti a privazione di sonno, gli anziani peggiorano meno dei giovani nei test di vigilanza sensibili al sonno (Adam e colleghi, 2006).',
+    a: 'Il cervello anziano è meno vulnerabile alla perdita di sonno: se una notte in bianco lo danneggia poco, quel sonno gli serviva meno.',
+    b: 'È un effetto pavimento: da riposati gli anziani partono già più in basso dei giovani, al punto che alcuni studi trovano prestazioni simili fra anziani riposati e giovani privati del sonno. Chi è già in fondo alla scala non può scendere di molto.' }
+];
+
+function mostraDibattito(i) {
+  var b = document.querySelectorAll('[data-deb]');
+  for (var k = 0; k < b.length; k++) b[k].classList.toggle('attivo', k === i);
+  document.getElementById('debFatto').innerHTML = DIBATTITO[i].fatto;
+  document.getElementById('debA').innerHTML = DIBATTITO[i].a;
+  document.getElementById('debB').innerHTML = DIBATTITO[i].b;
+}
+
+/* ── avvio ── */
+mostraNotte(0);
+mostraMetrica(0);
+mostraOrologio(0);
+mostraDibattito(0);
+</script>
+</body>
+</html>
