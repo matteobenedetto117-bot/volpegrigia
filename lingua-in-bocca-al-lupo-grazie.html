@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché a "in bocca al lupo" non si deve mai rispondere "grazie"?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #d35400;
+    --accent-light: #fbe7d6;
+    --accent-mid: #e67e22;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · LE FAUCI ── */
+  .fauci-scena { background: #fdf4ec; border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .fauci-svg { display: block; width: 100%; height: auto; }
+  .fauci-battuta {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+    padding: 4px 4px 14px;
+    min-height: 30px;
+  }
+  .fauci-risposte { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .fauci-btn {
+    flex: 1;
+    min-width: 118px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .fauci-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .fauci-verdetto { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+  .fauci-esito {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 2px; color: #fff; background: var(--muted);
+  }
+  .fauci-esito.ok { background: #27ae60; }
+  .fauci-esito.ko { background: #c0392b; }
+  .fauci-esito.forse { background: var(--accent-mid); }
+  .fauci-etichetta { font-size: 13px; color: var(--muted); }
+
+  /* ── APPLET 2 · ANATOMIA DELLA FRASE ── */
+  .anat-frase {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    padding: 6px 0 18px;
+  }
+  .anat-pezzo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 6vw, 30px);
+    font-weight: 700;
+    color: var(--text);
+    background: none;
+    border: none;
+    border-bottom: 3px dotted var(--border);
+    padding: 2px 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .anat-pezzo:hover { color: var(--accent-mid); }
+  .anat-pezzo.attivo { color: var(--accent); border-bottom-color: var(--accent); }
+  .anat-switch {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--border);
+    font-size: 13.5px; color: var(--muted); flex-wrap: wrap;
+  }
+  .anat-switch button {
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    background: #f3f1ec; border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 7px 14px; cursor: pointer; color: var(--muted); transition: all 0.15s;
+  }
+  .anat-switch button.attivo { background: #c0392b; border-color: #c0392b; color: #fff; }
+  .anat-errore { font-size: 14px; line-height: 1.6; margin-top: 12px; color: var(--text); }
+  .anat-errore strong { color: #c0392b; }
+
+  /* ── APPLET 3 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto;
+    min-width: 92px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    padding: 0;
+    position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1;
+    transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 4 · SCONGIURI DEL MONDO ── */
+  .sc-wrap { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .sc-btn {
+    flex: 1;
+    min-width: 88px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sc-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .sc-scheda { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .sc-frase { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--accent); line-height: 1.25; margin-bottom: 4px; }
+  .sc-lett { font-size: 14.5px; line-height: 1.6; color: var(--text); margin-bottom: 14px; }
+  .sc-scambio { display: grid; grid-template-columns: 96px 1fr; gap: 6px 12px; font-size: 14px; align-items: baseline; }
+  .sc-etic { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .sc-val { color: var(--text); line-height: 1.5; }
+  .sc-val strong { color: var(--accent); }
+  .sc-nascosta {
+    background: none; border: 1.5px dashed var(--border); border-radius: 4px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; padding: 4px 12px; transition: all 0.15s;
+  }
+  .sc-nascosta:hover { border-color: var(--accent); color: var(--accent); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .fauci-btn { min-width: 45%; }
+    .sc-btn { min-width: 44%; }
+    .sc-scambio { grid-template-columns: 1fr; gap: 2px; }
+    .sc-scambio .sc-etic { margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Lingua</div>
+    <h1>Perché a "in bocca al lupo" non si deve mai rispondere "grazie"?</h1>
+    <div class="risposta-box">
+      <p>Perché non è un augurio: è uno scongiuro. La formula funziona per antifrasi — si nomina il pericolo peggiore proprio per allontanarlo — e va chiusa con un'altra formula magica, «Crepi!», non con un ringraziamento. Dire «grazie» significa accettare il lupo invece di ucciderlo: l'incantesimo resta a metà.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>La risposta di Elżbieta Jamrozik pubblicata dall'Accademia della Crusca nel 2006 dice una cosa precisa: i dizionari sono «concordi nell'attribuire alla locuzione <em>In bocca al lupo!</em> una funzione apotropaica», cioè capace di allontanare il male «per la sua carica di magia». Nasce come augurio «rivolto per antifrasi ai cacciatori»: si dice il contrario di quello che si spera, e il pericolo, nominato, si sposta altrove.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Sei nelle fauci: adesso rispondi</div>
+      <div class="applet-istruzione">Qualcuno ti ha appena augurato «in bocca al lupo». Scegli la tua risposta e guarda che cosa fa alle mascelle.</div>
+    </div>
+    <div class="fauci-scena">
+      <svg class="fauci-svg" id="fauciSvg" viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="320" height="190" fill="#fdf4ec"></rect>
+        <!-- gola -->
+        <ellipse cx="160" cy="98" rx="96" ry="56" fill="#7b2f1a"></ellipse>
+        <!-- mascella superiore -->
+        <g id="mascSup">
+          <path d="M40 96 Q160 -8 280 96 L280 60 Q160 -34 40 60 Z" fill="#6b6155"></path>
+          <path d="M44 92 Q160 4 276 92 Z" fill="#8d8172"></path>
+          <g fill="#fbf7ef">
+            <polygon points="72,84 84,84 78,106"></polygon>
+            <polygon points="104,66 118,66 111,94"></polygon>
+            <polygon points="140,56 154,56 147,88"></polygon>
+            <polygon points="176,56 190,56 183,88"></polygon>
+            <polygon points="212,66 226,66 219,94"></polygon>
+            <polygon points="246,84 258,84 252,106"></polygon>
+          </g>
+        </g>
+        <!-- mascella inferiore -->
+        <g id="mascInf">
+          <path d="M40 100 Q160 204 280 100 L280 138 Q160 230 40 138 Z" fill="#6b6155"></path>
+          <path d="M44 104 Q160 192 276 104 Z" fill="#8d8172"></path>
+          <g fill="#fbf7ef">
+            <polygon points="72,112 84,112 78,90"></polygon>
+            <polygon points="104,130 118,130 111,102"></polygon>
+            <polygon points="140,140 154,140 147,108"></polygon>
+            <polygon points="176,140 190,140 183,108"></polygon>
+            <polygon points="212,130 226,130 219,102"></polygon>
+            <polygon points="246,112 258,112 252,90"></polygon>
+          </g>
+        </g>
+        <!-- la persona -->
+        <g id="omino">
+          <circle cx="160" cy="88" r="8" fill="#1c1c2e"></circle>
+          <rect x="154" y="98" width="12" height="20" rx="4" fill="#1c1c2e"></rect>
+        </g>
+      </svg>
+    </div>
+    <div class="fauci-battuta" id="fauciBattuta">«In bocca al lupo!»</div>
+    <div class="fauci-risposte">
+      <button class="fauci-btn" data-r="0" onclick="rispondi(0)">«Grazie»</button>
+      <button class="fauci-btn" data-r="1" onclick="rispondi(1)">«Crepi!»</button>
+      <button class="fauci-btn" data-r="2" onclick="rispondi(2)">«Viva il lupo!»</button>
+      <button class="fauci-btn" data-r="3" onclick="rispondi(3)">Silenzio</button>
+    </div>
+    <div class="fauci-verdetto">
+      <span class="fauci-esito" id="fauciEsito">In attesa</span>
+      <span class="fauci-etichetta" id="fauciEtichetta">Scegli una risposta qui sopra.</span>
+    </div>
+    <div class="box-testo" id="fauciTesto">Nella logica antifrastica il lupo non è una metafora gentile: è il pericolo in persona, e chi parla lo evoca apposta. La replica serve a disinnescarlo, non a ringraziare chi lo ha nominato.</div>
+    <div class="applet-fonte">
+      Ricostruzione del meccanismo descritto in Elżbieta Jamrozik, <em>Sull'origine della formula «in bocca al lupo»</em>, «La Crusca per Voi» n. 33, ottobre 2006, p. 18 (online dal 7 giugno 2007): la locuzione ha «funzione apotropaica» e la risposta «Crepi! (sottinteso: il lupo)» ha «sempre lo stesso valore apotropaico». Il giudizio su «Viva il lupo!» segue Eva Luna Mascolino, <em>«In bocca al lupo»: che significa, come si scrive e cosa si risponde?</em>, ilLibraio.it, 9 gennaio 2025. L'animazione è illustrativa.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il punto è che «crepi» non è una parola qualsiasi: appartiene a una famiglia di formule performative che il <em>Grande dizionario della lingua italiana</em> di Salvatore Battaglia registra in blocco — <em>Crepi l'avarizia!</em>, <em>Crepi l'astrologo!</em> — accanto alle maledizioni vere e proprie <em>Che tu possa crepare!</em>, <em>Ti pigli il lupo!</em>, <em>Che tu sia il pan dei lupi!</em>. È un verbo che serve a far morire qualcosa a parole. «Grazie» no: chiude una cortesia, non un rito.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Anatomia di quattro parole</div>
+      <div class="applet-istruzione">Clicca ogni pezzo della frase per vedere che lavoro fa — poi prova a scriverla attaccata e guarda che cosa succede al senso.</div>
+    </div>
+    <div class="anat-frase" id="anatFrase">
+      <button class="anat-pezzo attivo" data-p="0" onclick="mostraPezzo(0)">In</button>
+      <button class="anat-pezzo" data-p="1" onclick="mostraPezzo(1)">bocca</button>
+      <button class="anat-pezzo" data-p="2" onclick="mostraPezzo(2)">al</button>
+      <button class="anat-pezzo" data-p="3" onclick="mostraPezzo(3)">lupo</button>
+    </div>
+    <div class="box-testo" id="anatTesto"></div>
+    <div class="anat-switch">
+      <span>Come si scrive?</span>
+      <button id="btnGiusto" class="" onclick="scrittura(0)">In bocca al lupo</button>
+      <button id="btnSbagliato" onclick="scrittura(1)">Imbocca al lupo</button>
+    </div>
+    <div class="anat-errore" id="anatErrore"></div>
+    <div class="applet-fonte">
+      Fonte: per la grafia e per l'analisi di <em>imboccare</em> come verbo transitivo, Eva Luna Mascolino, <em>«In bocca al lupo»: che significa, come si scrive e cosa si risponde?</em>, ilLibraio.it, 9 gennaio 2025; per il valore di <em>andare in bocca</em> («andare in preda, restare nel potere»), <em>Vocabolario degli Accademici della Crusca</em>, terza edizione (1691), citata da Jamrozik 2006.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che il lupo dell'espressione sia una bestia e non una mamma affettuosa lo dice il lessico intorno. Già la prima edizione del <em>Vocabolario della Crusca</em>, nel 1612, lo definisce «animal salvatico voracissimo» e raccoglie <em>gridare al lupo</em>, <em>il lupo cangia il pelo ma non il vezzo</em>, <em>chi pecora si fa il lupo se la mangia</em>. È lo stesso animale del Lupo di Gubbio nei <em>Fioretti di San Francesco</em> e di Ysengrin nel <em>Roman de Renart</em> francese del XII secolo: il nemico, non il custode.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Sette secoli dentro le fauci</div>
+      <div class="applet-istruzione">Clicca una tappa: ogni volta l'espressione compare in un posto diverso, e ogni volta significa qualcosa di leggermente diverso.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonte: Elżbieta Jamrozik, <em>Sull'origine della formula «in bocca al lupo»</em>, Accademia della Crusca, 2006/2007, per le attestazioni lessicografiche (Crusca 1612 e 1691, Fanfani 1863, Cortelazzo-Zolli 1983, Treccani 1989, Pittano 1992, Quartu 1993, Battaglia 1961-2002); per la protezione legale del lupo, decreto ministeriale Natali del 23 luglio 1971 e decreto Marcora del 1976. La citazione del 1294 è riportata dalla Crusca nella grafia dei lessicografi secenteschi.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La lettura alternativa è recente e ha una data di nascita istituzionale: il 23 luglio 1971 il decreto Natali toglie il lupo dall'elenco delle specie nocive quando in Italia ne restano circa un centinaio, tra Abruzzo e Calabria. Da un animale protetto è difficile augurarsi la morte, e così è nato «Viva il lupo!», con l'idea che la lupa porti i cuccioli in bocca per salvarli. Suggestiva, ma né i dizionari né la Crusca l'hanno mai confermata.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Lo stesso scongiuro, altri animali</div>
+      <div class="applet-istruzione">Scegli una lingua: vedrai la frase, la traduzione alla lettera e — solo se la scopri — la risposta che è obbligatorio dare.</div>
+    </div>
+    <div class="sc-wrap">
+      <button class="sc-btn attivo" data-l="0" onclick="mostraScongiuro(0)">Italiano</button>
+      <button class="sc-btn" data-l="1" onclick="mostraScongiuro(1)">Russo</button>
+      <button class="sc-btn" data-l="2" onclick="mostraScongiuro(2)">Tedesco</button>
+      <button class="sc-btn" data-l="3" onclick="mostraScongiuro(3)">Inglese</button>
+      <button class="sc-btn" data-l="4" onclick="mostraScongiuro(4)">Francese</button>
+      <button class="sc-btn" data-l="5" onclick="mostraScongiuro(5)">Italiano (2)</button>
+    </div>
+    <div class="sc-scheda">
+      <div class="sc-frase" id="scFrase"></div>
+      <div class="sc-lett" id="scLett"></div>
+      <div class="sc-scambio">
+        <span class="sc-etic">Si evoca</span>
+        <span class="sc-val" id="scEvoca"></span>
+        <span class="sc-etic">Chi lo dice</span>
+        <span class="sc-val" id="scChi"></span>
+        <span class="sc-etic">Risposta</span>
+        <span class="sc-val" id="scRisposta"><button class="sc-nascosta" onclick="scopriRisposta()">Scopri la risposta d'obbligo</button></span>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      Fonti: per il russo <em>ни пуха ни пера</em> e la replica <em>к чёрту!</em>, voce omonima di Wiktionary (in inglese) e Newslab.ru, <em>Ни пуха ни пера</em>; per l'ipotesi yiddish di <em>Hals- und Beinbruch</em> (da <em>hatsloche un broche</em>, 'successo e benedizione') e per <em>break a leg</em>, <em>merde</em> e <em>toi toi toi</em>, voce <em>In bocca al lupo</em> di Wikipedia in inglese con i rimandi a Lenka Peterson e Dan O'Connor, <em>Kids Take the Stage</em>, Random House 2006, p. 203, e a Laurence Urdang et al., <em>Picturesque Expressions</em>, Gale Research 1985, p. 321; per <em>in culo alla balena</em> e la replica, Gabrielle Euvino, <em>Dirty Italian</em>, Ulysses Press 2007, p. 15.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il paradosso è che oggi quasi nessuno crede davvero al potere magico delle parole, eppure il vincolo tiene: rispondere «grazie» a un «in bocca al lupo» continua a suonare goffo, come stringere la mano a chi te la porge di taglio. Non è più superstizione — è una coreografia verbale rimasta in piedi dopo che la credenza che la reggeva è caduta. Ed è per questo che la regola sopravvive: non protegge più dal lupo, protegge la battuta di ritorno.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>«Grazie» è una risposta perfetta a un augurio, e sbagliata a uno scongiuro: la differenza è che dell'augurio si ringrazia chi lo fa, dello scongiuro si deve completare la formula.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Elżbieta Jamrozik, <em>Sull'origine della formula «in bocca al lupo»</em>, in «La Crusca per Voi» n. 33, ottobre 2006, p. 18; pubblicata nella Consulenza linguistica dell'Accademia della Crusca il 7 giugno 2007 — <a href="https://accademiadellacrusca.it/it/consulenza/sullorigine-della-formula-in-bocca-al-lupo/164">accademiadellacrusca.it</a></li>
+      <li><em>Vocabolario degli Accademici della Crusca</em>, prima edizione (1612), voce <em>lupo</em> («animal salvatico voracissimo»); terza edizione (1691), locuzione <em>andare in bocca al lupo</em> («andare nel potére del nimico, incontrare da sé il pericolo»)</li>
+      <li>Salvatore Battaglia, <em>Grande dizionario della lingua italiana</em>, UTET, Torino 1961-2002, per <em>Crepi l'avarizia!</em>, <em>Crepi l'astrologo!</em>, <em>Ti pigli il lupo!</em>, <em>Che tu sia il pan dei lupi!</em></li>
+      <li>Manlio Cortelazzo e Paolo Zolli, <em>Dizionario etimologico della lingua italiana</em>, Zanichelli, Bologna 1983; <em>Vocabolario Treccani</em>, edizione 1989</li>
+      <li>Giuseppe Pittàno, <em>Frase fatta capo ha. Dizionario dei modi di dire, proverbi e locuzioni</em>, Zanichelli, Bologna 1992; B. Monica Quartu, <em>Dizionario dei modi di dire della lingua italiana</em>, Rizzoli, Milano 1993</li>
+      <li>Pietro Fanfani, <em>Vocabolario dell'uso toscano</em>, Barbèra, Firenze 1863</li>
+      <li>Eva Luna Mascolino, <em>«In bocca al lupo»: che significa, come si scrive e cosa si risponde?</em>, ilLibraio.it, 9 gennaio 2025 — <a href="https://www.illibraio.it/news/grammatica/in-bocca-al-lupo-1451075/">illibraio.it</a></li>
+      <li>Decreto ministeriale Natali del 23 luglio 1971 (il lupo esce dall'elenco delle specie nocive) e decreto ministeriale Marcora del 1976 (protezione integrale) — scheda <em>La normativa sul lupo</em>, Provincia autonoma di Trento, portale Grandi Carnivori — <a href="https://grandicarnivori.provincia.tn.it/Il-lupo/GESTIONE-E-CONSERVAZIONE/LA-NORMATIVA-SUL-LUPO">grandicarnivori.provincia.tn.it</a></li>
+      <li>Voce <em>In bocca al lupo</em>, Wikipedia in inglese, con i rimandi a Lenka Peterson e Dan O'Connor, <em>Kids Take the Stage</em>, Random House 2006, p. 203; Laurence Urdang, Walter W. Hunsinger e Nancy LaRoche, <em>Picturesque Expressions</em>, Gale Research 1985, p. 321; Gabrielle Euvino, <em>Dirty Italian</em>, Ulysses Press 2007, p. 15 — <a href="https://en.wikipedia.org/wiki/In_bocca_al_lupo">en.wikipedia.org</a></li>
+      <li>Voce <em>ни пуха ни пера</em>, Wiktionary in inglese — <a href="https://en.wiktionary.org/wiki/%D0%BD%D0%B8_%D0%BF%D1%83%D1%85%D0%B0_%D0%BD%D0%B8_%D0%BF%D0%B5%D1%80%D0%B0">en.wiktionary.org</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · LE FAUCI ── */
+var risposte = [
+  { esito: 'ko', cls: 'ko', lab: 'Formula non chiusa',
+    battuta: '«Grazie.»', apri: false, mangia: true,
+    txt: "Ringraziare significa <strong>accettare</strong> quello che ti è stato augurato alla lettera: restare in bocca al lupo. Nella logica antifrastica il pericolo è stato evocato e nessuno lo ha rimandato indietro — la formula resta aperta a metà. È il motivo per cui, anche a chi non è per niente superstizioso, «grazie» suona storto." },
+  { esito: 'ok', cls: 'ok', lab: 'Scongiuro completo',
+    battuta: '«Crepi il lupo!»', apri: true, mangia: false,
+    txt: "È la replica registrata dai dizionari: <em>Crepi!</em>, con sottinteso <em>il lupo</em>. Ha, scrive la Crusca, «sempre lo stesso valore apotropaico» della frase che la precede: al pericolo nominato si risponde uccidendolo a parole. Le fauci si aprono perché la bestia è morta, non perché è stata ringraziata." },
+  { esito: 'forse', cls: 'forse', lab: 'Variante recente',
+    battuta: '«Viva il lupo!»', apri: true, mangia: false,
+    txt: "Circola da pochi anni e ribalta l'antifrasi: il lupo diventa la lupa che porta i cuccioli in bocca per proteggerli. Funziona come replica — è comunque una formula, non un ringraziamento — ma nessun dizionario e nemmeno l'Accademia della Crusca ne hanno confermato la fondatezza etimologica." },
+  { esito: 'ko', cls: 'ko', lab: 'Formula non chiusa',
+    battuta: '…', apri: false, mangia: true,
+    txt: "Tacere lascia lo scongiuro sospeso esattamente come «grazie»: la coppia domanda-risposta è l'unità minima del rito, e metà rito non vale nulla. Le formule apotropaiche vivono di scambio — qualcuno nomina il male, qualcun altro lo respinge." }
+];
+
+function rispondi(i) {
+  var btns = document.querySelectorAll('.fauci-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var r = risposte[i];
+  document.getElementById('fauciBattuta').textContent = r.battuta;
+  var es = document.getElementById('fauciEsito');
+  es.className = 'fauci-esito ' + r.cls;
+  es.textContent = r.esito === 'ok' ? 'Chiuso' : (r.esito === 'forse' ? 'Discusso' : 'A metà');
+  document.getElementById('fauciEtichetta').textContent = r.lab;
+  document.getElementById('fauciTesto').innerHTML = r.txt;
+  animaFauci(r.apri, r.mangia);
+}
+
+function animaFauci(apri, mangia) {
+  var sup = document.getElementById('mascSup');
+  var inf = document.getElementById('mascInf');
+  var om = document.getElementById('omino');
+  sup.style.transition = 'transform 0.6s ease';
+  inf.style.transition = 'transform 0.6s ease';
+  om.style.transition = 'transform 0.7s ease, opacity 0.7s ease';
+  if (apri) {
+    sup.style.transform = 'translateY(-26px) rotate(-3deg)';
+    inf.style.transform = 'translateY(26px) rotate(3deg)';
+    om.style.transform = 'translate(96px, 0px)';
+    om.style.opacity = '1';
+  } else {
+    sup.style.transform = 'translateY(12px)';
+    inf.style.transform = 'translateY(-12px)';
+    om.style.transform = 'translate(0, 6px)';
+    om.style.opacity = mangia ? '0.15' : '1';
+  }
+}
+
+/* ── APPLET 02 · ANATOMIA DELLA FRASE ── */
+var pezzi = [
+  { txt: "<strong>In</strong> — moto a luogo, non stato in luogo. La preposizione dice che il movimento è <em>verso l'interno</em>: la persona ci sta entrando adesso, davanti a una prova che deve ancora affrontare. Per questo l'augurio si fa prima dell'esame, mai dopo." },
+  { txt: "<strong>Bocca</strong> — il punto di massimo pericolo, non un rifugio. La Crusca registra anche il più generico <em>andare in bocca</em>, «andare in preda, restare nel potere», con l'esempio boccaccesco «Io n'andréi in bocca del diavolo, nel profondo dello 'nferno». La stessa bocca, altro divoratore." },
+  { txt: "<strong>Al</strong> — è il dettaglio che fa scrivere correttamente la frase. È un complemento di moto, non di termine: si finisce <em>dentro</em> al lupo, non si dà qualcosa <em>a</em> lui. Confonderlo cambia chi mangia chi." },
+  { txt: "<strong>Lupo</strong> — il nemico nominato per nome. È la mossa più rischiosa della formula: la superstizione vieta di chiamare il male, l'antifrasi lo fa apposta, perché dirlo a voce alta serve a spostarlo. Da lì il bisogno di una replica che lo uccida subito." }
+];
+
+function mostraPezzo(i) {
+  var btns = document.querySelectorAll('.anat-pezzo');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('anatTesto').innerHTML = pezzi[i].txt;
+}
+
+function scrittura(modo) {
+  var frase = document.getElementById('anatFrase');
+  var err = document.getElementById('anatErrore');
+  document.getElementById('btnSbagliato').classList.toggle('attivo', modo === 1);
+  if (modo === 1) {
+    frase.innerHTML = '<button class="anat-pezzo attivo" style="color:#c0392b;border-bottom-color:#c0392b">Imbocca</button>' +
+                      '<button class="anat-pezzo">al</button><button class="anat-pezzo">lupo</button>';
+    err.innerHTML = "<strong>Sbagliato, e con un senso opposto.</strong> <em>Imboccare</em> è transitivo e vuol dire «dare da mangiare a qualcuno mettendogli il cibo in bocca»: scritto attaccato, stai invitando qualcuno a <em>sfamare</em> il lupo, cioè a tenere in vita il nemico. Il complemento diventa di termine dove serviva un oggetto.";
+  } else {
+    frase.innerHTML = '<button class="anat-pezzo attivo" data-p="0" onclick="mostraPezzo(0)">In</button>' +
+                      '<button class="anat-pezzo" data-p="1" onclick="mostraPezzo(1)">bocca</button>' +
+                      '<button class="anat-pezzo" data-p="2" onclick="mostraPezzo(2)">al</button>' +
+                      '<button class="anat-pezzo" data-p="3" onclick="mostraPezzo(3)">lupo</button>';
+    err.innerHTML = "";
+    mostraPezzo(0);
+  }
+}
+
+/* ── APPLET 03 · LINEA DEL TEMPO ── */
+var tappe = [
+  { anno: '1294', tit: 'La citazione più antica',
+    txt: "La terza edizione del <em>Vocabolario della Crusca</em> registra <em>andare in bocca al lupo</em> con il significato «andare nel potére del nimico, incontrare da sé il pericolo», e porta come esempio un passo attribuito a Guittone d'Arezzo, morto proprio in quell'anno. Non è ancora un augurio: è la descrizione di un guaio.",
+    cit: "«Ma la povera femmina, accostandosi a quell'huomo, si accorse d'essere andáta in bocca al lupo»" },
+  { anno: '1612', tit: 'Il lupo entra nel primo Vocabolario',
+    txt: "La Crusca definisce il lupo «animal salvatico voracissimo» e mette a lemma <em>gridare al lupo</em>, <em>il lupo cangia il pelo ma non il vezzo</em>, <em>chi pecora si fa il lupo se la mangia</em>. Nessuna traccia di tenerezza: è l'animale che si teme, quello che nelle minacce ai bambini «ti mangia»." },
+  { anno: '1691', tit: 'Andare in bocca al diavolo',
+    txt: "Accanto a <em>andare in bocca al lupo</em> il Vocabolario registra il più generico <em>andare in bocca</em>, «andare in preda, restare nel potere», con un esempio di Boccaccio in cui la bocca è quella del diavolo. Lupo e diavolo occupano lo stesso posto nella frase: sono intercambiabili.",
+    cit: "«Io n'andréi in bocca del diavolo, nel profondo dello 'nferno, e saréi messa nel fuoco penace»" },
+  { anno: '1863', tit: 'Fanfani e l\'uso toscano',
+    txt: "Pietro Fanfani raccoglie la locuzione nel <em>Vocabolario dell'uso toscano</em> insieme alla sua parentela: <em>correre nella bocca del lupo</em>, <em>mettersi in bocca al lupo</em>, <em>cascare in bocca al lupo</em>, <em>andare nella tana del lupo</em>. Sempre nel senso di finire nelle mani del nemico." },
+  { anno: '1961-2002', tit: 'Il Battaglia mette in fila i "crepi"',
+    txt: "Il <em>Grande dizionario della lingua italiana</em> allinea la replica <em>Crepi!</em> alle altre formule performative con lo stesso verbo — <em>Crepi l'avarizia!</em>, <em>Crepi l'astrologo!</em> — e alle imprecazioni di malaugurio <em>Crepa!</em>, <em>Che tu possa crepare!</em>, <em>Ti pigli il lupo!</em>, <em>Che tu sia il pan dei lupi!</em>." },
+  { anno: '1971', tit: 'Il lupo diventa protetto',
+    txt: "Il decreto ministeriale Natali del 23 luglio toglie il lupo dall'elenco delle specie nocive e vieta caccia e bocconi avvelenati. In Italia ne restano circa un centinaio, concentrati tra Abruzzo e Calabria; nel 1976 il decreto Marcora arriverà alla protezione integrale. È qui che «crepi» comincia a diventare imbarazzante." },
+  { anno: '2006', tit: 'La Crusca risponde',
+    txt: "Elżbieta Jamrozik firma su «La Crusca per Voi» la risposta che è ancora oggi il riferimento: funzione apotropaica, origine nel gergo dei cacciatori, estensione «all'insieme delle situazioni difficili in cui incorre l'uomo». La replica <em>Crepi!</em> ha lo stesso identico valore magico della frase che la innesca." },
+  { anno: 'Oggi', tit: '«Viva il lupo!»',
+    txt: "La variante animalista è diffusissima, ma resta una proposta d'uso: né i dizionari né l'Accademia della Crusca l'hanno avallata sul piano etimologico. Intanto «grazie» continua a essere la risposta che tutti sanno di non dover dare, senza più sapere perché." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.setAttribute('data-tl', i);
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ── APPLET 04 · SCONGIURI DEL MONDO ── */
+var scongiuri = [
+  { frase: 'In bocca al lupo',
+    lett: "Alla lettera è quello che dice: dentro le fauci della bestia. Nata tra i cacciatori, si è estesa — scrive la Crusca — «all'insieme delle situazioni difficili in cui incorre l'uomo», dagli esami alle prime teatrali.",
+    evoca: 'Il lupo, «animal salvatico voracissimo» secondo la Crusca del 1612',
+    chi: 'Cacciatori, poi tutti',
+    risposta: '<strong>«Crepi (il lupo)!»</strong> — si augura la morte dell\'animale appena nominato.' },
+  { frase: 'Ни пуха ни пера',
+    lett: "«Né piuma né penna», cioè: che tu non prenda niente. Nel gergo venatorio russo <em>пух</em> stava per la selvaggina pelosa e <em>перо</em> per quella con le piume: si augurava letteralmente una battuta di caccia disastrosa.",
+    evoca: 'Il fallimento totale della caccia',
+    chi: 'Cacciatori russi, oggi soprattutto studenti prima di un esame',
+    risposta: '<strong>«К чёрту!»</strong> — «al diavolo!»: la sfortuna viene rispedita a chi di dovere.' },
+  { frase: 'Hals- und Beinbruch',
+    lett: "«Rottura del collo e delle gambe». Una spiegazione diffusa la fa derivare dallo yiddish <em>hatsloche un broche</em>, «successo e benedizione», storpiato in tedesco fino a diventare una frase macabra che nessuno più riconosce come benedizione.",
+    evoca: 'Le ossa rotte di chi sta per partire o esibirsi',
+    chi: 'Aviatori, attori, chiunque affronti un rischio',
+    risposta: 'Nessuna replica rituale obbligatoria: qui è la frase stessa a fare tutto il lavoro.' },
+  { frase: 'Break a leg',
+    lett: "«Rompiti una gamba». È la formula del teatro anglosassone, retta dalla stessa superstizione: dietro le quinte augurare esplicitamente <em>good luck</em> porta sfortuna, quindi si augura il contrario.",
+    evoca: 'L\'infortunio in scena',
+    chi: 'Attori, dietro le quinte',
+    risposta: 'Nessuna formula fissa — ma il ringraziamento diretto è considerato di cattivo augurio quanto l\'augurio esplicito.' },
+  { frase: 'Merde',
+    lett: "«Merda». È l'augurio dei ballerini francesi, passato allo spagnolo <em>mucha mierda</em> e al portoghese <em>muita merda</em>. Nell'opera lirica circola invece <em>toi toi toi</em>, imitazione onomatopeica dello sputo per allontanare il malocchio.",
+    evoca: 'Lo sterco — e, in una lettura corrente, quello dei cavalli delle carrozze davanti a un teatro pieno',
+    chi: 'Ballerini e cantanti lirici',
+    risposta: 'Non si risponde né si ringrazia: rispondere spezzerebbe lo scongiuro.' },
+  { frase: 'In culo alla balena',
+    lett: "La variante italiana volgare e scherzosa: al posto delle fauci del lupo, l'interno di un cetaceo. Registrata dai repertori di slang accanto a «in bocca al lupo» come suo doppio irriverente.",
+    evoca: 'L\'essere inghiottiti — nell\'etimologia popolare, il Giona biblico nel ventre del pesce',
+    chi: 'Uso colloquiale, tra amici',
+    risposta: '<strong>«Speriamo che non caghi!»</strong> — anche qui la replica è obbligatoria e continua la metafora.' }
+];
+
+var scIndice = 0;
+
+function mostraScongiuro(i) {
+  scIndice = i;
+  var btns = document.querySelectorAll('.sc-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var s = scongiuri[i];
+  document.getElementById('scFrase').textContent = s.frase;
+  document.getElementById('scLett').innerHTML = s.lett;
+  document.getElementById('scEvoca').innerHTML = s.evoca;
+  document.getElementById('scChi').innerHTML = s.chi;
+  document.getElementById('scRisposta').innerHTML = '<button class="sc-nascosta" onclick="scopriRisposta()">Scopri la risposta d\'obbligo</button>';
+}
+
+function scopriRisposta() {
+  document.getElementById('scRisposta').innerHTML = scongiuri[scIndice].risposta;
+}
+
+/* ── AVVIO ── */
+mostraPezzo(0);
+costruisciTimeline();
+mostraScongiuro(0);
+</script>
+</body>
+</html>
