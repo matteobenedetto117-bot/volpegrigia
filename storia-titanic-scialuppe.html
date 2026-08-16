@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché il Titanic non aveva scialuppe per tutti?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fbeae8;
+    --accent-mid: #e74c3c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ’Source Sans 3’, sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: ’Source Sans 3’, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: ’Playfair Display’, serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: ’Playfair Display’, serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · IL RIGHELLO DEL 1894 ── */
+  .rig-svg { display: block; width: 100%; height: auto; background: #fbf7f5; border-radius: 6px; }
+  .rig-slider { width: 100%; margin: 16px 0 4px; accent-color: var(--accent); }
+  .rig-scala { position: relative; height: 34px; font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+  .rig-scala b { position: absolute; top: 0; transform: translateX(-50%); font-weight: 400; text-align: center; line-height: 1.25; white-space: nowrap; }
+  .rig-scala b::before { content: ""; display: block; width: 1px; height: 5px; background: #cfc9bf; margin: 0 auto 3px; }
+  .rig-scala b:first-child { transform: none; text-align: left; }
+  .rig-scala b:first-child::before { margin-left: 0; }
+  .rig-scala b:last-child { transform: translateX(-100%); text-align: right; }
+  .rig-scala b:last-child::before { margin-right: 0; }
+  .rig-griglia { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .rig-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+  .rig-cella .et { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); display: block; }
+  .rig-cella .vl { font-family: ’Playfair Display’, serif; font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .rig-cella.fissa .vl { color: var(--accent); }
+  .rig-cella .nt { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  /* ── APPLET 2 · IL PONTE LANCE ── */
+  .pont-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pont-btn {
+    flex: 1; min-width: 84px;
+    font-family: ’Source Sans 3’, sans-serif; font-size: 12.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 8px 6px; cursor: pointer; transition: all 0.15s; line-height: 1.25;
+  }
+  .pont-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pont-btn small { display: block; font-weight: 400; font-size: 11px; opacity: 0.85; }
+  .pont-svg { display: block; width: 100%; height: auto; background: #f4f7f9; border-radius: 6px; }
+  .pont-barra { margin-top: 14px; }
+  .pont-riga { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .pont-riga span { color: var(--accent); font-weight: 700; }
+  .pont-track { background: #f3f1ec; border-radius: 3px; height: 18px; overflow: hidden; position: relative; }
+  .pont-fill { height: 100%; background: var(--accent); transition: width 0.45s ease; }
+  .pont-soglia { position: absolute; top: 0; bottom: 0; width: 2px; background: #1c1c2e; }
+  .pont-soglia-lab { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+
+  /* ── APPLET 3 · EVACUAZIONE ── */
+  .evac-top { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .evac-btn {
+    font-family: ’Source Sans 3’, sans-serif; font-size: 13px; font-weight: 600;
+    background: var(--accent); border: 1.5px solid var(--accent); color: #fff;
+    border-radius: 4px; padding: 9px 16px; cursor: pointer; transition: all 0.15s;
+  }
+  .evac-btn.sec { background: #f3f1ec; border-color: var(--border); color: var(--muted); }
+  .evac-orologio { font-family: ’Playfair Display’, serif; font-size: 30px; font-weight: 700; color: var(--text); margin-left: auto; letter-spacing: 0.02em; }
+  .evac-conta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .evac-conta div { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; text-align: center; }
+  .evac-conta .n { font-family: ’Playfair Display’, serif; font-size: 22px; font-weight: 700; display: block; line-height: 1.2; }
+  .evac-conta .l { font-size: 11px; color: var(--muted); line-height: 1.3; display: block; }
+  .evac-vuoti .n { color: var(--accent); }
+  .evac-griglia { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+  .evac-cella { background: #f3f1ec; border: 1px solid var(--border); border-radius: 4px; padding: 5px 3px 6px; text-align: center; opacity: 0.35; transition: opacity 0.3s; }
+  .evac-cella.uscita { opacity: 1; }
+  .evac-nome { font-size: 12px; font-weight: 700; color: var(--text); }
+  .evac-mini { height: 6px; background: #ddd8d0; border-radius: 2px; overflow: hidden; margin: 3px 2px 2px; }
+  .evac-mini i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.3s; }
+  .evac-num { font-size: 10.5px; color: var(--muted); }
+  .evac-esito { margin-top: 16px; }
+
+  /* ── APPLET 4 · CHI SI SALVO ── */
+  .surv-btns { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .surv-btn {
+    flex: 1; min-width: 130px;
+    font-family: ’Source Sans 3’, sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .surv-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .surv-canvas-wrap { position: relative; height: 300px; }
+
+  /* ── APPLET 5 · IPOTESI ── */
+  .ipo-lista { display: grid; gap: 8px; margin-bottom: 18px; }
+  .ipo-btn {
+    text-align: left;
+    font-family: ’Source Sans 3’, sans-serif; font-size: 14px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
+  }
+  .ipo-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .solidita-riga { display: grid; gap: 5px; margin-bottom: 14px; }
+  .solidita-label { display: flex; justify-content: space-between; font-size: 13px; }
+  .solidita-label strong { color: var(--text); }
+  .solidita-label span { color: var(--accent); font-weight: 700; }
+  .solidita-track { background: #f3f1ec; border-radius: 3px; height: 16px; overflow: hidden; }
+  .solidita-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+  .ipo-cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 13.5px; color: var(--muted); line-height: 1.55; font-style: italic; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: ’Playfair Display’, serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: ’Source Sans 3’, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .rig-griglia { grid-template-columns: 1fr; }
+    .pont-btn { min-width: 46%; }
+    .surv-btn { min-width: 100%; }
+    .evac-griglia { grid-template-columns: repeat(3, 1fr); }
+    .evac-orologio { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Storia</div>
+    <h1>Perché il Titanic non aveva scialuppe a sufficienza per tutti i passeggeri?</h1>
+    <div class="risposta-box">
+      <p>Perché la legge non contava le persone: contava le tonnellate, e la sua tabella si fermava a 10.000. Il Titanic ne stazzava 46.328, ma la norma del Board of Trade — datata 9 marzo 1894 e mai più aggiornata — chiedeva 16 scialuppe e basta. La White Star ne imbarcò 20, quattro più del minimo: 1.178 posti per 2.201 persone. E quella notte nemmeno quei 1.178 posti furono usati.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Il fatto più scomodo di tutta la vicenda è che il Titanic partì perfettamente in regola, anzi in eccesso: la legge ne pretendeva 16, di scialuppe, e a bordo ce n’erano 20. Il problema non era la nave. Era il righello con cui la si misurava, una tabella del Board of Trade entrata in vigore il 1º giugno 1894 che contava le tonnellate di stazza e non le teste dei passeggeri.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il righello del 1894</div>
+      <div class="applet-istruzione">Trascina il cursore e fai crescere la nave da 10.000 a 52.000 tonnellate: guarda che cosa succede a ciò che la legge pretende.</div>
+    </div>
+    <svg class="rig-svg" id="rigSvg" viewBox="0 0 600 190" xmlns="http://www.w3.org/2000/svg">
+      <line x1="20" y1="86" x2="580" y2="86" stroke="#d8d2c8" stroke-width="1"></line>
+      <path id="rigNave" d="M20 60 L200 60 L226 73 L200 86 L20 86 Z" fill="#c0392b" opacity="0.85"></path>
+      <text id="rigStazzaTxt" x="20" y="48" font-family="Georgia, serif" font-size="15" font-weight="bold" fill="#1c1c2e">46.328 tonnellate</text>
+      <text x="20" y="112" font-family="sans-serif" font-size="11" letter-spacing="1" fill="#7f8c8d">SCIALUPPE RICHIESTE SOTTO LE GRU</text>
+      <g id="rigBarche"></g>
+      <text x="20" y="176" font-family="sans-serif" font-size="12" fill="#c0392b" font-weight="bold">16 — sempre, qualunque sia la stazza</text>
+    </svg>
+    <input class="rig-slider" id="rigSlider" type="range" min="10000" max="52000" step="100" value="46328" oninput="aggiornaRighello(this.value)">
+    <div class="rig-scala">
+      <b style="left:0%">10.000 t</b>
+      <b style="left:7%">Lucania<br>12.952</b>
+      <b style="left:86.5%">Titanic<br>46.328</b>
+      <b style="left:100%">52.000 t</b>
+    </div>
+    <div class="rig-griglia">
+      <div class="rig-cella fissa">
+        <span class="et">Capacità minima di legge</span>
+        <div class="vl">9.625 <small style="font-size:13px;font-weight:400">piedi cubi</small></div>
+        <div class="nt">5.500 sotto le gru, più tre quarti per le navi che trasportano emigranti.</div>
+      </div>
+      <div class="rig-cella fissa">
+        <span class="et">Cioè, in persone</span>
+        <div class="vl">962</div>
+        <div class="nt">A 10 piedi cubi a testa. Non cambia mai: né a 12.000 né a 52.000 tonnellate.</div>
+      </div>
+    </div>
+    <div class="box-testo" id="rigNota">Il Titanic stazzava 46.328 tonnellate: tre volte e mezzo il tetto della tabella. Poteva imbarcare legalmente fino a 3.547 persone — con l’obbligo di posti in scialuppa per 962.</div>
+    <div class="applet-fonte">
+      Fonte: Lord Mersey, <em>Report on the Loss of the S.S. «Titanic»</em>, British Wreck Commissioner’s Inquiry, 30 luglio 1912, capitolo «Board of Trade’s Administration»: la tabella allegata al Merchant Shipping Act 1894 è datata 9 marzo 1894, entra in vigore il 1º giugno e «si ferma al punto in cui la stazza lorda raggiunge le 10.000 tonnellate e oltre», fissando 16 imbarcazioni sotto le gru e 5.500 piedi cubi complessivi. La sagoma della nave nel disegno è illustrativa; le cifre sono quelle del rapporto.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quando quella tabella fu scritta, la più grande nave per emigranti in mare era il <em>Lucania</em> della Cunard: 12.952 tonnellate. Nessuno pensò di prolungare la scala verso l’alto, e per diciotto anni non la toccò nessuno. Il conto, per una nave come il Titanic, faceva 9.625 piedi cubi di scialuppe: a dieci piedi cubi a testa, posti per 962 persone su una capienza autorizzata di 3.547.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Sedici gru, quattro scialuppe ciascuna</div>
+      <div class="applet-istruzione">Le gru Welin montate sul Titanic potevano impilare fino a quattro scialuppe per postazione. Cambia configurazione e guarda il ponte lance riempirsi.</div>
+    </div>
+    <div class="pont-btns">
+      <button class="pont-btn" data-cfg="0" onclick="mostraPonte(0)">16<small>minimo di legge</small></button>
+      <button class="pont-btn attivo" data-cfg="1" onclick="mostraPonte(1)">20<small>come partì</small></button>
+      <button class="pont-btn" data-cfg="2" onclick="mostraPonte(2)">32<small>piano C1</small></button>
+      <button class="pont-btn" data-cfg="3" onclick="mostraPonte(3)">48<small>l’idea di Carlisle</small></button>
+      <button class="pont-btn" data-cfg="4" onclick="mostraPonte(4)">64<small>piano C2, il massimo</small></button>
+    </div>
+    <svg class="pont-svg" id="pontSvg" viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 40 L470 40 Q560 105 470 170 L40 170 Q22 105 40 40 Z" fill="#ffffff" stroke="#c9d4dc" stroke-width="2"></path>
+      <rect x="150" y="82" width="240" height="46" rx="6" fill="#f0f3f5" stroke="#dde4e9" stroke-width="1"></rect>
+      <text x="270" y="110" text-anchor="middle" font-family="sans-serif" font-size="11" letter-spacing="1" fill="#9fb0bb">SOVRASTRUTTURE</text>
+      <text x="500" y="108" font-family="sans-serif" font-size="10.5" fill="#9fb0bb">prua →</text>
+      <text x="40" y="28" font-family="sans-serif" font-size="10.5" letter-spacing="1" fill="#7f8c8d">SINISTRA (pari)</text>
+      <text x="40" y="192" font-family="sans-serif" font-size="10.5" letter-spacing="1" fill="#7f8c8d">DRITTA (dispari)</text>
+      <g id="pontBarche"></g>
+    </svg>
+    <div class="pont-barra">
+      <div class="pont-riga"><strong id="pontEtichetta">20 imbarcazioni · 1.178 posti</strong><span id="pontPerc">54%</span></div>
+      <div class="pont-track"><div class="pont-fill" id="pontFill" style="width:54%"></div><div class="pont-soglia" style="left:100%"></div></div>
+      <div class="pont-soglia-lab">Percentuale di posti rispetto alle <strong>2.201 persone</strong> imbarcate la notte del 14 aprile 1912.</div>
+    </div>
+    <div class="box-testo" id="pontTesto" style="margin-top:14px;">Le 20 imbarcazioni realmente presenti: 14 scialuppe da 65 posti, 2 lance di emergenza da 40 e 4 pieghevoli Engelhardt da 47. Totale 1.178 posti, ben oltre i 962 richiesti dalla legge — e poco più della metà delle persone a bordo.</div>
+    <div class="applet-fonte">
+      Fonte: composizione delle 20 imbarcazioni e totale di 1.178 posti dal rapporto Mersey, 1912 (deposizione di Harold Sanderson, domande 19115-19122). I piani a 2 e a 4 scialuppe per gru sono quelli prodotti in aula da Alexander Carlisle e catalogati come C1 e C2 (Giorno 20, 10 giugno 1912). Le configurazioni a 32, 48 e 64 sono stime a 65 posti per scialuppa: quelle imbarcazioni non furono mai costruite, quindi la loro capienza esatta non esiste.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che si potesse fare diversamente lo sapeva bene chi la nave l’aveva disegnata. Alexander Carlisle, direttore generale dei cantieri Harland &amp; Wolff, si era fatto progettare dalla Welin’s Quadrant Davit Company gru capaci di reggere quattro scialuppe per postazione — 64 in tutto — e le fece installare. Le mostrò a Bruce Ismay e Harold Sanderson in due riunioni, nell’ottobre 1909 e nel gennaio 1910: la prima durò un giorno intero, e alle scialuppe furono dedicati «probabilmente non più di cinque o dieci minuti».</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Centosessanta minuti, diciotto scialuppe</div>
+      <div class="applet-istruzione">Avvia l’orologio di bordo dalle 23:40 del 14 aprile: ogni scialuppa parte all’ora registrata dall’inchiesta, con dentro le persone che i testimoni dichiararono.</div>
+    </div>
+    <div class="evac-top">
+      <button class="evac-btn" id="evacPlay" onclick="avviaEvacuazione()">Avvia l’orologio</button>
+      <button class="evac-btn sec" onclick="resetEvacuazione()">Azzera</button>
+      <div class="evac-orologio" id="evacOrologio">23:40</div>
+    </div>
+    <div class="evac-conta">
+      <div><span class="n" id="evacBarche">0</span><span class="l">scialuppe calate<br>(su 18)</span></div>
+      <div><span class="n" id="evacPersone">0</span><span class="l">persone imbarcate<br>(dalle deposizioni)</span></div>
+      <div class="evac-vuoti"><span class="n" id="evacVuoti">0</span><span class="l">posti partiti<br>vuoti</span></div>
+    </div>
+    <div class="evac-griglia" id="evacGriglia"></div>
+    <div class="evac-esito box-testo" id="evacEsito">La collisione è alle 23:40. L’ordine di scoprire le scialuppe arriva alle 00:05, quello di imbarcare donne e bambini alle 00:30. La prima scialuppa tocca l’acqua alle 00:45.</div>
+    <div class="applet-fonte">
+      Fonte: rapporto Mersey, 1912, capitolo «Account of the Saving and Rescue of Those Who Survived — Boats»: tabella degli orari di partenza e tabella del numero di uomini d’equipaggio, passeggeri uomini e donne e bambini in ciascuna imbarcazione. Mersey avverte espressamente che questi orari «sono inattendibili» e che le cifre delle deposizioni sono gonfiate: tre scialuppe risultano partite con più persone della loro capienza. Le pieghevoli A e B non furono calate: galleggiarono via all’affondamento e furono usate come zattere.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La scialuppa 7 fu calata alle 00:45 con 27 persone su 65 posti; la lancia di emergenza numero 1 partì alle 01:10 con dodici persone a bordo, su una capienza di quaranta. Non c’era mai stata un’esercitazione di abbandono nave, molti membri dell’equipaggio non sapevano quale imbarcazione fosse la loro, e dal ponte lance all’acqua c’erano venti metri di vuoto. «Queste scialuppe» scrive Mersey «si lasciarono dietro molte centinaia di vite destinate a perire».</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">I posti c’erano, ma non per tutti allo stesso modo</div>
+      <div class="applet-istruzione">Cambia vista: le percentuali di sopravvivenza calcolate dall’inchiesta britannica, gruppo per gruppo.</div>
+    </div>
+    <div class="surv-btns">
+      <button class="surv-btn attivo" data-vista="0" onclick="mostraSopravvivenza(0)">Adulti, per classe</button>
+      <button class="surv-btn" data-vista="1" onclick="mostraSopravvivenza(1)">Bambini ed equipaggio</button>
+    </div>
+    <div class="surv-canvas-wrap"><canvas id="survCanvas"></canvas></div>
+    <div class="box-testo" id="survTesto" style="margin-top:16px;">In prima classe si salvò il 97,22% delle donne adulte (140 su 144) e il 32,57% degli uomini (57 su 175). In terza classe le donne salvate furono 76 su 165, il 46,06%: una donna di terza classe ebbe meno della metà delle possibilità di una di prima.</div>
+    <div class="applet-fonte">
+      Fonte: rapporto Mersey, 1912, capitolo «Account of the Saving and Rescue of Those Who Survived — Numbers Saved», che riporta i totali e le percentuali qui usate: 711 salvati su 2.201 a bordo, pari al 32,30%. La percentuale dei bambini di terza classe (27 su 79) è calcolata sommando le due righe del rapporto, 13 su 48 maschi e 14 su 31 femmine.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Di 2.201 persone a bordo se ne salvarono 711, il 32,30%. Il dato che smonta l’idea del semplice «mancavano le scialuppe» è un altro: nelle diciotto imbarcazioni calate c’erano 1.084 posti, e secondo i calcoli di Mersey ne partirono al massimo 652 persone. Anche con le scialuppe che c’erano si sarebbero potute salvare centinaia di vite in più.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">Cinque spiegazioni, non tutte documentate</div>
+      <div class="applet-istruzione">Seleziona una spiegazione: vedi che cosa la sostiene e se qualcuno, all’epoca, la mise davvero per iscritto.</div>
+    </div>
+    <div class="ipo-lista">
+      <button class="ipo-btn attivo" data-ipo="0" onclick="mostraIpotesi(0)">La tabella ferma al 1894</button>
+      <button class="ipo-btn" data-ipo="1" onclick="mostraIpotesi(1)">La scialuppa come navetta, non come arca</button>
+      <button class="ipo-btn" data-ipo="2" onclick="mostraIpotesi(2)">Un equipaggio in più che non serviva a nulla</button>
+      <button class="ipo-btn" data-ipo="3" onclick="mostraIpotesi(3)">Le paratie stagne al posto delle scialuppe</button>
+      <button class="ipo-btn" data-ipo="4" onclick="mostraIpotesi(4)">«Il ponte sarebbe sembrato ingombro»</button>
+    </div>
+    <div class="solidita-riga">
+      <div class="solidita-label"><strong>Attestazione d’epoca</strong><span id="solVal">Documentata</span></div>
+      <div class="solidita-track"><div class="solidita-fill" id="solBar" style="width:95%"></div></div>
+    </div>
+    <div class="box-testo" id="ipoTesto">La spiegazione principale, e quella su cui l’inchiesta britannica si sofferma più a lungo. La tabella allegata al Merchant Shipping Act del 1894 misurava la stazza, non i passeggeri, e si fermava alla riga «10.000 tonnellate e oltre». Restò immutata per diciotto anni, mentre le navi quadruplicavano.<em class="ipo-cit">Mersey: «Non può essere che la dotazione di scialuppe stabilita nel 1894 per navi di 10.000 tonnellate e oltre sia rimasta sufficiente fino al 1910, quando si costruivano navi da 45.000 tonnellate.»</em></div>
+    <div class="applet-fonte">
+      Fonte: rapporto Mersey, 1912, capitolo «Board of Trade’s Administration» (che riporta per esteso la deposizione di Sir Alfred Chalmers, consigliere nautico del Board of Trade dal 1896 all’agosto 1911, la scala proposta da William Archer il 28 febbraio 1911 e il testo della Regola 12) e deposizione di Alexander Carlisle, Giorno 20, domande 21255-21400. La barra indica se esiste o no una fonte d’epoca che dichiari esplicitamente quella motivazione: è una valutazione redazionale, non un dato misurato.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il seguito arrivò in fretta: tra il 23 novembre 1913 e il 20 gennaio 1914 i delegati di tredici Paesi si riunirono a Londra e firmarono la prima convenzione SOLAS — scialuppe e giubbotti per tutti a bordo, ascolto radio continuo, esercitazioni obbligatorie, pattuglia internazionale dei ghiacci. A guidare la delegazione britannica c’era Lord Mersey in persona. Poi scoppiò la guerra: solo cinque Paesi la ratificarono, e la convenzione dovette essere riscritta nel 1929, 1948, 1960 e 1974.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il Titanic partì con quattro scialuppe più di quante la legge ne chiedesse: è esattamente questo il problema. Una regola scritta quando la nave più grande del mondo pesava un quarto di lui era ancora in vigore, e per diciotto anni nessuno l’aveva guardata.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Lord Mersey (John Charles Bigham), <em>Report on the Loss of the S.S. «Titanic»</em>, British Wreck Commissioner’s Inquiry, Londra, 30 luglio 1912 — capitoli «Board of Trade’s Administration», «Account of the Saving and Rescue of Those Who Survived: Boats» e «Numbers Saved» — <a href="https://www.titanicinquiry.org/BOTInq/BOTReport/botRep01.php">titanicinquiry.org</a></li>
+      <li>Deposizione di Alexander Carlisle, già presidente dei direttori generali di Harland &amp; Wolff, British Wreck Commissioner’s Inquiry, Giorno 20, 10 giugno 1912, domande 21255-21400 — <a href="https://www.titanicinquiry.org/BOTInq/BOTInq20Carlisle01.php">titanicinquiry.org</a></li>
+      <li>Deposizione di Sir Alfred Chalmers, consigliere nautico del Board of Trade 1896-1911, ivi, Giorno 23, domanda 22875 e seguenti</li>
+      <li>Deposizione di William Archer, ispettore capo navale del Board of Trade, ivi, Giorno 25, domande 24246 e 24256</li>
+      <li><em>Merchant Shipping Act 1894</em>, sezioni 427-431 e diciassettesimo allegato; tabella del Board of Trade del 9 marzo 1894, in vigore dal 1º giugno 1894</li>
+      <li><em>Report of the Departmental Committee on Boats, Rafts and Life-Saving Apparatus</em>, Board of Trade, 1886; <em>Select Committee on Saving Life at Sea</em> (presidente Lord Charles Beresford), House of Commons, 1887 — entrambi citati per esteso nel rapporto Mersey</li>
+      <li>The National Archives (Regno Unito), <em>The Convention for the Safety of Life at Sea (SOLAS)</em>, ratifica britannica del 30 dicembre 1914, segnatura FO 94/999 — <a href="https://www.nationalarchives.gov.uk/explore-the-collection/stories/the-convention-for-the-safety-of-life-at-sea/">nationalarchives.gov.uk</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · IL RIGHELLO DEL 1894 ── */
+function fmt(n) { return n.toLocaleString('it-IT'); }
+
+(function disegnaBarche() {
+  var g = document.getElementById('rigBarche');
+  var s = '';
+  for (var i = 0; i < 16; i++) {
+    var x = 20 + i * 35;
+    s += '<rect x="' + x + '" y="122" width="28" height="9" rx="4" fill="#c0392b" opacity="0.75"></rect>';
+    s += '<rect x="' + (x + 12) + '" y="131" width="4" height="9" fill="#c0392b" opacity="0.4"></rect>';
+  }
+  g.innerHTML = s;
+})();
+
+function aggiornaRighello(v) {
+  v = parseInt(v, 10);
+  var t = (v - 10000) / 42000;
+  var len = 90 + t * 380;
+  document.getElementById('rigNave').setAttribute('d',
+    'M20 60 L' + (20 + len) + ' 60 L' + (20 + len + 26) + ' 73 L' + (20 + len) + ' 86 L20 86 Z');
+  document.getElementById('rigStazzaTxt').textContent = fmt(v) + ' tonnellate';
+  var nota;
+  if (v <= 13500) {
+    nota = 'Siamo dalle parti del <strong>Lucania</strong> della Cunard, 12.952 tonnellate: era la più grande nave per emigranti in mare quando la tabella fu scritta. È su navi come questa che il Board of Trade tarò le sue 16 scialuppe.';
+  } else if (v <= 30000) {
+    nota = 'Nel 1894 una nave di questa stazza non esisteva. La tabella però non ha righe oltre le 10.000 tonnellate: qualunque cifra si legga qui sopra, la riga applicabile resta l’ultima.';
+  } else if (v <= 44000) {
+    nota = 'Più del doppio del Lucania. La legge continua a chiedere 16 imbarcazioni sotto le gru e posti per 962 persone: la stazza è raddoppiata, l’obbligo no.';
+  } else if (v <= 47500) {
+    nota = '<strong>46.328 tonnellate: è il Titanic.</strong> Tre volte e mezzo il tetto della tabella. Poteva imbarcare legalmente fino a 3.547 persone, con l’obbligo di posti in scialuppa per 962 — meno di un terzo.';
+  } else {
+    nota = 'Oltre il Titanic. Le navi continuarono a crescere, la tabella no: fu il naufragio, non l’ingegneria, a farla riscrivere.';
+  }
+  document.getElementById('rigNota').innerHTML = nota;
+}
+aggiornaRighello(46328);
+
+/* ── APPLET 02 · IL PONTE LANCE ── */
+var config = [
+  { n: 1, extra: 0, tit: '16 imbarcazioni · 962 posti richiesti', posti: 962,
+    txt: 'Sedici imbarcazioni sotto le gru, per complessivi 9.625 piedi cubi: il minimo assoluto che il Board of Trade pretendeva da una nave emigranti di quella stazza. Bastava per 962 persone su 2.201 imbarcate.' },
+  { n: 1, extra: 4, tit: '20 imbarcazioni · 1.178 posti', posti: 1178,
+    txt: 'Quelle realmente presenti: 14 scialuppe da 65 posti, 2 lance di emergenza da 40 e 4 pieghevoli Engelhardt da 47 (in chiaro nel disegno). Totale 1.178 posti, 216 più del minimo di legge — e poco più della metà delle persone a bordo.' },
+  { n: 2, extra: 0, tit: '32 imbarcazioni · circa 2.080 posti', posti: 2080,
+    txt: 'Il piano catalogato in aula come C1: due scialuppe per gru, la soluzione che Welin aveva già realizzato nel 1909 per l’Edinburgh Castle della Union-Castle Line. Carlisle la vide, disse «pensai che si potesse fare di meglio», e disegnò la successiva.' },
+  { n: 3, extra: 0, tit: '48 imbarcazioni · circa 3.120 posti', posti: 3120,
+    txt: '«Pensavo che ce ne dovessero essere tre per ogni coppia di gru», rispose Carlisle a Lord Mersey che lo incalzava. Quarantotto scialuppe: più posti che persone a bordo quella notte, e quasi quanti la nave ne poteva legalmente imbarcare.' },
+  { n: 4, extra: 0, tit: '64 imbarcazioni · circa 4.160 posti', posti: 4160,
+    txt: 'Il piano C2, il massimo consentito dalle gru Welin già montate sul Titanic: quattro scialuppe per postazione, una sospesa fuori bordo «come fa di solito la P&O». Carlisle sostenne in aula che si sarebbero potute calare tutte in acqua «in mezz’ora, facilmente».' }
+];
+
+function mostraPonte(i) {
+  var btns = document.querySelectorAll('.pont-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var c = config[i], s = '';
+  for (var st = 0; st < 8; st++) {
+    var x = 60 + st * 51.4;
+    for (var b = 0; b < c.n; b++) {
+      s += '<rect x="' + x.toFixed(1) + '" y="' + (44 + b * 10) + '" width="38" height="9" rx="3" fill="#c0392b" opacity="' + (0.9 - b * 0.12) + '"></rect>';
+      s += '<rect x="' + x.toFixed(1) + '" y="' + (157 - b * 10) + '" width="38" height="9" rx="3" fill="#c0392b" opacity="' + (0.9 - b * 0.12) + '"></rect>';
+    }
+  }
+  if (c.extra) {
+    s += '<rect x="368" y="56" width="30" height="8" rx="3" fill="#e74c3c" opacity="0.45"></rect>';
+    s += '<rect x="316" y="56" width="30" height="8" rx="3" fill="#e74c3c" opacity="0.45"></rect>';
+    s += '<rect x="368" y="146" width="30" height="8" rx="3" fill="#e74c3c" opacity="0.45"></rect>';
+    s += '<rect x="316" y="146" width="30" height="8" rx="3" fill="#e74c3c" opacity="0.45"></rect>';
+  }
+  document.getElementById('pontBarche').innerHTML = s;
+  document.getElementById('pontEtichetta').textContent = c.tit;
+  var perc = Math.round(c.posti / 2201 * 100);
+  document.getElementById('pontPerc').textContent = perc + '%';
+  document.getElementById('pontFill').style.width = Math.min(perc, 100) + '%';
+  document.getElementById('pontTesto').innerHTML = c.txt;
+}
+mostraPonte(1);
+
+/* ── APPLET 03 · L'EVACUAZIONE ── */
+var scialuppe = [
+  { nome: '7',  min: 65,  cap: 65, occ: 27 },
+  { nome: '5',  min: 75,  cap: 65, occ: 41 },
+  { nome: '6',  min: 75,  cap: 65, occ: 28 },
+  { nome: '3',  min: 80,  cap: 65, occ: 50 },
+  { nome: '1',  min: 90,  cap: 40, occ: 12 },
+  { nome: '8',  min: 90,  cap: 65, occ: 39 },
+  { nome: '9',  min: 100, cap: 65, occ: 56 },
+  { nome: '10', min: 100, cap: 65, occ: 55 },
+  { nome: '11', min: 105, cap: 65, occ: 70 },
+  { nome: '12', min: 105, cap: 65, occ: 42 },
+  { nome: '14', min: 110, cap: 65, occ: 63 },
+  { nome: '13', min: 115, cap: 65, occ: 64 },
+  { nome: '15', min: 115, cap: 65, occ: 70 },
+  { nome: '16', min: 115, cap: 65, occ: 56 },
+  { nome: 'C',  min: 120, cap: 47, occ: 71 },
+  { nome: '2',  min: 125, cap: 40, occ: 26 },
+  { nome: '4',  min: 135, cap: 65, occ: 40 },
+  { nome: 'D',  min: 145, cap: 47, occ: 44 }
+];
+
+var evacTimer = null, evacMin = 0;
+
+function oraDa(min) {
+  var tot = (23 * 60 + 40 + min) % 1440;
+  var h = Math.floor(tot / 60), m = tot % 60;
+  return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+}
+
+(function costruisciGriglia() {
+  var g = document.getElementById('evacGriglia'), s = '';
+  for (var i = 0; i < scialuppe.length; i++) {
+    s += '<div class="evac-cella" id="ev' + i + '">' +
+         '<div class="evac-nome">' + scialuppe[i].nome + '</div>' +
+         '<div class="evac-mini"><i id="evb' + i + '"></i></div>' +
+         '<div class="evac-num" id="evn' + i + '">' + scialuppe[i].cap + ' posti</div></div>';
+  }
+  g.innerHTML = s;
+})();
+
+function resetEvacuazione() {
+  if (evacTimer) { clearInterval(evacTimer); evacTimer = null; }
+  evacMin = 0;
+  document.getElementById('evacOrologio').textContent = '23:40';
+  document.getElementById('evacBarche').textContent = '0';
+  document.getElementById('evacPersone').textContent = '0';
+  document.getElementById('evacVuoti').textContent = '0';
+  document.getElementById('evacPlay').textContent = 'Avvia l’orologio';
+  document.getElementById('evacPlay').disabled = false;
+  for (var i = 0; i < scialuppe.length; i++) {
+    document.getElementById('ev' + i).classList.remove('uscita');
+    document.getElementById('evb' + i).style.width = '0';
+    document.getElementById('evn' + i).textContent = scialuppe[i].cap + ' posti';
+  }
+  document.getElementById('evacEsito').innerHTML = 'La collisione è alle 23:40. L’ordine di scoprire le scialuppe arriva alle 00:05, quello di imbarcare donne e bambini alle 00:30. La prima scialuppa tocca l’acqua alle 00:45.';
+}
+
+function avviaEvacuazione() {
+  resetEvacuazione();
+  document.getElementById('evacPlay').disabled = true;
+  document.getElementById('evacPlay').textContent = 'In corso…';
+  evacTimer = setInterval(passoEvacuazione, 62);
+}
+
+function passoEvacuazione() {
+  evacMin++;
+  document.getElementById('evacOrologio').textContent = oraDa(evacMin);
+  var barche = 0, persone = 0, vuoti = 0;
+  for (var i = 0; i < scialuppe.length; i++) {
+    var s = scialuppe[i];
+    if (evacMin >= s.min) {
+      barche++; persone += s.occ; vuoti += Math.max(s.cap - s.occ, 0);
+      var cella = document.getElementById('ev' + i);
+      if (!cella.classList.contains('uscita')) {
+        cella.classList.add('uscita');
+        document.getElementById('evb' + i).style.width = Math.min(s.occ / s.cap * 100, 100) + '%';
+        document.getElementById('evn' + i).textContent = s.occ + '/' + s.cap;
+      }
+    }
+  }
+  document.getElementById('evacBarche').textContent = barche;
+  document.getElementById('evacPersone').textContent = fmt(persone);
+  document.getElementById('evacVuoti').textContent = vuoti;
+  if (evacMin === 40) {
+    document.getElementById('evacEsito').innerHTML = '<strong>00:20.</strong> Ordine di mettere fuori bordo le scialuppe. Il vapore che sfiata dalle valvole fa un rumore tale che il secondo ufficiale Lightoller non riesce a farsi sentire e deve dare gli ordini a gesti.';
+  }
+  if (evacMin === 55) {
+    document.getElementById('evacEsito').innerHTML = '<strong>00:35.</strong> Arriva il messaggio del Carpathia: sta facendo rotta verso di loro. La notizia si diffonde, e forse convince altri passeggeri che sulla nave si sta più sicuri che in mare.';
+  }
+  if (evacMin === 90) {
+    document.getElementById('evacEsito').innerHTML = '<strong>01:10.</strong> La lancia di emergenza numero 1 è partita con dodici persone a bordo, su quaranta posti. Dal ponte lance all’acqua ci sono venti metri: molte donne si rifiutano di scendere.';
+  }
+  if (evacMin >= 160) {
+    clearInterval(evacTimer); evacTimer = null;
+    document.getElementById('evacOrologio').textContent = '02:20';
+    document.getElementById('evacPlay').textContent = 'Avvia l’orologio';
+    document.getElementById('evacPlay').disabled = false;
+    document.getElementById('evacEsito').innerHTML = '<strong>02:20: la nave affonda.</strong> Le diciotto scialuppe calate offrivano 1.084 posti; le deposizioni ne riempiono 854, e già così ne restano 264 vuoti. Ma solo 712 persone furono raccolte dal Carpathia, e circa 60 erano state ripescate dall’acqua o dalle pieghevoli A e B: <strong>dalle scialuppe erano partite al massimo 652 persone</strong>. Mersey ne conclude che i testimoni gonfiarono i numeri — «c’era la tendenza a esagerare le presenze in ogni scialuppa».';
+  }
+}
+
+/* ── APPLET 04 · CHI SI SALVÒ ── */
+var viste = [
+  { lab: ['Donne, 1ª classe', 'Donne, 2ª classe', 'Donne, 3ª classe', 'Uomini, 1ª classe', 'Uomini, 2ª classe', 'Uomini, 3ª classe'],
+    dat: [97.22, 86.02, 46.06, 32.57, 8.33, 16.23],
+    txt: 'In prima classe si salvò il 97,22% delle donne adulte (140 su 144) e il 32,57% degli uomini (57 su 175). In terza classe le donne salvate furono 76 su 165, il 46,06%: una donna di terza ebbe meno della metà delle possibilità di una di prima. Il gruppo più falcidiato è quello degli uomini di seconda classe: 14 su 168, l’8,33%.' },
+  { lab: ['Bambini, 1ª classe', 'Bambini, 2ª classe', 'Bambini, 3ª classe', 'Equipaggio di coperta', 'Equipaggio di macchina', 'Personale di cambusa'],
+    dat: [100, 100, 34.18, 65.15, 22.15, 19.63],
+    txt: 'Tutti i bambini di prima e seconda classe si salvarono: sei e ventiquattro. Di quelli di terza ne sopravvissero 27 su 79. Fra l’equipaggio la differenza è tecnica prima che sociale: i marinai di coperta sapevano manovrare le scialuppe e ci finirono dentro come rematori (65,15%), i fuochisti e i camerieri no (22,15% e 19,63%).' }
+];
+
+var survChart = null;
+
+function mostraSopravvivenza(i) {
+  var btns = document.querySelectorAll('.surv-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var v = viste[i];
+  document.getElementById('survTesto').innerHTML = v.txt;
+  if (survChart) survChart.destroy();
+  survChart = new Chart(document.getElementById('survCanvas').getContext('2d'), {
+    type: 'bar',
+    data: { labels: v.lab, datasets: [{ data: v.dat, backgroundColor: '#c0392b', borderRadius: 3, barPercentage: 0.72 }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function (c) { return c.parsed.x.toString().replace('.', ',') + '% salvati'; } } }
+      },
+      scales: {
+        x: { beginAtZero: true, max: 100, ticks: { callback: function (t) { return t + '%'; }, font: { size: 11 } }, grid: { color: '#efece6' } },
+        y: { ticks: { font: { size: 12 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+mostraSopravvivenza(0);
+
+/* ── APPLET 05 · LE CINQUE SPIEGAZIONI ── */
+var ipotesi = [
+  { sol: 95, lab: 'Documentata',
+    txt: 'La spiegazione principale, e quella su cui l’inchiesta britannica si sofferma più a lungo. La tabella allegata al Merchant Shipping Act del 1894 misurava la stazza, non i passeggeri, e si fermava alla riga «10.000 tonnellate e oltre». Restò immutata per diciotto anni, mentre le navi quadruplicavano.',
+    cit: 'Mersey: «Non può essere che la dotazione di scialuppe stabilita nel 1894 per navi di 10.000 tonnellate e oltre sia rimasta sufficiente fino al 1910, quando si costruivano navi da 45.000 tonnellate.»' },
+  { sol: 88, lab: 'Documentata',
+    txt: 'Nella cultura marittima dell’epoca la scialuppa non doveva contenere tutti: doveva fare la spola fra la nave in avaria e il soccorritore più vicino. Lo scriveva già il comitato dipartimentale del Board of Trade nel 1886, e la radiotelegrafia — sul Lucania dal luglio 1901 — sembrava rendere quel soccorso ancora più sicuro.',
+    cit: 'Comitato dipartimentale del Board of Trade, 1886: le scialuppe «sarebbero di scarsa utilità nel salvare vite (benché possano prolungarle per un certo tempo) se non ci fosse soccorso a portata di mano da altre navi o dalla vicinanza della costa».' },
+  { sol: 75, lab: 'Documentata, a verbale',
+    txt: 'Sir Alfred Chalmers, consigliere nautico del Board of Trade dal 1896 al 1911, spiegò sotto giuramento perché non avesse mai proposto di alzare la soglia: più scialuppe significavano più marinai da imbarcare e stipendiare, e sedici erano a suo giudizio «il massimo numero manovrabile rapidamente in mare».',
+    cit: 'Chalmers: «Si fornirebbe un equipaggio portato inutilmente attraverso l’oceano, che non servirebbe mai a manovrare le scialuppe.»' },
+  { sol: 70, lab: 'Documentata',
+    txt: 'La Regola 12 del Board of Trade permetteva alle navi con compartimenti stagni giudicati efficienti di dimezzare le scialuppe supplementari. William Archer, ispettore capo navale, propose il 28 febbraio 1911 una scala molto più severa ma anche un’estensione di quello sconto: la sicurezza doveva stare nello scafo, non nelle lance.',
+    cit: 'Mersey, riassumendo la posizione di Archer: «Il grande obiettivo era costruire la nave in modo che, in caso di disastro, essa fosse la propria scialuppa di salvataggio.» Dopo il naufragio Archer dichiarò in aula di aver cambiato idea.' },
+  { sol: 25, lab: 'Nessuna fonte d’epoca',
+    txt: 'È la versione più raccontata: la White Star avrebbe tolto le scialuppe perché il ponte sarebbe sembrato ingombro. Nei verbali dell’inchiesta non c’è nulla del genere. Carlisle mise i piani sul tavolo e li lasciò lì; interrogato da Mersey, ammise di non aver mai detto ai proprietari che le scialuppe erano insufficienti.',
+    cit: 'Mersey: «Pensava che dovessero essercene 64?» — Carlisle: «Pensavo che dovessero essere tre per ogni coppia di gru.» — «Perché non lo disse?» — «Perché sono sempre stato abituato a mettere i piani davanti ai proprietari e lasciare giudicare loro.»' }
+];
+
+function mostraIpotesi(i) {
+  var btns = document.querySelectorAll('.ipo-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('solBar').style.width = ipotesi[i].sol + '%';
+  document.getElementById('solVal').textContent = ipotesi[i].lab;
+  document.getElementById('ipoTesto').innerHTML = ipotesi[i].txt + '<em class="ipo-cit">' + ipotesi[i].cit + '</em>';
+}
+mostraIpotesi(0);
+</script>
+</body>
+</html>
