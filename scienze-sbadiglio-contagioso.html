@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché lo sbadiglio è contagioso?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #16a085;
+    --accent-light: #ddf1ec;
+    --accent-mid: #1abc9c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · RESISTI ── */
+  .res-controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .res-btn {
+    flex: 1; min-width: 140px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .res-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .res-btn.primario { background: var(--text); border-color: var(--text); color: #fff; }
+  .res-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .res-scena { display: grid; grid-template-columns: 160px 1fr; gap: 16px; align-items: stretch; }
+  .faccia-wrap { background: #eef7f5; border-radius: 6px; overflow: hidden; }
+  .faccia-svg { display: block; width: 100%; height: auto; }
+
+  .res-pannello { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+  .urge-label { display: flex; justify-content: space-between; font-size: 13px; }
+  .urge-label strong { color: var(--text); }
+  .urge-label span { color: var(--accent); font-weight: 700; }
+  .urge-track { background: #f3f1ec; border-radius: 3px; height: 18px; overflow: hidden; position: relative; }
+  .urge-fill { height: 100%; border-radius: 3px; background: var(--accent); width: 0%; transition: width 0.12s linear; }
+  .urge-soglia { position: absolute; top: 0; bottom: 0; left: 72%; width: 2px; background: #c0392b; }
+  .res-log { font-size: 13px; line-height: 1.5; color: var(--muted); background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; min-height: 74px; }
+  .res-esito { font-size: 14px; text-align: center; padding: 12px 4px 2px; min-height: 20px; color: var(--text); }
+
+  /* ── APPLET 2 · IPOTESI ── */
+  .ipo-lista { display: grid; gap: 8px; margin-bottom: 18px; }
+  .ipo-btn {
+    text-align: left; font-family: 'Source Sans 3', sans-serif; font-size: 14px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
+  }
+  .ipo-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .solidita-riga { display: grid; gap: 5px; margin-bottom: 14px; }
+  .solidita-label { display: flex; justify-content: space-between; font-size: 13px; }
+  .solidita-label strong { color: var(--text); }
+  .solidita-label span { color: var(--accent); font-weight: 700; }
+  .solidita-track { background: #f3f1ec; border-radius: 3px; height: 16px; overflow: hidden; }
+  .solidita-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+  .prove { display: grid; gap: 10px; }
+  .prova { font-size: 14px; line-height: 1.55; padding: 12px 14px; border-radius: 4px; }
+  .prova.pro { background: var(--accent-light); border-left: 3px solid var(--accent); }
+  .prova.contro { background: #fbeae7; border-left: 3px solid #c0392b; }
+  .prova b { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .prova.pro b { color: var(--accent); }
+  .prova.contro b { color: #c0392b; }
+
+  /* ── APPLET 3 · GRADIENTE SOCIALE ── */
+  .bond-wrap { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .bond-btn {
+    flex: 1; min-width: 92px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .bond-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .bond-freq-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+  .bond-freq-label strong { color: var(--text); }
+  .bond-freq-label span { color: var(--accent); font-weight: 700; }
+  .bond-track { background: #f3f1ec; border-radius: 3px; height: 22px; overflow: hidden; margin-bottom: 16px; }
+  .bond-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease; }
+  .lat-titolo { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .lat-strip { display: flex; gap: 6px; margin-bottom: 16px; }
+  .lat-cella { flex: 1; text-align: center; font-size: 12.5px; padding: 8px 4px; border-radius: 4px; background: #f3f1ec; color: var(--muted); border: 1.5px solid var(--border); transition: all 0.3s; }
+  .lat-cella.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+  /* ── APPLET 4 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto; min-width: 74px; background: none; border: none; cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif; padding: 0; position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1; transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 5 · CRONOMETRO ── */
+  .cron-wrap { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .cron-btn {
+    flex: 1; min-width: 84px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .cron-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cron-scena { display: grid; grid-template-columns: 1fr 130px; gap: 16px; align-items: center; margin-bottom: 14px; }
+  .cron-display { font-family: 'Playfair Display', serif; font-size: 46px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .cron-nome { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .bocca-svg { display: block; width: 100%; height: auto; background: #eef7f5; border-radius: 6px; }
+  .cron-barre { display: grid; gap: 4px; margin-bottom: 6px; }
+  .cron-riga { display: grid; grid-template-columns: 88px 1fr 44px; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+  .cron-riga .mini-track { background: #f3f1ec; border-radius: 2px; height: 9px; overflow: hidden; }
+  .cron-riga .mini-fill { height: 100%; background: #cfe6e0; }
+  .cron-riga.attiva { color: var(--text); font-weight: 600; }
+  .cron-riga.attiva .mini-fill { background: var(--accent); }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .res-btn { min-width: 100%; }
+    .res-scena { grid-template-columns: 110px 1fr; gap: 12px; }
+    .cron-scena { grid-template-columns: 1fr 100px; }
+    .cron-display { font-size: 38px; }
+    .bond-btn { min-width: 44%; }
+    .cron-btn { min-width: 30%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Scienze</div>
+    <h1>Perché lo sbadiglio è contagioso?</h1>
+    <div class="risposta-box">
+      <p>Perché non è un gesto, è un riflesso: vedere qualcuno sbadigliare accende automaticamente la corteccia motoria primaria, e quanto sei contagiabile dipende da quanto è eccitabile la tua — un tratto individuale che nel 2017 è stato misurato con la stimolazione magnetica transcranica. Resistere non funziona: cambia la forma dello sbadiglio, non l'impulso, che anzi aumenta. E l'empatia, la spiegazione che tutti ripetono, è la parte più fragile della storia.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Sbadigliare è molto più antico della vita sociale: i feti umani lo fanno già intorno alle undici settimane, quando non c'è aria da respirare e nessuno da imitare. Nadja Reissland e colleghi, con ecografie 4D su quindici feti sani seguiti a 24, 28, 32 e 36 settimane, hanno contato circa sei sbadigli l'ora a 24 settimane, con la frequenza che cala fino a sparire a 36. Il <em>contagio</em>, invece, è un'altra cosa e arriva molto dopo: compare intorno ai 4-5 anni.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Prova a resistere</div>
+      <div class="applet-istruzione">Scegli se lasciarti andare o trattenerti, poi guarda la faccia sbadigliare tre volte e osserva la barra dell'urgenza. È il protocollo di Nottingham, in piccolo.</div>
+    </div>
+    <div class="res-controls">
+      <button class="res-btn attivo" id="btnLibero" onclick="scegliCondizione('libero')">Lasciati andare</button>
+      <button class="res-btn" id="btnResisti" onclick="scegliCondizione('resisti')">Resisti allo sbadiglio</button>
+      <button class="res-btn primario" id="btnPlay" onclick="avviaVideo()">Guarda il video</button>
+    </div>
+    <div class="res-scena">
+      <div class="faccia-wrap">
+        <svg class="faccia-svg" id="facciaSvg" viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="140" height="200" fill="#eef7f5"></rect>
+          <ellipse cx="70" cy="98" rx="46" ry="58" fill="#f6ded0" stroke="#d9c3b4" stroke-width="1.5"></ellipse>
+          <path d="M28 66 Q46 40 70 40 Q94 40 112 66 Q100 56 70 56 Q40 56 28 66 Z" fill="#4a4034"></path>
+          <line id="soprSx" x1="44" y1="82" x2="62" y2="82" stroke="#4a4034" stroke-width="3" stroke-linecap="round"></line>
+          <line id="soprDx" x1="78" y1="82" x2="96" y2="82" stroke="#4a4034" stroke-width="3" stroke-linecap="round"></line>
+          <ellipse id="occhioSx" cx="53" cy="94" rx="7" ry="6" fill="#ffffff" stroke="#4a4034" stroke-width="1.5"></ellipse>
+          <ellipse id="occhioDx" cx="87" cy="94" rx="7" ry="6" fill="#ffffff" stroke="#4a4034" stroke-width="1.5"></ellipse>
+          <circle id="pupillaSx" cx="53" cy="94" r="3" fill="#1c1c2e"></circle>
+          <circle id="pupillaDx" cx="87" cy="94" r="3" fill="#1c1c2e"></circle>
+          <path d="M70 104 Q66 114 70 118" fill="none" stroke="#d9b9a5" stroke-width="2" stroke-linecap="round"></path>
+          <ellipse id="bocca" cx="70" cy="136" rx="13" ry="3" fill="#8c3b3b"></ellipse>
+          <ellipse id="lingua" cx="70" cy="140" rx="8" ry="1" fill="#c05a5a"></ellipse>
+        </svg>
+      </div>
+      <div class="res-pannello">
+        <div>
+          <div class="urge-label"><strong>Urgenza di sbadigliare</strong><span id="urgeVal">0%</span></div>
+          <div class="urge-track"><div class="urge-fill" id="urgeFill"></div><div class="urge-soglia" title="soglia"></div></div>
+        </div>
+        <div class="res-log" id="resLog">Il video non è ancora partito. La linea rossa è la soglia oltre la quale lo sbadiglio scatta.</div>
+      </div>
+    </div>
+    <div class="res-esito" id="resEsito">Condizione scelta: <strong>lasciati andare</strong>.</div>
+    <div class="applet-fonte">
+      Simulazione del protocollo di Beverley H. Brown, Georgina M. Jackson, Stephen R. Jackson e colleghi, <em>A Neural Basis for Contagious Yawning</em>, «Current Biology» 27(17), 31 agosto 2017: 36 volontari guardavano clip di persone che sbadigliavano con l'istruzione di trattenersi oppure di lasciarsi andare, mentre l'urgenza percepita veniva registrata in continuo. Le curve qui sono illustrative, non dati misurati: il risultato che riproducono è che trattenersi non riduce la propensione a sbadigliare ma aumenta l'urgenza.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quel risultato è la parte più contro-intuitiva della ricerca di Nottingham. Georgina Jackson lo riassume così: «This research has shown that the "urge" is increased by trying to stop yourself» — l'urgenza aumenta proprio nel tentativo di fermarsi. Con la stimolazione elettrica il gruppo è riuscito ad alzare l'eccitabilità corticale e, con essa, la propensione al contagio: la misura TMS dell'eccitabilità e dell'inibizione della corteccia motoria primaria prediceva chi si contagiava e chi no.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Cinque spiegazioni, cinque livelli di prova</div>
+      <div class="applet-istruzione">Seleziona un'ipotesi per vedere l'esperimento che la sostiene e quello che la mette in difficoltà.</div>
+    </div>
+    <div class="ipo-lista">
+      <button class="ipo-btn attivo" data-ipo="0" onclick="mostraIpotesi(0)">Riflesso motorio: è la corteccia che si eccita</button>
+      <button class="ipo-btn" data-ipo="1" onclick="mostraIpotesi(1)">Neuroni specchio</button>
+      <button class="ipo-btn" data-ipo="2" onclick="mostraIpotesi(2)">Empatia e legame sociale</button>
+      <button class="ipo-btn" data-ipo="3" onclick="mostraIpotesi(3)">Raffreddare il cervello</button>
+      <button class="ipo-btn" data-ipo="4" onclick="mostraIpotesi(4)">Sincronizzare la vigilanza del gruppo</button>
+    </div>
+    <div class="solidita-riga">
+      <div class="solidita-label"><strong>Solidità sperimentale</strong><span id="solVal">Alta</span></div>
+      <div class="solidita-track"><div class="solidita-fill" id="solBar" style="width:85%"></div></div>
+    </div>
+    <div class="prove">
+      <div class="prova pro" id="ipoPro"></div>
+      <div class="prova contro" id="ipoContro"></div>
+    </div>
+    <div class="applet-fonte">
+      Fonti delle singole voci: Brown et al., «Current Biology» 2017; Helene Haker et al., <em>Mirror neuron activity during contagious yawning — an fMRI study</em>, «Brain Imaging and Behavior» 2013; Nicholas R. Cooper et al., <em>Bridging a yawning chasm</em>, «Cognitive, Affective &amp; Behavioral Neuroscience» 12(2), 2012; Fatta B. Nahab et al., <em>Contagious yawning and the frontal lobe: an fMRI study</em>, 2009; Ivan Norscia ed Elisabetta Palagi, «PLoS ONE» 2011; Atsushi Senju et al., «Biology Letters» 3(6), 2007; Alex J. Bartholomew ed Elizabeth T. Cirulli, «PLoS ONE» 9(3), 2014; Andrew C. Gallup e Gordon G. Gallup Jr., «Evolutionary Psychology» 5(1), 2007. La barra di «solidità sperimentale» è una valutazione redazionale basata sul numero e sulla replicabilità degli studi citati, non un dato misurato.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La prova più citata a favore dell'empatia è uno studio sul campo, non di laboratorio: Ivan Norscia ed Elisabetta Palagi hanno passato un anno (2010-2011) a osservare 109 adulti nella vita quotidiana — al lavoro, a tavola, sui mezzi — registrando ogni sbadiglio e ogni persona entro tre metri, in contatto visivo o uditivo. Dei 613 episodi raccolti ne hanno analizzati 480, quelli in cui la risposta era attribuibile a un innesco preciso entro tre minuti.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Chi ha sbadigliato davanti a te</div>
+      <div class="applet-istruzione">Scegli il tipo di legame con chi sbadiglia e guarda come cambiano frequenza e velocità del contagio.</div>
+    </div>
+    <div class="bond-wrap">
+      <button class="bond-btn" data-bond="0" onclick="mostraBond(0)">Estraneo</button>
+      <button class="bond-btn attivo" data-bond="1" onclick="mostraBond(1)">Conoscente</button>
+      <button class="bond-btn" data-bond="2" onclick="mostraBond(2)">Amico</button>
+      <button class="bond-btn" data-bond="3" onclick="mostraBond(3)">Parente o partner</button>
+    </div>
+    <div class="bond-freq-label"><strong>Frequenza del contagio (media stimata)</strong><span id="bondVal">0,386</span></div>
+    <div class="bond-track"><div class="bond-fill" id="bondFill" style="width:38.6%"></div></div>
+    <div class="lat-titolo">Quanto ci mette ad arrivare la risposta</div>
+    <div class="lat-strip">
+      <div class="lat-cella" id="lat0">entro 1 min</div>
+      <div class="lat-cella" id="lat1">1-2 min</div>
+      <div class="lat-cella" id="lat2">2-3 min</div>
+    </div>
+    <div class="box-testo" id="bondTesto"></div>
+    <div class="applet-fonte">
+      Fonte: Ivan Norscia ed Elisabetta Palagi, <em>Yawn Contagion and Empathy in Homo sapiens</em>, «PLoS ONE» 6(12): e28472, 7 dicembre 2011. Le frequenze sono le medie stimate dal modello lineare misto (media±errore standard: conoscenti 0,386±0,058; amici 0,519±0,080; parenti stretti con r≥0,25 e partner 0,850±0,064; n=48 diadi). Gli estranei sono esclusi dall'analisi di frequenza e compaiono solo in quella sull'occorrenza, dove sono la categoria più bassa; le latenze sono le tre fasce temporali usate dagli autori.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Tre anni dopo, però, quella spiegazione ha incassato un colpo duro. Alex Bartholomew ed Elizabeth Cirulli hanno sottoposto 328 persone a un video di tre minuti di sbadigli, a una batteria cognitiva e a questionari su empatia, contagio emotivo, ritmi circadiani e sonnolenza: nessuna di quelle variabili prediceva il contagio una volta tenuta in conto l'età. E l'età spiegava appena l'8% della variabilità. «The lack of association in our study between contagious yawning and empathy suggests that contagious yawning is not simply a product of one's capacity for empathy», ha commentato Cirulli.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Trentacinque anni di sbadigli in laboratorio</div>
+      <div class="applet-istruzione">Clicca una tappa per vedere l'esperimento, quante persone (o animali) coinvolgeva e che cosa ha trovato.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Ricostruzione basata sulle pubblicazioni originali elencate in fondo alla pagina. Le date sono quelle di pubblicazione dell'articolo scientifico; le numerosità campionarie sono quelle dichiarate dagli autori.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Un altro filone punta in una direzione diversa dall'empatia intesa come sentimento: nel dicembre 2021 il più ampio studio mai fatto sul contagio — 458 partecipanti di 50 nazionalità, coordinati da Andrew Gallup e Jörg Massen — ha trovato che chi ottiene punteggi alti nei tratti psicopatici si contagia meno, e il risultato ha retto anche controllando sesso, età, ore di sonno, stanchezza percepita e attenzione effettiva al video.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">Il cronometro degli sbadigli</div>
+      <div class="applet-istruzione">Scegli una specie e premi «Sbadiglia»: la bocca resta aperta esattamente per la durata media misurata in quella specie. Conta i secondi.</div>
+    </div>
+    <div class="cron-wrap">
+      <button class="cron-btn" data-cron="0" onclick="scegliSpecie(0)">Topo</button>
+      <button class="cron-btn" data-cron="1" onclick="scegliSpecie(1)">Gatto</button>
+      <button class="cron-btn" data-cron="2" onclick="scegliSpecie(2)">Cane</button>
+      <button class="cron-btn" data-cron="3" onclick="scegliSpecie(3)">Cammello</button>
+      <button class="cron-btn attivo" data-cron="4" onclick="scegliSpecie(4)">Uomo</button>
+    </div>
+    <div class="cron-scena">
+      <div>
+        <div class="cron-display" id="cronDisplay">0,00 s</div>
+        <div class="cron-nome" id="cronNome">Uomo — durata media 6,5 s</div>
+      </div>
+      <svg class="bocca-svg" id="boccaSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="100" height="100" fill="#eef7f5"></rect>
+        <ellipse id="boccaCron" cx="50" cy="50" rx="26" ry="3" fill="#8c3b3b"></ellipse>
+      </svg>
+    </div>
+    <button class="res-btn primario" id="btnSbadiglia" onclick="lanciaSbadiglio()" style="width:100%;margin-bottom:14px;">Sbadiglia</button>
+    <div class="cron-barre" id="cronBarre"></div>
+    <div class="applet-fonte">
+      Fonte: Andrew C. Gallup, Allyson M. Church e Anthony J. Pelegrino, <em>Yawn duration predicts brain weight and cortical neuron number in mammals</em>, «Biology Letters» 12(10), 4 ottobre 2016 — 205 sbadigli completi cronometrati su 177 individui di 24 taxa, molti da video su YouTube; durate medie riportate dagli autori: 0,8 s nel topo, 1,97 s nel gatto, 2,4 s nel cane, 4,8 s nel cammello, 6,5 s nell'uomo, il valore più alto del campione). La durata media correla con il peso dell'encefalo (r=0,911) e con il numero di neuroni corticali (r=0,951). Gorilla, cammelli, cavalli, leoni, trichechi ed elefanti africani sbadigliano meno a lungo di noi pur avendo mascelle più grandi.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il contagio, poi, attraversa le specie: nel 2008 Ramiro Joly-Mascheroni e colleghi hanno mostrato che 21 cani su 29 sbadigliavano guardando un essere umano sbadigliare, mentre nessuno rispondeva ai movimenti di bocca usati come controllo. Ed è qui che la faccenda smette di essere una curiosità: lo sbadiglio contagioso è un <em>ecofenomeno</em>, la stessa famiglia dell'ecolalia e dell'ecoprassia. «If we can understand how alterations in cortical excitability give rise to neural disorders we can potentially reverse them», dice Stephen Jackson: capire il riflesso più innocuo che abbiamo è un modo per arrivare ai tic della sindrome di Tourette.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Sbadigliamo prima di nascere, ma impariamo a contagiarci solo a quattro o cinque anni: il riflesso è antico, la trasmissione è una cosa che il cervello aggiunge dopo — e che, per quanto ci si provi, non sa più togliere.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Beverley H. Brown, Georgina M. Jackson, Stephen R. Jackson e colleghi, <em>A Neural Basis for Contagious Yawning</em>, «Current Biology» 27(17), 31 agosto 2017 — <a href="https://www.cell.com/current-biology/fulltext/S0960-9822(17)30966-1">cell.com</a>; comunicato stampa University of Nottingham, 31 agosto 2017 (dichiarazioni di Georgina e Stephen Jackson)</li>
+      <li>Ivan Norscia, Elisabetta Palagi, <em>Yawn Contagion and Empathy in Homo sapiens</em>, «PLoS ONE» 6(12): e28472, 7 dicembre 2011 — <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0028472">journals.plos.org</a></li>
+      <li>Alex J. Bartholomew, Elizabeth T. Cirulli, <em>Individual Variation in Contagious Yawning Susceptibility Is Highly Stable and Largely Unexplained by Empathy or Other Known Factors</em>, «PLoS ONE» 9(3): e91773, 14 marzo 2014 — <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0091773">journals.plos.org</a></li>
+      <li>Andrew C. Gallup, Jorg J. M. Massen et al., <em>People that score high on psychopathic traits are less likely to yawn contagiously</em>, «Scientific Reports» 11, dicembre 2021 — <a href="https://www.nature.com/articles/s41598-021-03159-1">nature.com</a></li>
+      <li>Andrew C. Gallup, Allyson M. Church, Anthony J. Pelegrino, <em>Yawn duration predicts brain weight and cortical neuron number in mammals</em>, «Biology Letters» 12(10), 4 ottobre 2016 — <a href="https://royalsocietypublishing.org/doi/10.1098/rsbl.2016.0545">royalsocietypublishing.org</a></li>
+      <li>Andrew C. Gallup, Gordon G. Gallup Jr., <em>Yawning as a Brain Cooling Mechanism: Nasal Breathing and Forehead Cooling Diminish the Incidence of Contagious Yawning</em>, «Evolutionary Psychology» 5(1), 2007</li>
+      <li>Robert R. Provine, <em>Yawning as a Stereotyped Action Pattern and Releasing Stimulus</em>, «Ethology» 72(2), 1986, pp. 109-122</li>
+      <li>Ramiro M. Joly-Mascheroni, Atsushi Senju, Alex J. Shepherd, <em>Dogs catch human yawns</em>, «Biology Letters» 4(5), 2008, pp. 446-448 — <a href="https://royalsocietypublishing.org/doi/10.1098/rsbl.2008.0333">royalsocietypublishing.org</a></li>
+      <li>Atsushi Senju, Makiko Maeda, Yukiko Kikuchi, Toshikazu Hasegawa, Yoshikuni Tojo, Hiroo Osanai, <em>Absence of contagious yawning in children with autism spectrum disorder</em>, «Biology Letters» 3(6), 22 dicembre 2007, pp. 706-708</li>
+      <li>Nadja Reissland, Brian Francis, James Mason, <em>Development of Fetal Yawn Compared with Non-Yawn Mouth Openings from 24-36 Weeks Gestation</em>, «PLoS ONE» 7(11): e50569, 21 novembre 2012 — <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050569">journals.plos.org</a></li>
+      <li>Helene Haker, Wolfram Kawohl, Ulrich Herwig, Wulf Rössler, <em>Mirror neuron activity during contagious yawning — an fMRI study</em>, «Brain Imaging and Behavior» 7, 2013, pp. 28-34</li>
+      <li>Nicholas R. Cooper, Ignazio Puzzo, Adam D. Pawley et al., <em>Bridging a yawning chasm: EEG investigations into the debate concerning the role of the human mirror neuron system in contagious yawning</em>, «Cognitive, Affective &amp; Behavioral Neuroscience» 12(2), 2012, pp. 393-405</li>
+      <li>Fatta B. Nahab, Noriaki Hattori, Ziad S. Saad, Mark Hallett, <em>Contagious yawning and the frontal lobe: an fMRI study</em>, «Human Brain Mapping» 30(5), 2009</li>
+      <li>Steven M. Platek, Samuel R. Critton, Thomas E. Myers, Gordon G. Gallup Jr., <em>Contagious yawning: the role of self-awareness and mental state attribution</em>, «Cognitive Brain Research» 17(2), 2003</li>
+      <li>Andrew C. Gallup, Allyson M. Church, Heather Miller, Evan F. Risko, Alan Kingstone, <em>Social Presence Diminishes Contagious Yawning in the Laboratory</em>, «Scientific Reports» 6: 25045, 2016</li>
+      <li>«The Bigger Your Brain, the Longer Your Yawn», STAT, 4 ottobre 2016, ripubblicato da «Scientific American» — riporta le durate per singola specie dichiarate dagli autori dello studio del 2016 (topo 0,8 s; gatto 1,97 s; cane 2,4 s; cammello 4,8 s; uomo 6,5 s)</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · RESISTI ── */
+var condizione = 'libero';
+var videoAttivo = false, urge = 0, urgeMax = 0, rafRes = null, tRes = 0, esitoSegnato = false;
+var SOGLIA = 72;
+var Y_BOCCA = 136;
+
+function scegliCondizione(c) {
+  if (videoAttivo) return;
+  condizione = c;
+  document.getElementById('btnLibero').classList.toggle('attivo', c === 'libero');
+  document.getElementById('btnResisti').classList.toggle('attivo', c === 'resisti');
+  document.getElementById('resEsito').innerHTML = 'Condizione scelta: <strong>' + (c === 'libero' ? 'lasciati andare' : 'resisti allo sbadiglio') + '</strong>.';
+}
+
+function apriBocca(f) {
+  /* f va da 0 (chiusa) a 1 (spalancata) */
+  var ry = 3 + f * 24;
+  var b = document.getElementById('bocca');
+  b.setAttribute('ry', ry);
+  b.setAttribute('cy', Y_BOCCA + f * 6);
+  var l = document.getElementById('lingua');
+  l.setAttribute('ry', 1 + f * 4);
+  l.setAttribute('cy', Y_BOCCA + 8 + f * 14);
+  /* gli occhi si stringono: nei veri sbadigli si chiudono quasi sempre */
+  var ryOcchio = Math.max(6 - f * 5.4, 0.6);
+  document.getElementById('occhioSx').setAttribute('ry', ryOcchio);
+  document.getElementById('occhioDx').setAttribute('ry', ryOcchio);
+  document.getElementById('pupillaSx').setAttribute('r', Math.max(3 - f * 2.6, 0.4));
+  document.getElementById('pupillaDx').setAttribute('r', Math.max(3 - f * 2.6, 0.4));
+  document.getElementById('soprSx').setAttribute('y1', 82 - f * 5);
+  document.getElementById('soprSx').setAttribute('y2', 82 - f * 3);
+  document.getElementById('soprDx').setAttribute('y1', 82 - f * 3);
+  document.getElementById('soprDx').setAttribute('y2', 82 - f * 5);
+}
+
+function logRes(t) { document.getElementById('resLog').innerHTML = t; }
+
+function avviaVideo() {
+  if (videoAttivo) return;
+  videoAttivo = true; urge = 0; urgeMax = 0; tRes = 0; esitoSegnato = false;
+  document.getElementById('btnPlay').disabled = true;
+  document.getElementById('btnLibero').disabled = true;
+  document.getElementById('btnResisti').disabled = true;
+  document.getElementById('resEsito').textContent = 'Video in corso…';
+  logRes('Parte la clip. Nello studio di Nottingham i volontari ne guardavano diverse, ripresi in video mentre ogni sbadiglio e ogni sbadiglio soffocato veniva contato.');
+  var t0 = performance.now(), tPrec = t0;
+  function loop(ts) {
+    var t = (ts - t0) / 1000;
+    var dt = Math.min((ts - tPrec) / 1000, 0.1);
+    tPrec = ts;
+    tRes = t;
+    /* tre sbadigli della faccia: 0-6 s, 7-13 s, 14-20 s */
+    var f = 0;
+    var fasi = [0, 7, 14];
+    for (var i = 0; i < 3; i++) {
+      var d = t - fasi[i];
+      if (d >= 0 && d <= 6) {
+        /* salita lenta fino all'apice (60% del tempo), discesa più rapida */
+        f = d < 3.6 ? Math.pow(d / 3.6, 0.8) : Math.max(1 - (d - 3.6) / 2.4, 0);
+      }
+    }
+    apriBocca(f);
+    /* l'urgenza sale con l'esposizione; trattenendosi sale di piu' e non si scarica */
+    var k = condizione === 'resisti' ? 17.5 : 13;
+    urge = urge + f * k * dt;
+    if (condizione === 'libero' && esitoSegnato) urge -= 7 * dt;
+    urge = Math.max(Math.min(urge, 100), 0);
+    if (urge > urgeMax) urgeMax = urge;
+    document.getElementById('urgeFill').style.width = urge + '%';
+    document.getElementById('urgeVal').textContent = Math.round(urge) + '%';
+    if (!esitoSegnato && urge >= SOGLIA) {
+      esitoSegnato = true;
+      if (condizione === 'resisti') {
+        logRes('Soglia superata. Tu ti stai trattenendo: quello che esce e\u0300 uno <strong>sbadiglio soffocato</strong> \u2014 mascella bloccata, respiro trattenuto \u2014 ma l\'urgenza continua a salire.');
+      } else {
+        logRes('Soglia superata: <strong>hai sbadigliato</strong>. Lo sbadiglio scarica l\'urgenza, che ricomincia a scendere.');
+      }
+    }
+    if (t < 21) { rafRes = requestAnimationFrame(loop); } else { chiudiVideo(); }
+  }
+  rafRes = requestAnimationFrame(loop);
+}
+
+function chiudiVideo() {
+  videoAttivo = false;
+  cancelAnimationFrame(rafRes);
+  apriBocca(0);
+  document.getElementById('btnPlay').disabled = false;
+  document.getElementById('btnLibero').disabled = false;
+  document.getElementById('btnResisti').disabled = false;
+  var picco = Math.round(urgeMax);
+  if (condizione === 'resisti') {
+    document.getElementById('resEsito').innerHTML = 'Urgenza al picco: <strong>' + picco + '%</strong>. Trattenersi ha cambiato la <em>forma</em> dello sbadiglio, non la voglia: nello studio del 2017 l\'urgenza dichiarata era più alta proprio in questa condizione.';
+  } else {
+    document.getElementById('resEsito').innerHTML = 'Urgenza al picco: <strong>' + picco + '%</strong>. Ora prova la condizione «resisti» e confronta il numero.';
+  }
+}
+apriBocca(0);
+
+/* ── APPLET 02 · IPOTESI ── */
+var ipotesi = [
+  { sol: 85, lab: 'Alta',
+    pro: "Con la stimolazione magnetica transcranica su 36 volontari, Brown e colleghi (2017) hanno misurato eccitabilità e inibizione della corteccia motoria primaria: quei due valori predicevano quanto una persona fosse contagiabile. Alzando artificialmente l'eccitabilità con la stimolazione elettrica, la propensione al contagio aumentava. Spiega anche perché resistere non funziona.",
+    contro: "Dice <em>come</em> avviene il contagio, non <em>perché</em> esista: l'eccitabilità corticale è il meccanismo di trasmissione, non la funzione. Sul motivo per cui uno sbadiglio debba propagarsi tra individui, questo modello non prende posizione." },
+  { sol: 55, lab: 'Contesa',
+    pro: "Helene Haker e colleghi, con la risonanza magnetica funzionale, hanno trovato attivazione unilaterale dell'area 9 di Brodmann nel giro frontale inferiore destro, una regione del sistema dei neuroni specchio. Cooper e colleghi (2012), con l'EEG, hanno registrato una soppressione del ritmo mu maggiore per gli sbadigli che per gli stimoli di controllo, più marcata in chi aveva punteggi di empatia alti.",
+    contro: "Lo studio fMRI di Nahab e colleghi (2009) non trova le classiche aree specchio ma la corteccia prefrontale ventromediale. E la soppressione del ritmo mu come indicatore del sistema specchio è essa stessa oggetto di dibattito: gli stessi autori del lavoro EEG intitolano l'articolo «colmare un abisso sbadigliante»." },
+  { sol: 50, lab: 'Divisa',
+    pro: "Norscia e Palagi (2011) trovano un gradiente netto: parenti stretti, poi amici, poi conoscenti, poi estranei — lo stesso ordine che segue l'empatia. Senju e colleghi (2007) osservano che 24 bambini con disturbo dello spettro autistico non si contagiano guardando clip di sbadigli, mentre 25 coetanei a sviluppo tipico sì. E chi ha punteggi alti nei tratti psicopatici si contagia meno (2021, 458 partecipanti).",
+    contro: "Bartholomew e Cirulli (2014), su 328 persone, non trovano alcun effetto dell'empatia una volta considerata l'età — e l'età stessa spiega solo l'8% della variabilità. La suscettibilità al contagio, dicono, è un tratto individuale molto stabile ma in gran parte inspiegato." },
+  { sol: 40, lab: 'Suggestiva, contestata',
+    pro: "Andrew e Gordon Gallup (2007): chi guardava video di sbadigli respirando liberamente o con la bocca si contagiava nel 48% dei casi, chi era istruito a respirare col naso nello 0%. Nello stesso lavoro, 33 studenti dell'Università di Albany tenevano sulla fronte un pacco caldo (46 °C), a temperatura ambiente o freddo (4 °C): col freddo il contagio spariva.",
+    contro: "I critici obiettano che, per quanto si spalanchi la mascella e si inspiri, il raffreddamento effettivo del cervello è trascurabile. Lo stesso Gallup ammette: «Whether yawning functions specifically to cool the brain can still be debated». E comunque il raffreddamento spiegherebbe lo sbadiglio, non il fatto che si trasmetta." },
+  { sol: 30, lab: 'Ipotesi evolutiva poco testata',
+    pro: "Il contagio è documentato in specie sociali — scimpanzé, cani, alcuni uccelli — e l'idea è che uno sbadiglio che si propaga allinei i livelli di vigilanza del gruppo, sincronizzando i momenti di riposo e di allerta. È la spiegazione funzionale che rende conto meglio del gradiente sociale osservato sul campo.",
+    contro: "Manca l'esperimento decisivo: nessuno ha mostrato che un gruppo che si contagia sia più coordinato o più al sicuro di uno che non lo fa. E un dato va nella direzione opposta: Gallup, Church, Miller, Risko e Kingstone (2016) hanno trovato che la presenza di altre persone in laboratorio <em>riduce</em> il contagio invece di aumentarlo." }
+];
+
+function mostraIpotesi(i) {
+  var btns = document.querySelectorAll('.ipo-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('solBar').style.width = ipotesi[i].sol + '%';
+  document.getElementById('solVal').textContent = ipotesi[i].lab;
+  document.getElementById('ipoPro').innerHTML = '<b>La prova a favore</b>' + ipotesi[i].pro;
+  document.getElementById('ipoContro').innerHTML = '<b>Il punto debole</b>' + ipotesi[i].contro;
+}
+mostraIpotesi(0);
+
+/* ── APPLET 03 · GRADIENTE SOCIALE ── */
+var bond = [
+  { freq: null, val: 'non misurata', lat: [0, 0, 1],
+    txt: "Gli estranei sono la categoria in cui il contagio si verifica meno spesso: nel modello sull'occorrenza (480 episodi) il legame sociale è l'unico fattore che conta, e gli estranei stanno in fondo. Sono invece esclusi dall'analisi sulla frequenza, perché servivano almeno tre occasioni di contatto per la stessa coppia di persone. La risposta, quando arriva, arriva tardi." },
+  { freq: 0.386, val: '0,386', lat: [0, 1, 1],
+    txt: "Un collega di lavoro, il vicino di posto sul treno. La frequenza stimata è 0,386 (±0,058): meno della metà di quella tra parenti. Insieme agli estranei, i conoscenti mostrano un ritardo più lungo nella risposta rispetto ad amici e parenti." },
+  { freq: 0.519, val: '0,519', lat: [1, 1, 0],
+    txt: "Con un amico la frequenza sale a 0,519 (±0,080) e la risposta si accorcia. Il salto rispetto ai conoscenti è netto ma non enorme: il grande scalino è quello successivo." },
+  { freq: 0.850, val: '0,850', lat: [1, 0, 0],
+    txt: "Parenti con coefficiente di parentela r≥0,25 e partner di vita: frequenza 0,850 (±0,064), più del doppio dei conoscenti. È il valore che ha convinto gli autori a parlare di un legame tra contagio dello sbadiglio ed empatia — perché è lo stesso ordine (parenti > amici > conoscenti > estranei) che segue la risposta empatica." }
+];
+
+function mostraBond(i) {
+  var btns = document.querySelectorAll('.bond-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var b = bond[i];
+  document.getElementById('bondVal').textContent = b.val;
+  document.getElementById('bondFill').style.width = (b.freq === null ? 12 : b.freq * 100) + '%';
+  for (var j = 0; j < 3; j++) document.getElementById('lat' + j).classList.toggle('on', b.lat[j] === 1);
+  document.getElementById('bondTesto').innerHTML = b.txt;
+}
+mostraBond(1);
+
+/* ── APPLET 04 · LINEA DEL TEMPO ── */
+var tappe = [
+  { anno: '1986', tit: 'Provine: lo sbadiglio è uno schema fisso',
+    txt: "Robert Provine cronometra gli sbadigli e li classifica come «stereotyped action pattern»: durata media 5,9 secondi, intervallo medio tra uno e l'altro 68,3 secondi, valori stabili nella stessa persona per settimane. Scopre anche che leggere di sbadigli o semplicemente pensarci basta a provocarne uno.",
+    cit: "Il canale del contagio non è solo la vista: è qualunque cosa richiami l'idea dello sbadiglio." },
+  { anno: '2003', tit: 'Platek: il contagio e il riconoscersi allo specchio',
+    txt: "Steven Platek e colleghi mettono in relazione la suscettibilità al contagio con il riconoscimento del proprio volto e con i compiti di teoria della mente (le storielle con la gaffe, i «faux pas»). È il primo aggancio psicologico solido tra sbadiglio contagioso ed empatia." },
+  { anno: '2007', tit: 'Gallup: e se servisse a raffreddare il cervello?',
+    txt: "Andrew e Gordon Gallup pubblicano l'esperimento del respiro nasale e del pacco freddo sulla fronte: 48% di contagio respirando normalmente o con la bocca, 0% respirando col naso; contagio azzerato anche con un pacco a 4 °C sulla fronte, ma non a 46 °C né a temperatura ambiente." },
+  { anno: '2007', tit: 'Senju: i bambini autistici non si contagiano',
+    txt: "Ventiquattro bambini con disturbo dello spettro autistico e 25 coetanei a sviluppo tipico guardano clip di sbadigli e clip di controllo con altri movimenti della bocca. I bambini a sviluppo tipico sbadigliano di più dopo le clip di sbadigli; nel gruppo con autismo il tipo di clip non fa differenza." },
+  { anno: '2008', tit: 'I cani prendono i nostri sbadigli',
+    txt: "Ramiro Joly-Mascheroni, Atsushi Senju e Alex Shepherd testano 29 cani davanti a un essere umano che sbadiglia: 21 sbadigliano a loro volta. Nessuno risponde ai movimenti di bocca di controllo. Il contagio, quindi, non è un fatto solo primate." },
+  { anno: '2011', tit: 'Norscia e Palagi: conta solo chi hai davanti',
+    txt: "Un anno di osservazione naturalistica su 109 adulti, 613 episodi di sbadiglio, 480 analizzati. Di tutte le variabili testate — sesso, contesto, nazionalità, modalità sensoriale, posizione — l'unica che sopravvive nel modello migliore è il legame sociale.",
+    cit: "«Yawn contagion is primarily driven by the emotional closeness between individuals and not by other variables, such as gender and nationality.»" },
+  { anno: '2014', tit: 'Bartholomew e Cirulli: l\'empatia non basta',
+    txt: "Trecentoventotto persone, tre minuti di video, batteria cognitiva e questionari. Nessun effetto di empatia, contagio emotivo, ritmo circadiano o sonnolenza una volta considerata l'età — che a sua volta spiega solo l'8% della variabilità.",
+    cit: "«The lack of association in our study between contagious yawning and empathy suggests that contagious yawning is not simply a product of one's capacity for empathy.»" },
+  { anno: '2016', tit: 'Più a lungo sbadigli, più grande hai il cervello',
+    txt: "Gallup, Church e Pelegrino cronometrano 205 sbadigli completi di 177 individui appartenenti a 24 taxa, molti da video su YouTube. La durata media va da 0,8 secondi del topo a 6,5 secondi dell'uomo e correla con il peso dell'encefalo (r=0,911) e con il numero di neuroni corticali (r=0,951)." },
+  { anno: '2017', tit: 'Brown: è la corteccia motoria a decidere',
+    txt: "Trentasei volontari, stimolazione magnetica transcranica, clip di sbadigli con l'istruzione di resistere o di lasciarsi andare. L'eccitabilità e l'inibizione della corteccia motoria primaria predicono la propensione al contagio; alzando l'eccitabilità con la stimolazione elettrica il contagio aumenta.",
+    cit: "«This research has shown that the \u2018urge\u2019 is increased by trying to stop yourself.» (Georgina Jackson)" },
+  { anno: '2021', tit: 'Il più grande studio mai fatto',
+    txt: "Quattrocentocinquantotto partecipanti di 50 nazionalità, quattro diverse scale di tratti psicopatici. Chi ha punteggi alti si contagia meno, anche controllando sesso, età, sonno della notte prima, stanchezza percepita e attenzione effettiva al video." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.setAttribute('data-tl', i);
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+costruisciTimeline();
+
+/* ── APPLET 05 · CRONOMETRO ── */
+var specie = [
+  { nome: 'Topo', dur: 0.8 },
+  { nome: 'Gatto', dur: 1.97 },
+  { nome: 'Cane', dur: 2.4 },
+  { nome: 'Cammello', dur: 4.8 },
+  { nome: 'Uomo', dur: 6.5 }
+];
+var specieSel = 4, cronAttivo = false, rafCron = null;
+function fmtSec(x) { return (Math.round(x * 100) / 100).toString().replace('.', ','); }
+
+function costruisciBarre() {
+  var c = document.getElementById('cronBarre');
+  c.innerHTML = '';
+  for (var i = 0; i < specie.length; i++) {
+    var d = document.createElement('div');
+    d.className = 'cron-riga' + (i === specieSel ? ' attiva' : '');
+    d.innerHTML = '<span>' + specie[i].nome + '</span>' +
+      '<div class="mini-track"><div class="mini-fill" style="width:' + (specie[i].dur / 6.5 * 100) + '%"></div></div>' +
+      '<span>' + fmtSec(specie[i].dur) + ' s</span>';
+    c.appendChild(d);
+  }
+}
+
+function scegliSpecie(i) {
+  if (cronAttivo) return;
+  specieSel = i;
+  var btns = document.querySelectorAll('.cron-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('cronNome').textContent = specie[i].nome + ' \u2014 durata media ' + fmtSec(specie[i].dur) + ' s';
+  document.getElementById('cronDisplay').textContent = '0,00 s';
+  document.getElementById('boccaCron').setAttribute('ry', 3);
+  costruisciBarre();
+}
+
+function lanciaSbadiglio() {
+  if (cronAttivo) return;
+  cronAttivo = true;
+  document.getElementById('btnSbadiglia').disabled = true;
+  var D = specie[specieSel].dur * 1000;
+  var t0 = performance.now();
+  function loop(ts) {
+    var t = ts - t0;
+    var p = Math.min(t / D, 1);
+    var f = p < 0.6 ? Math.pow(p / 0.6, 0.8) : Math.max(1 - (p - 0.6) / 0.4, 0);
+    document.getElementById('boccaCron').setAttribute('ry', 3 + f * 30);
+    document.getElementById('cronDisplay').textContent = (Math.min(t, D) / 1000).toFixed(2).replace('.', ',') + ' s';
+    if (p < 1) { rafCron = requestAnimationFrame(loop); }
+    else {
+      cronAttivo = false;
+      document.getElementById('btnSbadiglia').disabled = false;
+      document.getElementById('boccaCron').setAttribute('ry', 3);
+    }
+  }
+  rafCron = requestAnimationFrame(loop);
+}
+costruisciBarre();
+</script>
+</body>
+</html>
