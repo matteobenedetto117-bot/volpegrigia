@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché un caffè al bar costa 20 volte il prezzo della materia prima?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #2980b9;
+    --accent-light: #e4f0f8;
+    --accent-mid: #5dade2;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · IL VIAGGIO DEL CHICCO ── */
+  .filiera-svg { display: block; width: 100%; height: auto; background: #f7fafd; border-radius: 6px; margin-bottom: 16px; }
+  .filiera-svg .staz-hit { cursor: pointer; }
+  .filiera-controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filiera-btn {
+    flex: 1; min-width: 140px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .filiera-btn.primario { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .filiera-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .filiera-quadro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .filiera-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; text-align: center; }
+  .filiera-cella span { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .filiera-cella strong { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; color: var(--accent); line-height: 1.1; }
+
+  /* ── APPLET 2 · CRONOMETRO ── */
+  .crono-controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .crono-btn {
+    flex: 1; min-width: 130px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .crono-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .crono-display { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .crono-num { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 12px; text-align: center; }
+  .crono-num span { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .crono-num strong { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--accent); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .crono-barra { background: #f3f1ec; border-radius: 3px; height: 12px; overflow: hidden; margin-bottom: 14px; }
+  .crono-fill { height: 100%; background: var(--accent); width: 0%; }
+  .crono-lista { display: grid; gap: 4px; font-size: 13.5px; }
+  .crono-riga { display: flex; justify-content: space-between; gap: 10px; padding: 5px 10px; border-radius: 4px; color: var(--muted); background: #faf8f4; opacity: 0.45; transition: opacity 0.2s, background 0.2s; }
+  .crono-riga.fatta { opacity: 1; color: var(--text); }
+  .crono-riga.corrente { opacity: 1; background: var(--accent-light); color: var(--text); font-weight: 600; }
+  .crono-riga em { font-style: normal; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── APPLET 3 · LA TAZZINA SMONTATA ── */
+  .tazza-scena { display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: start; }
+  .tazza-svg { display: block; width: 100%; height: auto; background: #f7fafd; border-radius: 6px; }
+  .tazza-svg rect.banda { cursor: pointer; }
+  .tazza-legenda { display: grid; gap: 5px; align-content: start; }
+  .tazza-voce {
+    display: flex; align-items: center; gap: 8px; text-align: left;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    background: #faf8f4; border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 6px 9px; cursor: pointer; color: var(--muted); transition: all 0.15s; width: 100%;
+  }
+  .tazza-voce.attivo { border-color: var(--accent); color: var(--text); background: var(--accent-light); }
+  .tazza-pastiglia { width: 12px; height: 12px; border-radius: 2px; flex: 0 0 auto; }
+  .tazza-voce em { font-style: normal; margin-left: auto; font-variant-numeric: tabular-nums; color: var(--text); }
+  .tazza-dettaglio { margin-top: 14px; }
+
+  /* ── APPLET 4 · IL BANCO DI PROVA ── */
+  .shock-lista { display: grid; gap: 7px; margin-bottom: 18px; }
+  .shock-btn {
+    text-align: left; font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .shock-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .shock-quadro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .shock-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 11px; text-align: center; }
+  .shock-cella span { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .shock-cella strong { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; line-height: 1.1; color: var(--accent); }
+  .shock-cella strong.perdita { color: #c0392b; }
+  .shock-scala { position: relative; background: #f3f1ec; border-radius: 3px; height: 18px; margin-bottom: 12px; overflow: hidden; }
+  .shock-zero { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--muted); left: 25%; z-index: 2; }
+  .shock-barra { position: absolute; top: 0; bottom: 0; background: var(--accent); transition: all 0.35s ease; }
+  .shock-barra.perdita { background: #c0392b; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .filiera-btn, .crono-btn { min-width: 100%; }
+    .tazza-scena { grid-template-columns: 120px 1fr; gap: 12px; }
+    .filiera-cella strong, .crono-num strong, .shock-cella strong { font-size: 23px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Economia</div>
+    <h1>Perché un caffè al bar costa 20 volte il prezzo della materia prima?</h1>
+    <div class="risposta-box">
+      <p>Venti è una stima prudente: sono circa trenta. Il caffè verde che finisce in una tazzina vale quattro o cinque centesimi, l'espresso al bar 1,26 euro di media. Ma la materia prima è la voce meno interessante del conto: in un bar tipo il caffè in grani pesa 25 centesimi su 1,40, il barista che lo macina, lo estrae e lo serve ne pesa 55.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Un espresso italiano certificato è una ricetta con le tolleranze di un pezzo meccanico: 7 grammi di macinato (±0,5), acqua a 88°C (±2), 9 bar di pressione (±1), 25 secondi di percolazione (±5), 25 millilitri in tazza (±2,5). Sono i parametri dell'Istituto Espresso Italiano. Sette grammi: da un chilo di caffè tostato escono circa 140 tazzine.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il viaggio di 8,5 grammi</div>
+      <div class="applet-istruzione">Fai avanzare il chicco lungo la filiera, o clicca una stazione: il contatore mostra quanto vale, in quel punto, il caffè di una singola tazzina.</div>
+    </div>
+    <svg class="filiera-svg" id="filieraSvg" viewBox="0 0 600 190" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="120" x2="540" y2="120" stroke="#d5e4ef" stroke-width="3"></line>
+      <line id="filieraProgress" x1="60" y1="120" x2="60" y2="120" stroke="#2980b9" stroke-width="3"></line>
+      <g id="filieraStazioni"></g>
+      <g id="filieraChicco">
+        <ellipse cx="60" cy="120" rx="9" ry="12" fill="#6b4423"></ellipse>
+        <path d="M60,109 Q55,120 60,131" stroke="#f7fafd" stroke-width="2" fill="none"></path>
+      </g>
+    </svg>
+    <div class="filiera-controls">
+      <button class="filiera-btn primario" id="btnAvanza" onclick="avanzaFiliera()">Avanza di un passaggio</button>
+      <button class="filiera-btn" id="btnRiavvolgi" onclick="mostraStazione(0)">Torna alla piantagione</button>
+    </div>
+    <div class="filiera-quadro">
+      <div class="filiera-cella"><span>Vale in tazzina</span><strong id="filieraValore">4,5 cent</strong></div>
+      <div class="filiera-cella"><span>Rispetto al chicco verde</span><strong id="filieraMolt">×1</strong></div>
+    </div>
+    <div class="box-testo" id="filieraTesto"></div>
+    <div class="applet-fonte">
+      Fonti: prezzo del caffè verde dall'indice composito ICO (I-CIP), 248,90 centesimi di dollaro per libbra nella media di giugno 2026, pari a circa 5,5 dollari al chilo (International Coffee Organization, <em>Coffee Market Report</em>, giugno 2026). I moltiplicatori della filiera — ×5,6 dai crudisti all'esercente, ×5,9 dall'esercente al consumatore — sono del Centro studi Fipe-Confcommercio, <em>Il prezzo del caffè: dal caffè verde all'espresso al bar</em>, giugno 2024. Il costo della dose tostata pagata dal bar (0,246 €) è dello studio Caffè Mod, novembre 2025. Il passaggio da 7 g tostati a 8,5 g verdi assume un calo peso in tostatura del 18%, valore tecnico standard compreso tra il 15% e il 20%: è una nostra conversione, non un dato di fonte; così come lo è la resa in euro dei 4,7 centesimi di dollaro che ne risultano, arrotondati a 4,5 centesimi di euro.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La catena regge alla verifica: 4,5 centesimi moltiplicati per il 5,6 misurato da Fipe fanno 25 centesimi, ed è esattamente quanto lo studio modenese di Caffè Mod trova nel portafiltro di un bar medio (0,246 €). Quei 25 centesimi, moltiplicati per il 5,9 dell'ultimo passaggio, fanno 1,45 euro: il prezzo di listino di una tazzina. Due fonti indipendenti, la stessa aritmetica.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Il cronometro del barista</div>
+      <div class="applet-istruzione">Avvia il servizio e guarda il contatore in euro: scorre a 20 €/ora, il costo orario reale di un dipendente della ristorazione. Prova prima al banco, poi al tavolo.</div>
+    </div>
+    <div class="crono-controls">
+      <button class="crono-btn attivo" id="btnBanco" onclick="scegliModo(0)">Al banco</button>
+      <button class="crono-btn" id="btnTavolo" onclick="scegliModo(1)">Al tavolo</button>
+      <button class="crono-btn" id="btnAvvia" onclick="avviaCrono()">Servi il caffè</button>
+    </div>
+    <div class="crono-display">
+      <div class="crono-num"><span>Tempo</span><strong id="cronoTempo">0&quot;</strong></div>
+      <div class="crono-num"><span>Costo del lavoro</span><strong id="cronoCosto">0,00 €</strong></div>
+    </div>
+    <div class="crono-barra"><div class="crono-fill" id="cronoFill"></div></div>
+    <div class="crono-lista" id="cronoLista"></div>
+    <div class="applet-fonte">
+      Fonte: Caffè Mod, <em>Il prezzo del caffè</em>, studio sul costo industriale dell'espresso in un bar italiano tipo, novembre 2025, ripreso da Comunicaffè il 30 novembre 2025: 55 secondi per un caffè al banco, circa 135 al tavolo, costo orario lordo di 20 €/h. Quest'ultimo è confermato dal Decreto direttoriale n. 63 del 10 luglio 2025 del Ministero del Lavoro sul costo medio orario nel settore ristorazione, e comprende contributi, ferie, malattia, TFR e formazione obbligatoria. La ripartizione interna dei secondi tra le singole operazioni è una nostra ricostruzione: nello studio compaiono solo i totali.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Con metà dei caffè serviti al banco e metà al tavolo, il tempo medio ponderato è di circa cento secondi: 0,555 euro di manodopera per tazzina. È più del doppio del caffè che c'è dentro. Il conto è controintuitivo solo finché si pensa all'espresso come a un prodotto: è un servizio, e il prodotto è la parte che costa meno.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">La tazzina smontata, centesimo per centesimo</div>
+      <div class="applet-istruzione">Clicca una fascia della tazzina — o una voce dell'elenco — per vedere che cosa contiene. In cima, come una crema, quello che resta al bar.</div>
+    </div>
+    <div class="tazza-scena">
+      <svg class="tazza-svg" id="tazzaSvg" viewBox="0 0 150 230" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="clipTazza">
+            <path d="M28,34 L122,34 L110,186 Q109,196 99,196 L51,196 Q41,196 40,186 Z"></path>
+          </clipPath>
+        </defs>
+        <path d="M122,62 Q146,66 144,92 Q142,116 118,116" fill="none" stroke="#c9d6e2" stroke-width="7"></path>
+        <g clip-path="url(#clipTazza)" id="tazzaBande"></g>
+        <path d="M28,34 L122,34 L110,186 Q109,196 99,196 L51,196 Q41,196 40,186 Z" fill="none" stroke="#8fa9bd" stroke-width="2.5"></path>
+        <ellipse cx="75" cy="207" rx="56" ry="9" fill="none" stroke="#c9d6e2" stroke-width="4"></ellipse>
+        <text x="75" y="22" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="600" fill="#7f8c8d">1,40 €</text>
+      </svg>
+      <div class="tazza-legenda" id="tazzaLegenda"></div>
+    </div>
+    <div class="box-testo tazza-dettaglio" id="tazzaTesto"></div>
+    <div class="applet-fonte">
+      Fonte: Caffè Mod, <em>Il prezzo del caffè</em>, novembre 2025 (modello di bar aperto 6-20, 250 caffè al giorno, metà al banco e metà al tavolo), ripreso da Comunicaffè, <em>Caffè al bar: ecco tutti i costi dietro l'erogazione della tazzina</em>, 30 novembre 2025. Avvertenza: la tabella riassuntiva dello studio indica 0,12 € di costi fissi allocati, ma il testo dello stesso studio ne indica 0,162 € (56.800 € l'anno, di cui un sesto attribuito alla caffetteria) ed è solo con questa seconda cifra che le voci sommano al totale dichiarato di 0,996 €: qui usiamo 0,162 €. Le percentuali sono calcolate da noi sul prezzo lordo di 1,40 €.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Restano 27,7 centesimi lordi per tazzina, su cui il bar deve ancora pagare le imposte. Sulle circa 58.400 tazzine l'anno implicite nel modello — 9.467 euro di costi fissi divisi per 0,162 — fanno poco più di 16.000 euro lordi annui: è il margine dell'intera caffetteria di un locale, non lo stipendio di nessuno.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Il banco di prova</div>
+      <div class="applet-istruzione">Applica uno shock al bar tipo e guarda dove finisce il margine. Serve per capire quale leva conta davvero — e quale, contro ogni intuizione, non conta quasi nulla.</div>
+    </div>
+    <div class="shock-lista" id="shockLista"></div>
+    <div class="shock-quadro">
+      <div class="shock-cella"><span>Margine lordo a tazzina</span><strong id="shockUtile">0,277 €</strong></div>
+      <div class="shock-cella"><span>Su 58.400 tazzine l'anno</span><strong id="shockAnno">16.161 €</strong></div>
+    </div>
+    <div class="shock-scala"><div class="shock-zero"></div><div class="shock-barra" id="shockBarra"></div></div>
+    <div class="box-testo" id="shockTesto"></div>
+    <div class="applet-fonte">
+      Fonte: ricalcolo nostro sul modello di costo di Caffè Mod (novembre 2025), voce per voce. Il crollo del caffè verde riprende lo scenario 2026: quotazioni in calo per il raccolto record del Brasile, stimato tra 66 e oltre 75 milioni di sacchi per la stagione 2026/27 secondo Conab e USDA, con la World Bank che prevedeva per il 2026 un calo del 15% per l'arabica e del 9% per la robusta (<em>Commodity Markets Outlook</em>). Il costo orario del lavoro è quello del Decreto direttoriale n. 63 del 10 luglio 2025 del Ministero del Lavoro. Gli scenari sono simulazioni a parità di tutto il resto: nella realtà le voci si muovono insieme.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>È qui che si scioglie il paradosso del 2026. Le quotazioni internazionali stanno scendendo e la tazzina no, e non è avidità: anche azzerando del tutto il prezzo del caffè verde, il bar tipo recupererebbe quattro centesimi e mezzo su 1,40. Il prezzo dell'espresso non è il prezzo di un chicco, è il prezzo di un minuto e mezzo di lavoro italiano — e quello, dal 2021, è aumentato più della tazzina.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il caffè è l'unica cosa, in quella tazzina, ad aver attraversato un oceano — ed è anche la meno cara: quello che paghiamo davvero è qualcuno in piedi dietro un banco dalle sei del mattino.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Caffè Mod, <em>Il prezzo del caffè</em>, studio sul costo industriale medio di un espresso in un bar italiano tipo, novembre 2025 — <a href="https://www.caffemod.com/post/il-prezzo-del-caff%C3%A8">caffemod.com</a>; ripreso in <em>Caffè al bar: ecco tutti i costi dietro l'erogazione della tazzina tra materia prima e personale</em>, Comunicaffè, 30 novembre 2025 — <a href="https://www.comunicaffe.it/caffe-al-bar-ecco-tutti-i-costi-dietro-lerogazione-della-tazzina/">comunicaffe.it</a></li>
+      <li>Centro studi Fipe-Confcommercio, ricerca sul prezzo del caffè dal chicco verde all'espresso al bar, giugno 2024 (catena del valore: ×5,6 dai crudisti all'esercente, ×5,9 dall'esercente al consumatore; prezzo medio della tazzina 1,18 € ad aprile 2024, da 0,95 € a Messina a 1,36 € a Bolzano) — <a href="https://www.comunicaffe.it/fipe-analizza-il-prezzo-del-chicco-dal-caffe-verde-allespresso-al-bar/">comunicaffe.it</a></li>
+      <li>International Coffee Organization, <em>Coffee Market Report</em>, giugno 2026: indice composito I-CIP a 248,90 centesimi di dollaro per libbra, in calo del 2,8% su maggio — <a href="https://ico.org/resources/public-market-information/">ico.org</a></li>
+      <li>Istituto Espresso Italiano, disciplinare dell'<em>Espresso Italiano Certificato</em>: 7 g ± 0,5 di macinato, 9 bar ± 1, 25 s ± 5, 25 ml ± 2,5, acqua in uscita a 88°C ± 2 — <a href="https://iei.coffee/en/espresso-italiano-certificato/">iei.coffee</a></li>
+      <li>Ministero del Lavoro e delle Politiche Sociali, Decreto direttoriale n. 63 del 10 luglio 2025, tabelle del costo medio orario del lavoro nel settore della ristorazione (20 €/h lordi)</li>
+      <li>Centro di ricerca sui consumi e Assoutenti su dati Istat e Osservatorio prezzi del MIMIT: prezzo medio della tazzina da 1,04 € nel 2021 a 1,25 € nell'agosto 2025 (+20,6% in quattro anni); prezzo medio 2026 attorno a 1,26 €, massimo a Bolzano (1,47-1,48 €), minimo a Messina (1,06 €)</li>
+      <li>Redazione Ecoseven, <em>Prezzo del caffè 2026: perché la tazzina costa di più mentre le quotazioni scendono</em>, 22 giugno 2026 (raccolto record del Brasile, surplus di mercato, stime Conab/USDA e World Bank) — <a href="https://www.ecoseven.net/economia/prezzo-del-caffe-2026/">ecoseven.net</a></li>
+      <li>Fipe-Confcommercio, dati sulla caffetteria italiana: circa 6 miliardi di consumazioni l'anno, oltre 100 tazzine a testa, l'espresso vale il 32,5% del fatturato di un bar; ripresi in <em>Un'intera filiera da un euro e poco più</em>, L'Osservatore di Livorno, 8 luglio 2026 — <a href="https://www.losservatore.com/2026/07/08/fipe-confcommercio-livorno-valore-espresso-numeri-filiera-bar/">losservatore.com</a></li>
+      <li>International Trade Centre, stima sulla quota del prezzo al dettaglio che resta ai produttori di caffè: in media circa il 10%, in Brasile anche sotto il 2%</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════════ APPLET 01 · IL VIAGGIO DEL CHICCO ══════════ */
+var stazioni = [
+  { x: 60, lab: 'Piantagione', val: '4,5 cent', molt: '×1',
+    txt: "Minas Gerais o gli altipiani vietnamiti. Per una tazzina servono circa 8,5 grammi di chicchi verdi, che in tostatura perderanno il 18% del peso e diventeranno i 7 grammi del portafiltro. A 248,90 centesimi di dollaro per libbra &mdash; la media ICO di giugno 2026, in calo del 2,8% sul mese prima &mdash; quegli 8,5 grammi valgono meno di cinque centesimi. Al coltivatore ne arriva solo una parte: secondo l'International Trade Centre ai produttori resta in media il 10% del prezzo al dettaglio, e in Brasile a volte meno del 2%." },
+  { x: 180, lab: 'Crudista e nave', val: 'non pubblicato', molt: '&nbsp;',
+    txt: "Il caffè verde viaggia in sacchi di juta da 60 chili. Qui si accumulano nolo marittimo, assicurazione, dazi, stoccaggio nei depositi certificati e il cambio euro-dollaro, che nel 2024 Fipe indicava tra le cause dell'impennata dei prezzi insieme all'allungamento delle rotte per evitare il Canale di Suez. Il ricarico del singolo passaggio non è un dato pubblico: Fipe misura solo il salto complessivo fino al bancone del bar." },
+  { x: 300, lab: 'Torrefazione', val: 'non pubblicato', molt: '&nbsp;',
+    txt: "Dodici minuti a oltre 200 gradi. Il chicco perde acqua e peso, guadagna volume e i circa 800 composti aromatici che chiamiamo &laquo;caffè&raquo;. Poi miscelazione (l'arabica dolce con la robusta che regge la crema), degassaggio, confezionamento sottovuoto, rete di agenti e assistenza tecnica alle macchine dei bar: la torrefazione vende un servizio, non solo un sacchetto." },
+  { x: 420, lab: 'Il bar compra', val: '24,6 cent', molt: '×5,6',
+    txt: "Fipe quantifica in <strong>5,6 volte</strong> l'incremento complessivo dal crudista all'esercente. Applicato ai 4,5 centesimi di partenza dà 25 centesimi: e lo studio Caffè Mod, con un metodo del tutto diverso &mdash; interviste ai baristi modenesi &mdash; trova 0,246 € di caffè per dose. Le due stime, indipendenti, coincidono." },
+  { x: 540, lab: 'In tazzina', val: '1,40 €', molt: '×31',
+    txt: "L'ultimo passaggio, dall'esercente al consumatore, vale secondo Fipe altre <strong>5,9 volte</strong>: 0,246 × 5,9 = 1,45 €, cioè il listino di un bar italiano. Sommando i due salti si arriva a circa <strong>33 volte</strong> il prezzo del chicco verde; partendo dai 4,5 centesimi e arrivando a 1,40 €, ×31. Le &laquo;20 volte&raquo; della domanda sono una stima prudente. Ma il salto grosso non è la tostatura: è quello che succede dopo, dentro il bar." }
+];
+var stazCorrente = 0;
+
+function costruisciFiliera() {
+  var g = document.getElementById('filieraStazioni');
+  var html = '';
+  for (var i = 0; i < stazioni.length; i++) {
+    var s = stazioni[i];
+    html += '<g class="staz-hit" data-st="' + i + '">';
+    html += '<circle cx="' + s.x + '" cy="120" r="15" fill="#f7fafd" stroke="#c9d6e2" stroke-width="2.5" id="stazC' + i + '"></circle>';
+    html += '<text x="' + s.x + '" y="125" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#8fa9bd" id="stazN' + i + '">' + (i + 1) + '</text>';
+    html += '<text x="' + s.x + '" y="158" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#7f8c8d" id="stazL' + i + '">' + s.lab + '</text>';
+    html += '<rect x="' + (s.x - 34) + '" y="96" width="68" height="70" fill="transparent"></rect>';
+    html += '</g>';
+  }
+  g.innerHTML = html;
+  var hits = g.querySelectorAll('.staz-hit');
+  for (var k = 0; k < hits.length; k++) {
+    hits[k].onclick = (function (n) { return function () { mostraStazione(n); }; })(k);
+  }
+  mostraStazione(0);
+}
+
+function mostraStazione(i) {
+  stazCorrente = i;
+  var s = stazioni[i];
+  for (var k = 0; k < stazioni.length; k++) {
+    var passata = k <= i;
+    document.getElementById('stazC' + k).setAttribute('fill', k === i ? '#2980b9' : (passata ? '#d5e4ef' : '#f7fafd'));
+    document.getElementById('stazC' + k).setAttribute('stroke', passata ? '#2980b9' : '#c9d6e2');
+    document.getElementById('stazN' + k).setAttribute('fill', k === i ? '#ffffff' : (passata ? '#2980b9' : '#8fa9bd'));
+    document.getElementById('stazL' + k).setAttribute('fill', k === i ? '#2980b9' : '#7f8c8d');
+  }
+  document.getElementById('filieraProgress').setAttribute('x2', s.x);
+  document.getElementById('filieraChicco').setAttribute('transform', 'translate(' + (s.x - 60) + ',0)');
+  document.getElementById('filieraValore').innerHTML = s.val;
+  document.getElementById('filieraMolt').innerHTML = s.molt;
+  document.getElementById('filieraTesto').innerHTML = s.txt;
+  document.getElementById('btnAvanza').disabled = (i === stazioni.length - 1);
+  document.getElementById('btnAvanza').textContent = (i === stazioni.length - 1) ? 'Il viaggio è finito' : 'Avanza di un passaggio';
+}
+
+function avanzaFiliera() {
+  if (stazCorrente < stazioni.length - 1) mostraStazione(stazCorrente + 1);
+}
+
+/* ══════════ APPLET 02 · IL CRONOMETRO DEL BARISTA ══════════ */
+var COSTO_SEC = 20 / 3600;
+var modi = [
+  { nome: 'al banco', tot: 55, passi: [
+      { t: 8,  n: 'Macinare e dosare i 7 grammi' },
+      { t: 7,  n: 'Pressare e agganciare il portafiltro' },
+      { t: 25, n: 'Estrazione: 25 secondi a 9 bar' },
+      { t: 6,  n: 'Servire con acqua di cortesia e zucchero' },
+      { t: 6,  n: 'Incasso alla cassa' },
+      { t: 3,  n: 'Lavare la tazzina e riordinare il banco' }
+    ] },
+  { nome: 'al tavolo', tot: 135, passi: [
+      { t: 46, n: 'Tutta la preparazione al banco' },
+      { t: 20, n: 'Raggiungere il tavolo e servire' },
+      { t: 25, n: 'Tornare per il conto e incassare' },
+      { t: 24, n: 'Sparecchiare e rientrare al banco' },
+      { t: 8,  n: 'Lavaggio della tazzina' },
+      { t: 12, n: 'Pulizia del tavolo per il cliente dopo' }
+    ] }
+];
+var modoCorrente = 0, cronoRaf = null, cronoT0 = 0, cronoAttivo = false;
+var VELOCITA = 4; /* il cronometro scorre 4 volte più veloce del reale */
+
+function disegnaLista(evidenzia) {
+  var m = modi[modoCorrente], html = '', acc = 0;
+  for (var i = 0; i < m.passi.length; i++) {
+    var p = m.passi[i], fine = acc + p.t;
+    var cls = 'crono-riga';
+    if (evidenzia >= fine) cls += ' fatta';
+    else if (evidenzia > acc) cls += ' corrente';
+    html += '<div class="' + cls + '"><span>' + p.n + '</span><em>' + p.t + '&quot;</em></div>';
+    acc = fine;
+  }
+  document.getElementById('cronoLista').innerHTML = html;
+}
+
+function scegliModo(i) {
+  if (cronoAttivo) return;
+  modoCorrente = i;
+  document.getElementById('btnBanco').classList.toggle('attivo', i === 0);
+  document.getElementById('btnTavolo').classList.toggle('attivo', i === 1);
+  aggiornaCrono(0);
+}
+
+function aggiornaCrono(sec) {
+  var m = modi[modoCorrente];
+  document.getElementById('cronoTempo').innerHTML = Math.round(sec) + '&quot;';
+  document.getElementById('cronoCosto').textContent = (sec * COSTO_SEC).toFixed(3).replace('.', ',') + ' €';
+  document.getElementById('cronoFill').style.width = (sec / m.tot * 100) + '%';
+  disegnaLista(sec);
+}
+
+function avviaCrono() {
+  if (cronoAttivo) return;
+  cronoAttivo = true;
+  document.getElementById('btnAvvia').textContent = 'In corso…';
+  cronoT0 = performance.now();
+  cronoRaf = requestAnimationFrame(ticCrono);
+}
+
+function ticCrono(ts) {
+  var m = modi[modoCorrente];
+  var sec = Math.min((ts - cronoT0) / 1000 * VELOCITA, m.tot);
+  aggiornaCrono(sec);
+  if (sec < m.tot) {
+    cronoRaf = requestAnimationFrame(ticCrono);
+  } else {
+    cronoAttivo = false;
+    document.getElementById('btnAvvia').textContent = 'Servi un altro caffè';
+    disegnaLista(m.tot + 1);
+  }
+}
+
+/* ══════════ APPLET 03 · LA TAZZINA SMONTATA ══════════ */
+var PREZZO = 1.40;
+var voci = [
+  { k: 'utile',    lab: 'Margine lordo',      eur: 0.277, col: '#f39c12',
+    txt: "Quello che resta al bar &mdash; <strong>prima</strong> delle imposte, non dopo. Diciannove centesimi e otto su ogni euro incassato, con cui il titolare paga Irpef o Ires, Irap, contributi propri e ogni imprevisto. Su 58.400 tazzine l'anno fa 16.161 € lordi: il margine dell'intera caffetteria di un locale." },
+  { k: 'mino',     lab: 'Energia, lavaggio e zucchero', eur: 0.033, col: '#aab7b8',
+    txt: "Tre voci minuscole che insieme non arrivano a tre centesimi e mezzo: 1,3 centesimi di energia (compreso lo standby della macchina, tenuta accesa 24 ore su 24), 1 centesimo per lavare la tazzina tra acqua, detergente e ammortamento della lavastoviglie, 1 centesimo per la bustina di zucchero da 5 grammi." },
+  { k: 'iva',      lab: 'IVA al 10%',         eur: 0.127, col: '#7f8c8d',
+    txt: "Su 1,40 € di scontrino, 12,7 centesimi non entrano mai nella cassa del bar: transitano e basta. Il corrispettivo netto su cui il locale costruisce il conto economico è 1,273 €. È il motivo per cui un aumento di listino di dieci centesimi ne porta al bar poco più di nove." },
+  { k: 'fissi',    lab: 'Costi fissi',        eur: 0.162, col: '#5dade2',
+    txt: "Affitto, TARI, commercialista, assicurazioni, manutenzioni, usura dei macchinari, occupazione di suolo pubblico: circa 56.800 € l'anno per il bar tipo dello studio, di cui un sesto attribuito alla sola caffetteria &mdash; il resto pesa su colazioni, pranzi e aperitivi. Spalmati sulle tazzine fanno 16,2 centesimi l'una." },
+  { k: 'caffe',    lab: 'Caffè in grani',     eur: 0.246, col: '#6b4423',
+    txt: "La materia prima vera: 24,6 centesimi per i 7 grammi macinati. È meno di un quinto dello scontrino, e dentro ci sono già il viaggio dal Brasile, la tostatura, il confezionamento e il margine della torrefazione. Il chicco verde da cui tutto parte ne vale meno di cinque." },
+  { k: 'lavoro',   lab: 'Manodopera',         eur: 0.555, col: '#2980b9',
+    txt: "La voce più grossa, quasi 40 centesimi su ogni euro incassato: cento secondi medi di lavoro a 20 €/h lordi. Non è lo stipendio netto del barista &mdash; sono contributi, ferie, malattia, TFR, corsi di sicurezza obbligatori. Costa il doppio esatto del caffè che c'è nella tazza." }
+];
+var vociOrdine = ['lavoro', 'caffe', 'fissi', 'iva', 'mino', 'utile']; /* dal basso verso l'alto */
+var voceCorrente = 'lavoro';
+
+function trovaVoce(k) { for (var i = 0; i < voci.length; i++) if (voci[i].k === k) return voci[i]; }
+
+function costruisciTazza() {
+  var yTop = 34, yBot = 196, H = yBot - yTop, tot = 0;
+  for (var i = 0; i < voci.length; i++) tot += voci[i].eur;
+  var g = document.getElementById('tazzaBande'), html = '', y = yBot;
+  for (var j = 0; j < vociOrdine.length; j++) {
+    var v = trovaVoce(vociOrdine[j]);
+    var h = v.eur / tot * H;
+    y -= h;
+    html += '<rect class="banda" data-v="' + v.k + '" x="20" y="' + y.toFixed(2) + '" width="112" height="' + h.toFixed(2) + '" fill="' + v.col + '"></rect>';
+  }
+  g.innerHTML = html;
+  var bande = g.querySelectorAll('rect.banda');
+  for (var b = 0; b < bande.length; b++) {
+    bande[b].onclick = (function (kk) { return function () { mostraVoce(kk); }; })(bande[b].getAttribute('data-v'));
+  }
+
+  var leg = '';
+  for (var m = vociOrdine.length - 1; m >= 0; m--) {
+    var w = trovaVoce(vociOrdine[m]);
+    leg += '<button class="tazza-voce" data-v="' + w.k + '">' +
+           '<span class="tazza-pastiglia" style="background:' + w.col + '"></span>' + w.lab +
+           '<em>' + w.eur.toFixed(3).replace('.', ',') + ' €</em></button>';
+  }
+  document.getElementById('tazzaLegenda').innerHTML = leg;
+  var btns = document.querySelectorAll('.tazza-voce');
+  for (var n = 0; n < btns.length; n++) {
+    btns[n].onclick = (function (kk) { return function () { mostraVoce(kk); }; })(btns[n].getAttribute('data-v'));
+  }
+  mostraVoce('lavoro');
+}
+
+function mostraVoce(k) {
+  voceCorrente = k;
+  var v = trovaVoce(k);
+  var btns = document.querySelectorAll('.tazza-voce');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('attivo', btns[i].getAttribute('data-v') === k);
+  var bande = document.querySelectorAll('#tazzaBande rect.banda');
+  for (var j = 0; j < bande.length; j++) {
+    var sel = bande[j].getAttribute('data-v') === k;
+    bande[j].setAttribute('opacity', sel ? '1' : '0.42');
+  }
+  var perc = (v.eur / PREZZO * 100).toFixed(1).replace('.', ',');
+  document.getElementById('tazzaTesto').innerHTML =
+    '<strong>' + v.lab + ' &mdash; ' + v.eur.toFixed(3).replace('.', ',') + ' €, il ' + perc + '% dello scontrino.</strong><br>' + v.txt;
+}
+
+/* ══════════ APPLET 04 · IL BANCO DI PROVA ══════════ */
+var BASE = { caffe: 0.246, zucchero: 0.010, energia: 0.013, lavaggio: 0.010, manodopera: 0.555, fissi: 0.162 };
+var TAZZINE_ANNO = 58400;
+
+var scenari = [
+  { lab: 'Il bar tipo, senza shock', mod: function (c) { return c; }, prezzo: 1.40,
+    txt: "Il punto di partenza: 250 caffè al giorno, metà al banco e metà al tavolo, listino a 1,40 €. Costo totale 0,996 €, corrispettivo netto 1,273 €, margine lordo 0,277 € &mdash; su cui il bar deve ancora pagare le tasse." },
+  { lab: 'Il caffè verde crolla del 30%', mod: function (c) { c.caffe -= 0.045 * 0.30; return c; }, prezzo: 1.40,
+    txt: "Lo scenario del 2026: il raccolto record del Brasile riporta il mercato in surplus e le quotazioni scendono. Ma i 4,5 centesimi di chicco verde dentro la tazzina, tagliati di un terzo, restituiscono al bar <strong>1,3 centesimi</strong>. Ecco perché la tazzina non scende quando scende la borsa: non c'è quasi niente da far scendere." },
+  { lab: 'Il costo del lavoro sale da 20 a 21 €/h', mod: function (c) { c.manodopera *= 21 / 20; return c; }, prezzo: 1.40,
+    txt: "Un euro l'ora in più &mdash; il 5% &mdash; brucia <strong>2,8 centesimi</strong> di margine: più del doppio di quanto un crollo del 30% della materia prima riesca a restituirne. Il bar è un'impresa di manodopera travestita da negozio di caffè." },
+  { lab: "L'affitto aumenta di 500 € al mese", mod: function (c) { c.fissi += (6000 / 6) / TAZZINE_ANNO; return c; }, prezzo: 1.40,
+    txt: "Seimila euro l'anno in più, di cui un sesto imputato alla caffetteria, spalmati su 58.400 tazzine: <strong>1,7 centesimi</strong> l'una. Anche l'affitto, la voce che tutti citano per prima, sulla singola tazzina pesa pochissimo. Il punto è che le tazzine sono tante." },
+  { lab: 'Tutti i caffè al banco, nessuno al tavolo', mod: function (c) { c.manodopera = 55 * (20 / 3600); return c; }, prezzo: 1.40,
+    txt: "Da cento secondi medi a 55: la manodopera scende da 0,555 a 0,306 € e il margine <strong>quasi raddoppia</strong>. È la leva più potente del modello, e spiega perché al tavolo si paga di più: non è un sovrapprezzo arbitrario, è ottanta secondi di lavoro in più." },
+  { lab: 'Il listino sale a 1,50 €', mod: function (c) { return c; }, prezzo: 1.50,
+    txt: "Dieci centesimi di listino ne portano al bar poco più di nove, perché l'IVA al 10% si prende la differenza. Il margine passa da 0,277 a 0,368 €: +33% con un ritocco che il cliente percepisce subito, perché l'espresso lo compra ogni giorno." },
+  { lab: 'Il listino scende a 1,00 €', mod: function (c) { return c; }, prezzo: 1.00,
+    txt: "L'espresso a un euro, quello che tutti rimpiangono, oggi in questo modello è <strong>in perdita di 8,7 centesimi a tazzina</strong>: quasi 5.100 € l'anno rimessi dalla caffetteria. A 0,95 € &mdash; il prezzo medio di Messina nel 2024 &mdash; regge solo chi ha costi molto sotto la media." }
+];
+var scenarioCorrente = 0;
+
+function calcolaScenario(i) {
+  var s = scenari[i];
+  var c = { caffe: BASE.caffe, zucchero: BASE.zucchero, energia: BASE.energia, lavaggio: BASE.lavaggio, manodopera: BASE.manodopera, fissi: BASE.fissi };
+  c = s.mod(c);
+  var costo = c.caffe + c.zucchero + c.energia + c.lavaggio + c.manodopera + c.fissi;
+  var netto = s.prezzo / 1.10;
+  return netto - costo;
+}
+
+function costruisciShock() {
+  var html = '';
+  for (var i = 0; i < scenari.length; i++) {
+    html += '<button class="shock-btn' + (i === 0 ? ' attivo' : '') + '" data-s="' + i + '">' + scenari[i].lab + '</button>';
+  }
+  document.getElementById('shockLista').innerHTML = html;
+  var btns = document.querySelectorAll('.shock-btn');
+  for (var k = 0; k < btns.length; k++) {
+    btns[k].onclick = (function (n) { return function () { mostraShock(n); }; })(k);
+  }
+  mostraShock(0);
+}
+
+function mostraShock(i) {
+  scenarioCorrente = i;
+  var btns = document.querySelectorAll('.shock-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+
+  var u = calcolaScenario(i);
+  var perdita = u < 0;
+  var elU = document.getElementById('shockUtile');
+  elU.textContent = (u >= 0 ? '' : '−') + Math.abs(u).toFixed(3).replace('.', ',') + ' €';
+  elU.className = perdita ? 'perdita' : '';
+  var anno = u * TAZZINE_ANNO;
+  var elA = document.getElementById('shockAnno');
+  elA.textContent = (anno >= 0 ? '' : '−') + Math.round(Math.abs(anno)).toLocaleString('it-IT') + ' €';
+  elA.className = perdita ? 'perdita' : '';
+
+  /* scala da −0,20 € a +0,60 €, zero al 25% */
+  var MIN = -0.20, MAX = 0.60, span = MAX - MIN;
+  var zero = (0 - MIN) / span * 100;
+  var pos = (u - MIN) / span * 100;
+  pos = Math.max(0, Math.min(100, pos));
+  var barra = document.getElementById('shockBarra');
+  barra.className = 'shock-barra' + (perdita ? ' perdita' : '');
+  barra.style.left = Math.min(zero, pos) + '%';
+  barra.style.width = Math.abs(pos - zero) + '%';
+
+  var extra = (i === 0) ? '' : ' <em>(base: 0,277 € &mdash; variazione ' + ((u - 0.277) >= 0 ? '+' : '−') + Math.abs(u - 0.277).toFixed(3).replace('.', ',') + ' €)</em>';
+  document.getElementById('shockTesto').innerHTML = scenari[i].txt + extra;
+}
+
+/* ── avvio ── */
+costruisciFiliera();
+scegliModo(0);
+costruisciTazza();
+costruisciShock();
+</script>
+</body>
+</html>
