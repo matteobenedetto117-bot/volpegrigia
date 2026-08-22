@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quanta della plastica che ricicliamo viene davvero riciclata?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #27ae60;
+    --accent-light: #e4f4ea;
+    --accent-mid: #2ecc71;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · LINEA DI SELEZIONE ── */
+  .sel-scelte { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 16px; }
+  .sel-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sel-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .sel-nastro-wrap { background: #f4f8f5; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+  .sel-svg { display: block; width: 100%; height: auto; }
+  .sel-avvia {
+    width: 100%;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px; font-weight: 600;
+    background: var(--accent); border: 1.5px solid var(--accent); color: #fff;
+    border-radius: 4px; padding: 11px; cursor: pointer; margin-bottom: 14px;
+  }
+  .sel-avvia:disabled { opacity: 0.45; cursor: default; }
+  .sel-esito { font-size: 14.5px; line-height: 1.6; }
+  .sel-esito strong { display: block; font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 4px; }
+
+  /* ── APPLET 2 · PUNTO DI CALCOLO ── */
+  .pc-tubo { position: relative; margin: 6px 0 18px; }
+  .pc-svg { display: block; width: 100%; height: auto; }
+  .pc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
+  .pc-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11.5px; font-weight: 600; line-height: 1.25;
+    color: var(--muted); background: #f3f1ec;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 8px 4px; cursor: pointer; transition: all 0.15s;
+  }
+  .pc-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pc-numerone { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; color: var(--accent); line-height: 1; text-align: center; margin-bottom: 2px; }
+  .pc-etichetta { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+  /* ── APPLET 3 · CODICI RESINA ── */
+  .rc-griglia { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 16px; }
+  .rc-cella { background: none; border: none; padding: 0; cursor: pointer; }
+  .rc-cella svg { display: block; width: 100%; height: auto; }
+  .rc-tri { fill: none; stroke: #b9b3a8; stroke-width: 4; }
+  .rc-num { font-family: 'Source Sans 3', sans-serif; font-size: 20px; font-weight: 600; fill: #b9b3a8; text-anchor: middle; }
+  .rc-cella.attivo .rc-tri { stroke: var(--accent); }
+  .rc-cella.attivo .rc-num { fill: var(--accent); }
+  .rc-sigla { display: block; text-align: center; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; margin-top: 2px; }
+  .rc-cella.attivo .rc-sigla { color: var(--accent); }
+  .rc-verdetto { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 2px; margin-bottom: 8px; color: #fff; }
+  .rc-nome { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+
+  /* ── APPLET 4 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo { flex: 1 0 auto; min-width: 78px; background: none; border: none; cursor: pointer; font-family: 'Source Sans 3', sans-serif; padding: 0; position: relative; }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2.5px solid var(--border); margin: 8px auto 8px; position: relative; z-index: 1; transition: all 0.15s; }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+  .tl-dettaglio { background: #f7faf8; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 5 · CALCOLATORE ── */
+  .cal-regioni { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .cal-reg {
+    flex: 1; min-width: 80px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 12.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 8px 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .cal-reg.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cal-slider-riga { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .cal-slider-riga input[type=range] { flex: 1; accent-color: var(--accent); }
+  .cal-kg { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; color: var(--accent); min-width: 92px; text-align: right; }
+  .cal-barra { display: flex; height: 34px; border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+  .cal-seg { display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 600; color: #fff; transition: width 0.35s ease; overflow: hidden; white-space: nowrap; }
+  .cal-legenda { display: grid; gap: 7px; }
+  .cal-voce { display: flex; align-items: baseline; gap: 9px; font-size: 14px; }
+  .cal-pallino { width: 11px; height: 11px; border-radius: 2px; flex: 0 0 auto; position: relative; top: 1px; }
+  .cal-voce b { font-variant-numeric: tabular-nums; }
+  .cal-voce span { color: var(--muted); font-size: 13.5px; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .sel-scelte { grid-template-columns: repeat(2, 1fr); }
+    .pc-btns { grid-template-columns: repeat(2, 1fr); }
+    .rc-griglia { grid-template-columns: repeat(4, 1fr); }
+    .cal-reg { min-width: 44%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Ambiente</div>
+    <h1>Quanta della plastica che ricicliamo viene davvero riciclata?</h1>
+    <div class="risposta-box">
+      <p>Molto meno di quanto suggerisca il bidone. Nel mondo, secondo l'OCSE, torna a essere materia il 9% della plastica che buttiamo. In Italia il dato ufficiale sugli imballaggi sfiora il 50%, ma è la cifra migliore di una scala che dipende da dove metti il metro: nel 2024 sono state raccolte oltre 1,5 milioni di tonnellate e ne sono state riciclate 931.096 — il resto, in gran parte «plasmix», è finito bruciato nei forni dei cementifici.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Il gesto è ormai automatico: nel 2024 gli italiani hanno messo nel bidone giallo oltre 1.500.000 tonnellate di imballaggi in plastica, 26 chili a testa, in 7.396 comuni che coprono il 97% della popolazione. Ma differenziare è solo il primo di cinque passaggi, e a ogni passaggio cade fuori qualcosa. La parola «riciclato» nasconde almeno quattro significati diversi, e danno quattro numeri diversi.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il nastro del centro di selezione</div>
+      <div class="applet-istruzione">Scegli un oggetto, avvia il nastro e guarda che cosa decide il lettore a infrarossi: la balla da riciclare, oppure lo scivolo del plasmix.</div>
+    </div>
+    <div class="sel-scelte" id="selScelte"></div>
+    <div class="sel-nastro-wrap">
+      <svg class="sel-svg" id="selSvg" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="400" height="190" fill="#f4f8f5"></rect>
+        <!-- nastro -->
+        <rect x="10" y="96" width="380" height="9" rx="4" fill="#c8c2b6"></rect>
+        <g id="rulli"></g>
+        <!-- arco lettore NIR -->
+        <rect x="176" y="20" width="48" height="8" rx="3" fill="#6b7a72"></rect>
+        <rect x="176" y="28" width="6" height="30" fill="#6b7a72"></rect>
+        <rect x="218" y="28" width="6" height="30" fill="#6b7a72"></rect>
+        <text x="200" y="15" font-family="sans-serif" font-size="9" fill="#6b7a72" text-anchor="middle">lettore NIR</text>
+        <path id="raggio" d="M182 58 L218 58 L212 96 L188 96 Z" fill="#27ae60" opacity="0"></path>
+        <!-- soffio d'aria -->
+        <g id="soffio" opacity="0">
+          <path d="M196 120 L200 108 L204 120 Z" fill="#27ae60"></path>
+          <path d="M196 134 L200 122 L204 134 Z" fill="#27ae60" opacity="0.5"></path>
+        </g>
+        <!-- balla riciclo (in alto a destra) -->
+        <rect x="316" y="34" width="70" height="46" rx="4" fill="#e4f4ea" stroke="#27ae60" stroke-width="1.5"></rect>
+        <text x="351" y="55" font-family="sans-serif" font-size="9.5" fill="#27ae60" text-anchor="middle">balla</text>
+        <text x="351" y="67" font-family="sans-serif" font-size="9.5" fill="#27ae60" text-anchor="middle">da riciclare</text>
+        <!-- scivolo plasmix (in basso a destra) -->
+        <rect x="316" y="122" width="70" height="52" rx="4" fill="#f7e9e2" stroke="#b0553a" stroke-width="1.5"></rect>
+        <text x="351" y="142" font-family="sans-serif" font-size="9.5" fill="#b0553a" text-anchor="middle">plasmix</text>
+        <text x="351" y="154" font-family="sans-serif" font-size="9.5" fill="#b0553a" text-anchor="middle">→ cementificio</text>
+        <text x="351" y="166" font-family="sans-serif" font-size="9.5" fill="#b0553a" text-anchor="middle">o inceneritore</text>
+        <!-- oggetto -->
+        <g id="oggetto" transform="translate(30,78)">
+          <rect id="oggForma" x="-11" y="-11" width="22" height="22" rx="4" fill="#8fb8c9"></rect>
+        </g>
+      </svg>
+    </div>
+    <button class="sel-avvia" id="selAvvia" onclick="avviaNastro()">Avvia il nastro</button>
+    <div class="sel-esito" id="selEsito"></div>
+    <div class="applet-fonte">
+      Fonti: COREPLA, <em>Dati 2024</em> presentati all'Assemblea annuale del 21 maggio 2025 (33 centri di selezione e 75 impianti di riciclo in Italia; 513.393 tonnellate di plasmix prodotte nel 2024, di cui l'86,5% avviate a cementifici italiani ed esteri e il 13% a termovalorizzatori); Lanxess, <em>Black pigment for recyclable plastic packaging</em>, per l'effetto del nerofumo sui lettori nel vicino infrarosso, che rende non ordinabile fino al 10% delle plastiche in alcuni impianti. Il percorso mostrato è una ricostruzione semplificata di una linea di selezione reale: gli esiti dei singoli oggetti riflettono la pratica corrente, non un impianto specifico.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>A decidere non è la buona volontà di chi differenzia, ma l'ottica e la chimica. I lettori dei centri di selezione riconoscono il polimero dalla luce che riflette nel vicino infrarosso: il nerofumo, il pigmento che colora le vaschette nere della carne, quella luce la assorbe quasi tutta, e l'oggetto per la macchina semplicemente non esiste. Le buste di patatine hanno un altro problema: sono lamine di PET, alluminio e polipropilene incollate insieme, e nessun impianto commerciale le separa.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Dove metti il metro</div>
+      <div class="applet-istruzione">Sposta il punto di misura lungo la filiera: la domanda resta «quanto ricicliamo?», la risposta cambia di cinquanta punti.</div>
+    </div>
+    <div class="pc-btns">
+      <button class="pc-btn attivo" onclick="mostraPunto(0)">1. Il bidone</button>
+      <button class="pc-btn" onclick="mostraPunto(1)">2. Uscita selezione</button>
+      <button class="pc-btn" onclick="mostraPunto(2)">3. Riciclo effettivo</button>
+      <button class="pc-btn" onclick="mostraPunto(3)">4. Ciclo chiuso</button>
+    </div>
+    <div class="pc-tubo">
+      <svg class="pc-svg" viewBox="0 0 400 76" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="34" width="372" height="20" rx="10" fill="#eceae4"></rect>
+        <rect id="pcRiempi" x="14" y="34" width="372" height="20" rx="10" fill="#27ae60" opacity="0.28"></rect>
+        <g id="pcTacche"></g>
+        <g id="pcMetro" transform="translate(386,0)">
+          <line x1="0" y1="18" x2="0" y2="70" stroke="#27ae60" stroke-width="2.5"></line>
+          <polygon points="-6,18 6,18 0,28" fill="#27ae60"></polygon>
+          <circle cx="0" cy="70" r="3.5" fill="#27ae60"></circle>
+        </g>
+      </svg>
+    </div>
+    <div class="pc-numerone" id="pcNum">100%</div>
+    <div class="pc-etichetta" id="pcEti">di quello che hai buttato nel bidone giallo</div>
+    <div class="box-testo" id="pcTesto"></div>
+    <div class="applet-fonte">
+      Fonti: COREPLA, <em>Dati 2024</em> (Assemblea annuale, 21 maggio 2025): 1.500.000 tonnellate raccolte, 931.096 riciclate. Greenpeace Italia, <em>Plastica, Italia campione del riciclo?</em>, novembre 2024: avvio a riciclo 55,1% nel 2022 contro un riciclo effettivo del 48% nel 2023, calcolato secondo i nuovi riferimenti comunitari. Ellen MacArthur Foundation, <em>The New Plastics Economy: Rethinking the Future of Plastics</em>, World Economic Forum, gennaio 2016, per il 2% a ciclo chiuso. Le percentuali si riferiscono a basi di calcolo diverse (raccolto, immesso al consumo, imballaggi globali) e vanno lette come ordini di grandezza confrontabili, non come una sola serie storica.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il punto di misura non è un dettaglio contabile: è una deroga scritta nelle regole europee. Quasi tutti gli Stati membri pesano il rifiuto all'uscita dell'impianto di selezione e non all'ingresso del riciclatore, cioè prima che si sappia quanto di quel materiale verrà davvero trasformato. Nel Rapporto di sostenibilità del CONAI gli audit indipendenti citati riguardano tre soli impianti — uno di compostaggio, uno di selezione e uno di riciclo — e sullo stesso punto la Corte dei conti europea, dopo un'indagine in Italia, Romania e Paesi Bassi, ha segnalato un alto rischio che parte dei rifiuti non venga riciclata come dichiarato.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Il triangolo che non promette nulla</div>
+      <div class="applet-istruzione">Clicca un numero: scoprirai che il simbolo dice di che plastica è fatta la confezione, non che qualcuno la ricicli.</div>
+    </div>
+    <div class="rc-griglia" id="rcGriglia"></div>
+    <div class="box-testo">
+      <span class="rc-verdetto" id="rcVerdetto"></span>
+      <div class="rc-nome" id="rcNome"></div>
+      <div id="rcTesto"></div>
+    </div>
+    <div class="applet-fonte">
+      Fonti: i codici furono introdotti nel 1988 dalla Society of the Plastics Industry (oggi Plastics Industry Association); la revisione dello standard ASTM D7611 del 2013 ha sostituito le tre frecce inseguenti con un triangolo pieno, ma il vecchio simbolo resta il più diffuso. La stessa associazione ha poi riconosciuto che l'uso del codice come strumento di comunicazione al consumatore è «inappropriato»; l'EPA statunitense ha proposto di considerare il simbolo ingannevole (E&amp;E News/Politico, <em>EPA looks to toss 'deceptive' plastics recycling symbol</em>). Sugli sbocchi di mercato reali: The Last Beach Cleanup e Beyond Plastics, <em>The Real Truth About the U.S. Plastics Recycling Rate</em>, maggio 2022.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quel triangolo è la sintesi di tutta la vicenda. Lo inventò nel 1988 la Society of the Plastics Industry, l'associazione dei produttori: dentro c'è un numero che identifica il polimero, intorno ci sono tre frecce che inseguono, cioè il simbolo universale del riciclo. Nel 2013 lo standard ASTM ha sostituito le frecce con un triangolo pieno proprio per togliere l'equivoco, ma sulle confezioni le frecce sono ancora dappertutto — e su un vasetto in PS numero 6 non significano niente.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Cinquant'anni di una promessa</div>
+      <div class="applet-istruzione">Clicca una tappa: in diversi casi l'industria aveva già messo per iscritto quello che oggi mostrano le statistiche.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonti: Laura Sullivan, <em>How Big Oil Misled The Public Into Believing Plastic Would Be Recycled</em>, NPR, 11 settembre 2020, e il documentario <em>Plastic Wars</em>, PBS Frontline/NPR, 31 marzo 2020, per i documenti interni del 1974 e le dichiarazioni di Larry Thomas; OCSE, <em>Global Plastics Outlook: Economic Drivers, Environmental Impacts and Policy Options</em>, febbraio 2022; Eurostat, dati sui rifiuti da imballaggio 2023 e sull'export di rifiuti plastici 2024.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>C'è poi il capitolo che non si vede dal bidone: l'esportazione. Nel 2024 l'Unione europea ha spedito fuori dai propri confini 1,5 milioni di tonnellate di rifiuti plastici, il 13% in più dell'anno prima, con la Turchia prima destinataria a 426.000 tonnellate e la Malesia seconda a 344.000. I rifiuti esportati possono essere conteggiati negli obiettivi europei se trattati in condizioni equivalenti a quelle UE: una condizione che, a qualche migliaio di chilometri di distanza, è molto più facile da dichiarare che da verificare.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">I tuoi 26 chili</div>
+      <div class="applet-istruzione">Scegli la tua regione o muovi il cursore: la barra applica alla tua raccolta annuale le proporzioni nazionali del 2024.</div>
+    </div>
+    <div class="cal-regioni" id="calRegioni"></div>
+    <div class="cal-slider-riga">
+      <input type="range" id="calRange" min="5" max="45" step="0.1" value="26" oninput="aggiornaCalc(this.value, null)">
+      <div class="cal-kg" id="calKg">26,0 kg</div>
+    </div>
+    <div class="cal-barra">
+      <div class="cal-seg" id="segRic" style="background:#27ae60;"></div>
+      <div class="cal-seg" id="segCem" style="background:#b0553a;"></div>
+      <div class="cal-seg" id="segTer" style="background:#d3a04a;"></div>
+    </div>
+    <div class="cal-legenda" id="calLegenda"></div>
+    <div class="applet-fonte">
+      Fonti: COREPLA, <em>Dati 2024</em>: 1.500.000 tonnellate raccolte e 931.096 riciclate (62,1% del raccolto); del materiale non riciclato, l'86,5% è stato bruciato nei cementifici — 41,9% in Italia e 44,46% all'estero — il 13% nei termovalorizzatori e lo 0,06% è finito in discarica. Medie regionali di raccolta pro capite: Sardegna 36,4 kg, Veneto 30,9 kg, Liguria 29,6 kg, media nazionale oltre 26 kg. Il calcolo applica le proporzioni nazionali alla raccolta individuale: è una stima proporzionale, non il destino misurato dei rifiuti di una singola regione.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Nulla di tutto questo significa che il riciclo sia una finzione: significa che funziona bene su una fetta stretta e non funziona sul resto. Le bottiglie in PET e i flaconi in HDPE hanno una filiera vera, con acquirenti che pagano; e anche lì il cerchio non si chiude del tutto, perché a ogni ciclo termico le catene del polimero si accorciano e la maggior parte delle plastiche regge due o tre giri. È la differenza tra un materiale che torna se stesso e un materiale che scende una rampa: dalla bottiglia alla fibra, dalla fibra alla panchina, dalla panchina al forno.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il bidone giallo non mente: separa davvero. Ma separa solo ciò che qualcuno, più a valle, sa già ricomprare — e quella parte la decide chi progetta la confezione, non chi la butta.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>OCSE, <em>Global Plastics Outlook: Economic Drivers, Environmental Impacts and Policy Options</em>, febbraio 2022 — 9% dei rifiuti plastici effettivamente riciclati, 19% inceneriti, ~50% in discarica controllata, 22% in discariche incontrollate, bruciati all'aperto o dispersi; rifiuti plastici da 156 Mt (2000) a 353 Mt (2019) — <a href="https://www.oecd.org/en/publications/global-plastics-outlook_de747aef-en.html">oecd.org</a></li>
+      <li>Ellen MacArthur Foundation e World Economic Forum, <em>The New Plastics Economy: Rethinking the Future of Plastics</em>, gennaio 2016 — degli imballaggi in plastica il 14% è raccolto, il 2% riciclato a ciclo chiuso, l'8% declassato a usi inferiori, il 4% perso nel processo — <a href="https://www.ellenmacarthurfoundation.org/the-new-plastics-economy-rethinking-the-future-of-plastics">ellenmacarthurfoundation.org</a></li>
+      <li>COREPLA, <em>Dati 2024</em>, presentati all'Assemblea annuale del Consorzio, 21 maggio 2025 — 1.500.000 t raccolte (+4%), oltre 26 kg pro capite, 931.096 t riciclate, 7.396 comuni e 97% della popolazione, 33 centri di selezione e 75 impianti di riciclo, 513.393 t di plasmix — <a href="https://www.corepla.it/">corepla.it</a></li>
+      <li>Greenpeace Italia, <em>Plastica, Italia campione del riciclo?</em>, inchiesta sui documenti ufficiali di COREPLA e CONAI, 13 novembre 2024 — 55,1% di avvio a riciclo nel 2022 contro 48% di riciclo effettivo nel 2023; ~700.000 t/anno avviate a riciclo e ~500.000 t di scarti tra 2021 e 2023; audit indipendenti su soli tre impianti — <a href="https://www.greenpeace.org/italy/storia/25455/italia-riciclo-plastica/">greenpeace.org/italy</a></li>
+      <li>Eurostat, <em>Plastic packaging waste in the EU: 35.3 kg per person</em>, 22 ottobre 2025 (dati 2023) — 42,1% di riciclo degli imballaggi in plastica nell'UE; Belgio 59,5%, Lettonia 59,2%, Slovacchia 54,1%; Ungheria 23,0%, Francia 25,7%, Austria 26,9%; il cambio di metodologia del 2020 ha abbassato il dato UE di 3,4 punti — <a href="https://ec.europa.eu/eurostat/web/products-eurostat-news/w/ddn-20251022-1">ec.europa.eu/eurostat</a></li>
+      <li>Eurostat, dati sul commercio di rifiuti plastici 2024 — 1,5 Mt esportate dall'UE (+13% sul 2023), Turchia 426.000 t, Malesia 344.000 t, Indonesia 208.000 t, Vietnam 187.000 t</li>
+      <li>The Last Beach Cleanup e Beyond Plastics, <em>The Real Truth About the U.S. Plastics Recycling Rate</em>, maggio 2022 — 5-6% di riciclo negli Stati Uniti nel 2021 (era 8,7% nel 2018), 85% in discarica, 10% incenerito — <a href="https://www.beyondplastics.org/reports/the-real-truth-about-the-us-plastics-recycling-rate">beyondplastics.org</a></li>
+      <li>Laura Sullivan, <em>How Big Oil Misled The Public Into Believing Plastic Would Be Recycled</em>, NPR, 11 settembre 2020, e <em>Plastic Wars</em>, PBS Frontline/NPR, 31 marzo 2020 — documento industriale del 1974 e dichiarazioni di Larry Thomas, ex presidente della Society of the Plastics Industry — <a href="https://www.npr.org/2020/09/11/897692090/how-big-oil-misled-the-public-into-believing-plastic-would-be-recycled">npr.org</a></li>
+      <li>ASTM D7611, revisione 2013, sui codici di identificazione delle resine introdotti nel 1988 dalla Society of the Plastics Industry; E&amp;E News/Politico, <em>EPA looks to toss 'deceptive' plastics recycling symbol</em></li>
+      <li>Lanxess, <em>Black pigment for recyclable plastic packaging</em>, sull'assorbimento del vicino infrarosso da parte del nerofumo e sulla quota di plastiche non ordinabili negli impianti di selezione — <a href="https://lanxess.com/en/products/brands/bayferrox/news/black-pigment-for-recyclable-plastic-packaging">lanxess.com</a></li>
+      <li>ESPER, <em>Il PET è la plastica più riciclabile e riciclata, ma potrebbe essere più circolare</em>, 18 febbraio 2022 — delle scaglie ottenute dalle bottiglie in Europa solo il 31% torna a essere bottiglia — <a href="https://esper.it/2022/02/18/il-pet-e-la-plastica-piu-riciclabile-e-riciclata-ma-potrebbe-essere-piu-circolare/">esper.it</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · NASTRO DI SELEZIONE ── */
+var oggetti = [
+  { nome: 'Bottiglia<br>d\'acqua', col: '#8fb8c9', w: 16, h: 30, r: 7, esito: 'riciclo',
+    txt: "<strong>Riconosciuta: PET trasparente</strong>È il flusso migliore che esista. Le balle di PET incolore hanno un prezzo di mercato e un acquirente garantito, e il lettore le identifica in pochi millisecondi. In Europa, però, delle scaglie ricavate dalle bottiglie solo il 31% torna a essere una bottiglia: il resto diventa fibra tessile, reggette, vaschette." },
+  { nome: 'Flacone del<br>detersivo', col: '#c9d2c1', w: 22, h: 28, r: 5, esito: 'riciclo',
+    txt: "<strong>Riconosciuto: HDPE</strong>Polimero unico, parete spessa, colore chiaro: il caso facile. L'HDPE dei flaconi è il secondo flusso con una filiera industriale vera in Italia, e rientra come nuovi flaconi per detergenza o come tubi. È anche il motivo per cui il tappo va lasciato attaccato: da solo, in mezzo al nastro, un tappo è troppo piccolo per essere ordinato." },
+  { nome: 'Vaschetta nera<br>della carne', col: '#2b2b2b', w: 26, h: 16, r: 3, esito: 'plasmix',
+    txt: "<strong>Non riconosciuta: invisibile al lettore</strong>La vaschetta può essere in PET perfettamente riciclabile, ma è colorata con nerofumo, che assorbe quasi tutto il vicino infrarosso. Per il sensore lì non passa niente: nessuno spettro, nessuna classificazione, nessun soffio d'aria. Esistono pigmenti neri alternativi che riflettono l'infrarosso, ma sono ancora una scelta del produttore, non un obbligo." },
+  { nome: 'Busta di<br>patatine', col: '#c9a227', w: 28, h: 20, r: 2, esito: 'plasmix',
+    txt: "<strong>Riconosciuta come «multistrato»</strong>Sotto il dito ci sono tre materiali laminati insieme: PET per la stampa, un velo di alluminio per la barriera alla luce, polipropilene per la saldatura. Nessun impianto commerciale li separa a costi sostenibili, e un solo polimero contaminato manda fuori specifica un intero lotto. Va nel plasmix." },
+  { nome: 'Tubetto di<br>dentifricio', col: '#dfe7ee', w: 14, h: 30, r: 6, esito: 'plasmix',
+    txt: "<strong>Riconosciuto come «multistrato»</strong>Stesso problema della busta, aggravato dal residuo di prodotto che resta dentro. I tubetti monomateriale in polietilene esistono da qualche anno e sono ordinabili dai lettori, ma finché sullo scaffale convivono le due versioni l'impianto tratta l'intera categoria come frazione eterogenea." },
+  { nome: 'Vasetto di<br>yogurt', col: '#f0eae0', w: 20, h: 22, r: 4, esito: 'plasmix',
+    txt: "<strong>Riconosciuto: PS — ma non comprato da nessuno</strong>Qui il lettore funziona benissimo: legge polistirene e lo classifica. Il problema è a valle. Il PS ha pochissimi riciclatori e prezzi che non ripagano la selezione, quindi in gran parte non viene nemmeno separato e scivola nel plasmix. Riconoscibile non vuol dire riciclabile: vuol dire solo che la macchina sa che cos'è." }
+];
+var selIdx = 0, selAnim = null;
+
+function costruisciScelte() {
+  var c = document.getElementById('selScelte');
+  for (var i = 0; i < oggetti.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'sel-btn' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = oggetti[i].nome;
+    b.onclick = (function (k) { return function () { scegliOggetto(k); }; })(i);
+    c.appendChild(b);
+  }
+  scegliOggetto(0);
+}
+
+function scegliOggetto(i) {
+  if (selAnim) { cancelAnimationFrame(selAnim); selAnim = null; }
+  selIdx = i;
+  var btns = document.querySelectorAll('.sel-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var o = oggetti[i];
+  var f = document.getElementById('oggForma');
+  f.setAttribute('width', o.w); f.setAttribute('height', o.h);
+  f.setAttribute('x', -o.w / 2); f.setAttribute('y', -o.h / 2);
+  f.setAttribute('rx', o.r); f.setAttribute('fill', o.col);
+  f.setAttribute('stroke', '#8a8378'); f.setAttribute('stroke-width', '1');
+  document.getElementById('oggetto').setAttribute('transform', 'translate(30,' + (96 - o.h / 2) + ')');
+  document.getElementById('raggio').setAttribute('opacity', 0);
+  document.getElementById('soffio').setAttribute('opacity', 0);
+  document.getElementById('selEsito').innerHTML = '<span style="color:#7f8c8d">Premi «Avvia il nastro» per far passare l\'oggetto sotto il lettore.</span>';
+  document.getElementById('selAvvia').disabled = false;
+}
+
+function avviaNastro() {
+  if (selAnim) return;
+  var o = oggetti[selIdx];
+  var yBase = 96 - o.h / 2;
+  var t0 = performance.now(), DUR = 3200;
+  document.getElementById('selAvvia').disabled = true;
+  document.getElementById('selEsito').innerHTML = '<span style="color:#7f8c8d">Il nastro corre…</span>';
+  function passo(ts) {
+    var t = Math.min((ts - t0) / DUR, 1);
+    var x, y;
+    if (t < 0.45) {                       // corsa verso il lettore
+      var u = t / 0.45;
+      x = 30 + u * (200 - 30); y = yBase;
+      document.getElementById('raggio').setAttribute('opacity', u > 0.75 ? 0.35 : 0);
+    } else if (t < 0.58) {                // lettura
+      x = 200; y = yBase;
+      document.getElementById('raggio').setAttribute('opacity', o.esito === 'riciclo' ? 0.6 : 0.12);
+    } else {                              // smistamento
+      var v = (t - 0.58) / 0.42;
+      document.getElementById('raggio').setAttribute('opacity', Math.max(0.6 * (1 - v * 3), 0));
+      if (o.esito === 'riciclo') {
+        document.getElementById('soffio').setAttribute('opacity', v < 0.4 ? 1 : 0);
+        x = 200 + v * (351 - 200);
+        y = yBase + v * v * (57 - yBase);
+      } else {
+        x = 200 + v * (351 - 200);
+        y = yBase + v * v * (148 - yBase);
+      }
+    }
+    document.getElementById('oggetto').setAttribute('transform', 'translate(' + x + ',' + y + ')');
+    if (t < 1) { selAnim = requestAnimationFrame(passo); }
+    else {
+      selAnim = null;
+      document.getElementById('soffio').setAttribute('opacity', 0);
+      document.getElementById('selAvvia').disabled = false;
+      document.getElementById('selEsito').innerHTML = o.txt;
+    }
+  }
+  selAnim = requestAnimationFrame(passo);
+}
+
+/* rulli decorativi sotto il nastro */
+(function () {
+  var g = document.getElementById('rulli'), s = '';
+  for (var x = 26; x < 390; x += 26) s += '<circle cx="' + x + '" cy="109" r="5" fill="#ded8cd"></circle>';
+  g.innerHTML = s;
+})();
+
+/* ── APPLET 02 · PUNTO DI CALCOLO ── */
+var punti = [
+  { pos: 0.055, fill: 1.00, num: '100%', eti: 'di quello che hai buttato nel bidone giallo',
+    txt: "È l'unica percentuale che dipende davvero da te: nel 2024 in Italia sono state 1.500.000 tonnellate, oltre 26 chili a testa. Da qui in avanti non decide più il cittadino — decidono il progetto della confezione e il prezzo dei polimeri." },
+  { pos: 0.42, fill: 0.551, num: '55,1%', eti: '«avvio a riciclo» — il dato italiano del 2022',
+    txt: "È il numero su cui l'Italia ha costruito la propria fama di campione. Misura il materiale che <em>esce</em> dai centri di selezione con destinazione riciclo, ed è pesato prima che il riciclatore lo lavori: comprende quindi anche la quota che verrà scartata più avanti. Tra il 2021 e il 2023 COREPLA ha avviato a riciclo circa 700.000 tonnellate l'anno, producendo però anche circa 500.000 tonnellate di scarti." },
+  { pos: 0.72, fill: 0.48, num: '48%', eti: 'riciclo effettivo 2023, con le nuove regole UE',
+    txt: "Le regole europee entrate a regime nel 2020 spostano il metro più a valle: conta solo ciò che entra davvero in un'operazione di riciclo. Ricalcolato così, il 55,1% del 2022 diventa il 48% del 2023 — sette punti evaporati senza che sia cambiato nulla sul nastro. Nel 2024 COREPLA dichiara 931.096 tonnellate riciclate, sfiorando l'obiettivo UE del 50% con un anno di anticipo." },
+  { pos: 0.965, fill: 0.02, num: '2%', eti: 'imballaggi che tornano imballaggi, nel mondo',
+    txt: "L'ultimo metro è il più severo: quanta plastica torna a essere un prodotto dello stesso valore. Su scala globale la Ellen MacArthur Foundation contava, già nel 2016, il 14% degli imballaggi raccolto, l'8% declassato a usi inferiori, il 4% perso nel processo — e il 2% rientrato in un ciclo chiuso." }
+];
+
+function costruisciTacche() {
+  var g = document.getElementById('pcTacche'), s = '';
+  for (var i = 0; i < punti.length; i++) {
+    var x = 14 + punti[i].pos * 372;
+    s += '<line x1="' + x + '" y1="30" x2="' + x + '" y2="58" stroke="#b9b3a8" stroke-width="1.5"></line>';
+    s += '<text x="' + x + '" y="70" font-family="sans-serif" font-size="9" fill="#9a948a" text-anchor="middle">' + (i + 1) + '</text>';
+  }
+  g.innerHTML = s;
+}
+
+function mostraPunto(i) {
+  var btns = document.querySelectorAll('.pc-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var p = punti[i];
+  document.getElementById('pcMetro').setAttribute('transform', 'translate(' + (14 + p.pos * 372) + ',0)');
+  document.getElementById('pcRiempi').setAttribute('width', Math.max(p.fill * 372, 8));
+  document.getElementById('pcNum').textContent = p.num;
+  document.getElementById('pcEti').textContent = p.eti;
+  document.getElementById('pcTesto').innerHTML = p.txt;
+}
+
+/* ── APPLET 03 · CODICI RESINA ── */
+var codici = [
+  { n: 1, sigla: 'PET', nome: 'Polietilene tereftalato', col: '#27ae60', verd: 'Filiera reale',
+    txt: "Bottiglie di acqua e bibite, vaschette trasparenti. È la plastica più riciclata al mondo e l'unica con un mercato che paga bene le balle incolori. Anche qui, però, il cerchio non si chiude: in Europa solo il 31% delle scaglie ricavate dalle bottiglie torna a essere bottiglia." },
+  { n: 2, sigla: 'HDPE', nome: 'Polietilene ad alta densità', col: '#27ae60', verd: 'Filiera reale',
+    txt: "Flaconi di detersivo e shampoo, taniche, tappi. Polimero unico, parete spessa, facile da leggere e da lavare: insieme al PET è il secondo dei due soli flussi italiani con impianti che se lo contendono." },
+  { n: 3, sigla: 'PVC', nome: 'Cloruro di polivinile', col: '#b0553a', verd: 'Quasi nessuno sbocco',
+    txt: "Tubi, infissi, blister dei farmaci. Contiene cloro: se finisce per errore in un lotto di PET, durante l'estrusione libera acido cloridrico e manda fuori specifica l'intera partita. Per questo negli impianti è cercato per essere <em>eliminato</em>, non per essere recuperato." },
+  { n: 4, sigla: 'LDPE', nome: 'Polietilene a bassa densità', col: '#d3a04a', verd: 'Sbocco parziale',
+    txt: "Pellicole, sacchetti, film da imballaggio. Il film industriale trasparente, raccolto pulito e in grandi quantità, si ricicla senza problemi. Il sacchetto domestico sporco è un'altra storia: è leggero, si avvolge attorno ai vagli rotanti e viene scartato prima ancora di arrivare al lettore." },
+  { n: 5, sigla: 'PP', nome: 'Polipropilene', col: '#d3a04a', verd: 'Sbocco parziale',
+    txt: "Tappi, vaschette del gelato, contenitori per alimenti, cassette. La filiera esiste e sta crescendo, ma il materiale è spesso pigmentato, multiforme e a contatto con residui alimentari: la quota che diventa granulo di qualità resta molto inferiore a quella raccolta." },
+  { n: 6, sigla: 'PS', nome: 'Polistirene', col: '#b0553a', verd: 'Quasi nessuno sbocco',
+    txt: "Vasetti di yogurt, vaschette del pesce, polistirolo espanso. Leggerissimo — quindi costosissimo da trasportare in rapporto al peso — e con pochissimi acquirenti: viene riconosciuto dai lettori ma raramente vale la pena separarlo. Destinazione tipica: plasmix." },
+  { n: 7, sigla: 'ALTRO', nome: 'Tutto il resto', col: '#b0553a', verd: 'Non è un materiale',
+    txt: "Il 7 non identifica un polimero: è la casella «altro». Ci finiscono policarbonato, poliuretano, ABS, bioplastiche e soprattutto i multistrato — buste, tubetti, cartoni per bevande. Per definizione non può avere una filiera dedicata, perché non si sa che cosa ci sia dentro." }
+];
+
+function costruisciCodici() {
+  var g = document.getElementById('rcGriglia');
+  for (var i = 0; i < codici.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'rc-cella' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<svg viewBox="0 0 60 56" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon class="rc-tri" points="30,6 54,48 6,48"></polygon>' +
+      '<text class="rc-num" x="30" y="42">' + codici[i].n + '</text></svg>' +
+      '<span class="rc-sigla">' + codici[i].sigla + '</span>';
+    b.onclick = (function (k) { return function () { mostraCodice(k); }; })(i);
+    g.appendChild(b);
+  }
+  mostraCodice(0);
+}
+
+function mostraCodice(i) {
+  var celle = document.querySelectorAll('.rc-cella');
+  for (var k = 0; k < celle.length; k++) celle[k].classList.toggle('attivo', k === i);
+  var c = codici[i];
+  var v = document.getElementById('rcVerdetto');
+  v.textContent = c.verd;
+  v.style.background = c.col;
+  document.getElementById('rcNome').textContent = c.n + ' · ' + c.nome;
+  document.getElementById('rcTesto').innerHTML = c.txt;
+}
+
+/* ── APPLET 04 · LINEA DEL TEMPO ── */
+var tappe = [
+  { anno: '1974', tit: 'Il dubbio messo per iscritto',
+    txt: "In un discorso interno all'industria, un dirigente del settore scrive che il riciclo della plastica difficilmente potrà reggersi da solo. Il documento resterà in archivio per quarantasei anni, fino all'inchiesta di NPR e Frontline.",
+    cit: "«There is serious doubt that [recycling plastic] can ever be made viable on an economic basis» — «Ci sono seri dubbi che il riciclo della plastica possa mai essere reso sostenibile su basi economiche»" },
+  { anno: '1988', tit: 'Nasce il triangolo',
+    txt: "La Society of the Plastics Industry introduce i codici di identificazione delle resine: i numeri da 1 a 7 racchiusi nelle tre frecce che si inseguono. Servono agli impianti per distinguere i polimeri; il pubblico li legge come una promessa di riciclabilità stampata sulla confezione." },
+  { anno: "Anni '90", tit: 'La campagna',
+    txt: "L'industria petrolchimica finanzia pubblicità e impianti dimostrativi che raccontano la plastica come materiale riciclabile all'infinito. Larry Thomas, allora presidente della Society of the Plastics Industry, spiegherà poi a NPR quale fosse l'obiettivo.",
+    cit: "«If the public thinks that recycling is working, then they are not going to be as concerned about the environment» — «Se il pubblico pensa che il riciclo funzioni, non sarà altrettanto preoccupato per l'ambiente»" },
+  { anno: '2016', tit: 'Il conto di Davos',
+    txt: "Al World Economic Forum la Ellen MacArthur Foundation presenta <em>The New Plastics Economy</em> e mette in fila le quote degli imballaggi in plastica: 14% raccolto, 8% declassato a usi inferiori, 4% perso nel processo, 2% davvero rientrato a ciclo chiuso." },
+  { anno: '2018', tit: 'La Cina chiude la porta',
+    txt: "Dal 1° gennaio la Cina vieta l'importazione di 24 categorie di rifiuti solidi, plastica compresa: è l'operazione National Sword. Il flusso mondiale dei rifiuti plastici si riversa in poche settimane su Turchia, Malesia, Vietnam e Indonesia." },
+  { anno: '2020', tit: 'Plastic Wars',
+    txt: "Il 31 marzo PBS Frontline e NPR pubblicano l'inchiesta con i documenti d'archivio dell'industria; l'11 settembre Laura Sullivan firma per NPR il resoconto che rende pubblica la frase del 1974. Non è più un sospetto degli ambientalisti: sono le carte dei produttori." },
+  { anno: '2022', tit: 'I numeri ufficiali',
+    txt: "A febbraio l'OCSE pubblica il <em>Global Plastics Outlook</em>: nel mondo si ricicla il 9% dei rifiuti plastici. A maggio The Last Beach Cleanup e Beyond Plastics calcolano per gli Stati Uniti il 5-6%, in calo dall'8,7% del 2018: il tasso americano non sta salendo, sta scendendo." },
+  { anno: '2024', tit: 'Il caso italiano',
+    txt: "A novembre Greenpeace Italia analizza i documenti di COREPLA e CONAI e ricalcola: 48% di riciclo effettivo nel 2023 contro il 55,1% di avvio a riciclo del 2022. Sullo stesso punto la Corte dei conti europea, dopo un'indagine in Italia, Romania e Paesi Bassi, segnala un alto rischio che parte dei rifiuti non venga riciclata come dichiarato." },
+  { anno: 'Oggi', tit: 'Dove siamo',
+    txt: "Eurostat certifica per il 2023 un 42,1% di riciclo degli imballaggi in plastica nell'UE, con distanze enormi tra Paesi: 59,5% in Belgio, 23,0% in Ungheria, 25,7% in Francia. Gli obiettivi europei restano il 50% al 2025 e il 55% al 2030, e nel frattempo l'UE nel 2024 ha esportato 1,5 milioni di tonnellate di rifiuti plastici, il 13% in più dell'anno precedente." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ── APPLET 05 · CALCOLATORE ── */
+var regioni = [
+  { nome: 'Sardegna', kg: 36.4 },
+  { nome: 'Veneto', kg: 30.9 },
+  { nome: 'Liguria', kg: 29.6 },
+  { nome: 'Media Italia', kg: 26.0 }
+];
+var QUOTE = { ric: 0.621, cem: 0.328, ter: 0.049, dis: 0.0002 };
+
+function costruisciRegioni() {
+  var c = document.getElementById('calRegioni');
+  for (var i = 0; i < regioni.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'cal-reg' + (i === 3 ? ' attivo' : '');
+    b.innerHTML = regioni[i].nome + '<br><span style="font-weight:400;font-size:11px">' + fmt(regioni[i].kg) + ' kg</span>';
+    b.onclick = (function (k) { return function () { aggiornaCalc(regioni[k].kg, k); }; })(i);
+    c.appendChild(b);
+  }
+  aggiornaCalc(26.0, 3);
+}
+
+function fmt(x) { return x.toFixed(1).replace('.', ','); }
+
+function aggiornaCalc(kg, regIdx) {
+  kg = parseFloat(kg);
+  document.getElementById('calRange').value = kg;
+  document.getElementById('calKg').textContent = fmt(kg) + ' kg';
+  var btns = document.querySelectorAll('.cal-reg');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', regIdx !== null && k === regIdx);
+  document.getElementById('segRic').style.width = (QUOTE.ric * 100) + '%';
+  document.getElementById('segCem').style.width = (QUOTE.cem * 100) + '%';
+  document.getElementById('segTer').style.width = (QUOTE.ter * 100) + '%';
+  document.getElementById('segRic').textContent = '62%';
+  document.getElementById('segCem').textContent = '33%';
+  document.getElementById('segTer').textContent = '5%';
+  var grammi = Math.round(kg * QUOTE.dis * 1000);
+  document.getElementById('calLegenda').innerHTML =
+    voce('#27ae60', fmt(kg * QUOTE.ric) + ' kg', 'tornano materia: nuovi flaconi, fibre tessili, reggette, tubi') +
+    voce('#b0553a', fmt(kg * QUOTE.cem) + ' kg', 'bruciati nei forni dei cementifici al posto del carbone — poco più della metà in impianti fuori dall\'Italia') +
+    voce('#d3a04a', fmt(kg * QUOTE.ter) + ' kg', 'bruciati nei termovalorizzatori, con recupero di energia elettrica e calore') +
+    voce('#b9b3a8', grammi + ' g', 'in discarica: lo 0,06% degli scarti, il dato di cui la filiera va giustamente fiera');
+}
+
+function voce(col, val, testo) {
+  return '<div class="cal-voce"><span class="cal-pallino" style="background:' + col + '"></span><b>' + val + '</b><span>' + testo + '</span></div>';
+}
+
+costruisciScelte();
+costruisciTacche();
+mostraPunto(0);
+costruisciCodici();
+costruisciTimeline();
+costruisciRegioni();
+</script>
+</body>
+</html>
