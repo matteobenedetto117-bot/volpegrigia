@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Se il freddo non causa il raffreddore, perché ci si ammala di più d'inverno?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #8e44ad;
+    --accent-light: #f3e8f8;
+    --accent-mid: #a569bd;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · IL NASO CHE SI RAFFREDDA ── */
+  .naso-scala { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .naso-btn {
+    flex: 1;
+    min-width: 74px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .naso-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .naso-wrap { background: #faf6fb; border-radius: 6px; overflow: hidden; margin-bottom: 14px; }
+  .naso-svg { display: block; width: 100%; height: auto; }
+  .naso-numeri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .naso-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 10px 8px; text-align: center; }
+  .naso-cella .val { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.1; display: block; }
+  .naso-cella .lab { font-size: 11.5px; color: var(--muted); line-height: 1.3; display: block; margin-top: 4px; }
+
+  /* ── APPLET 2 · SALISBURY ── */
+  .exp-lista { display: grid; gap: 8px; margin-bottom: 18px; }
+  .exp-btn {
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .exp-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .exp-esito { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .exp-badge { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; color: #fff; white-space: nowrap; }
+  .exp-badge.no { background: #7f8c8d; }
+  .exp-badge.si { background: #8e44ad; }
+  .exp-badge.forse { background: #a569bd; }
+  .exp-quando { font-size: 13px; color: var(--muted); }
+
+  /* ── APPLET 3 · STANZA RISCALDATA ── */
+  .stanza-riga { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .stanza-riga label { font-size: 13.5px; font-weight: 600; color: var(--text); min-width: 132px; }
+  .stanza-riga input[type=range] { flex: 1; min-width: 150px; accent-color: var(--accent); }
+  .stanza-riga output { font-size: 13.5px; font-weight: 700; color: var(--accent); min-width: 62px; text-align: right; }
+  .stanza-canvas { display: block; width: 100%; height: auto; background: #f7f3f9; border: 1px solid var(--border); border-radius: 6px; margin: 14px 0 12px; }
+  .stanza-numeri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+
+  /* ── APPLET 4 · CURVA E VACANZE ── */
+  .curva-riga { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .curva-riga label { font-size: 13.5px; font-weight: 600; color: var(--text); min-width: 150px; }
+  .curva-riga input[type=range] { flex: 1; min-width: 150px; accent-color: var(--accent); }
+  .curva-riga output { font-size: 13.5px; font-weight: 700; color: var(--accent); min-width: 78px; text-align: right; }
+  .curva-box { position: relative; height: 250px; margin: 10px 0 12px; }
+  .curva-numeri { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .naso-btn { min-width: 30%; }
+    .naso-numeri { grid-template-columns: 1fr; }
+    .stanza-numeri { grid-template-columns: 1fr; }
+    .stanza-riga label, .curva-riga label { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Salute</div>
+    <h1>Se il freddo non causa il raffreddore, perché ci si ammala di più d'inverno?</h1>
+    <div class="risposta-box">
+      <p>Perché il freddo non fabbrica il virus, ma smonta le difese proprio dove il virus entra: bastano 15 minuti a 4,4 °C per far scendere di circa 5 °C la temperatura dentro il naso, e lì la nube di vescicole che intercetta i virus cala del 42%, mentre la replicazione virale raddoppia. Ci si mettono poi l'aria secca delle case riscaldate, che tiene gli aerosol sospesi molto più a lungo, e i mesi passati al chiuso con le stesse persone.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Per quarantatré anni, a Salisbury, il Common Cold Unit del Medical Research Council ha pagato volontari per prendersi il raffreddore. Christopher Andrewes li faceva uscire dal bagno caldo e stare mezz'ora in un corridoio pieno di spifferi, in costume da bagno e calze bagnate. Nel 1948, in una conferenza alla Royal Society of Arts, ammise che sembrava «safe to agree that chilling alone cannot give you a cold»: prendere freddo, da solo, il raffreddore non lo dà.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Quarant'anni di volontari infreddoliti</div>
+      <div class="applet-istruzione">Scegli un esperimento davvero condotto su volontari umani e leggi che cosa ne è uscito.</div>
+    </div>
+    <div class="exp-lista">
+      <button class="exp-btn attivo" data-exp="0" onclick="mostraExp(0)">Bagno caldo, poi calze bagnate negli spifferi</button>
+      <button class="exp-btn" data-exp="1" onclick="mostraExp(1)">Stanza a 4 °C e bagno d'acqua, senza virus</button>
+      <button class="exp-btn" data-exp="2" onclick="mostraExp(2)">Rhinovirus 15 inoculato + freddo</button>
+      <button class="exp-btn" data-exp="3" onclick="mostraExp(3)">Piedi in acqua a 10 °C per 20 minuti</button>
+      <button class="exp-btn" data-exp="4" onclick="mostraExp(4)">Base antartica, 17 settimane di isolamento</button>
+    </div>
+    <div class="exp-esito">
+      <span class="exp-badge no" id="expBadge">Nessun effetto</span>
+      <span class="exp-quando" id="expQuando">Salisbury, anni Quaranta-Cinquanta</span>
+    </div>
+    <div class="box-testo" id="expTesto"></div>
+    <div class="applet-fonte">
+      Fonti: C. H. Andrewes, conferenza alla Royal Society of Arts, 1948; R. G. Douglas Jr., K. M. Lindgren, R. B. Couch, <em>Exposure to Cold Environment and Rhinovirus Common Cold: Failure to Demonstrate Effect</em>, «New England Journal of Medicine» 279(14), 3 ottobre 1968, pp. 742-747; C. Johnson, R. Eccles, <em>Acute cooling of the feet and the onset of common cold symptoms</em>, «Family Practice» 22(6), dicembre 2005, pp. 608-613; T. R. Allen et al., <em>An outbreak of common colds at an Antarctic base after seventeen weeks of complete isolation</em>, «The Journal of Hygiene» 71(4), 1973.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Poi, nel 2005, Claire Johnson e Ronald Eccles a Cardiff hanno rimesso in discussione il verdetto: 180 volontari, metà con i piedi in una bacinella d'acqua a 10 °C per venti minuti. Nei quattro-cinque giorni successivi 13 su 90 hanno dichiarato di avere il raffreddore, contro 5 su 90 nel gruppo di controllo. Il freddo però non aveva peggiorato i sintomi sul momento: sembrava piuttosto <em>far uscire allo scoperto</em> un'infezione già in corso. Il meccanismo restava un buco nero — fino al dicembre 2022.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Lo sciame di vescicole che il naso spara</div>
+      <div class="applet-istruzione">Sposta la temperatura dell'aria che respiri e guarda che cosa succede al primo posto di blocco: la mucosa del naso.</div>
+    </div>
+    <div class="naso-scala">
+      <button class="naso-btn attivo" data-naso="0" onclick="mostraNaso(0)">23,3 °C<br>in casa</button>
+      <button class="naso-btn" data-naso="1" onclick="mostraNaso(1)">12 °C<br>fuori, mite</button>
+      <button class="naso-btn" data-naso="2" onclick="mostraNaso(2)">4,4 °C<br>fuori, freddo</button>
+    </div>
+    <div class="naso-wrap">
+      <svg class="naso-svg" id="nasoSvg" viewBox="0 0 340 210" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="340" height="210" fill="#faf6fb"></rect>
+        <path d="M20 190 L20 70 Q 20 40 60 40 L120 40 L150 12 L178 40 L300 40 Q320 40 320 70 L320 190 Z" fill="#fdf7fb" stroke="#e3d3ea" stroke-width="1.5"></path>
+        <path id="mucosa" d="M34 178 L34 78 Q34 56 66 56 L286 56 Q306 56 306 78 L306 178 Z" fill="#f6c6d6" stroke="none"></path>
+        <path d="M34 178 L306 178" stroke="#e3d3ea" stroke-width="1.5"></path>
+        <g id="cellule"></g>
+        <g id="vescicole"></g>
+        <g id="virioni"></g>
+        <text x="150" y="30" font-family="sans-serif" font-size="11" fill="#8e44ad" text-anchor="middle">aria inspirata</text>
+        <text x="170" y="196" font-family="sans-serif" font-size="10.5" fill="#9b8aa3" text-anchor="middle">epitelio nasale — le cellule da proteggere</text>
+      </svg>
+    </div>
+    <div class="naso-numeri">
+      <div class="naso-cella"><span class="val" id="nasoTemp">−0,0 °C</span><span class="lab">calo di temperatura dentro il naso</span></div>
+      <div class="naso-cella"><span class="val" id="nasoEv">100%</span><span class="lab">vescicole liberate nel muco</span></div>
+      <div class="naso-cella"><span class="val" id="nasoRep">×1,0</span><span class="lab">replicazione del virus nelle cellule</span></div>
+    </div>
+    <div class="box-testo" id="nasoTesto"></div>
+    <div class="applet-fonte">
+      Fonte: Di Huang, Maie S. Taha, Angela L. Nocera, Alan D. Workman, Mansoor M. Amiji, Benjamin S. Bleier, <em>Cold exposure impairs extracellular vesicle swarm–mediated nasal antiviral immunity</em>, «Journal of Allergy and Clinical Immunology», 6 dicembre 2022 (DOI 10.1016/j.jaci.2022.09.037). Nello studio i volontari passavano da 23,3 °C a 4,4 °C per 15 minuti: la temperatura intranasale scendeva di circa 5 °C, la secrezione di vescicole calava del 42%, i recettori-esca perdevano fino al 77% e la replicazione virale nelle cellule nasali raddoppiava. Il valore intermedio a 12 °C è un'interpolazione illustrativa, non un dato misurato: lo studio ha testato due sole condizioni.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il gruppo di Bleier al Mass Eye and Ear ha scoperto che, appena un virus tocca la mucosa, le cellule del naso liberano miliardi di vescicole extracellulari — Bleier le paragona a «kicking a hornets' nest», dare un calcio a un nido di vespe. Quelle vescicole fanno due cose: consegnano microRNA antivirali alle cellule ancora sane e, soprattutto, espongono in superficie ICAM-1, cioè esattamente la serratura a cui si aggancia la maggior parte dei rhinovirus. Sono esche. Nel naso raffreddato le esche crollano fino al 77%.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Il termosifone che asciuga l'aria</div>
+      <div class="applet-istruzione">Imposta la temperatura esterna: il riscaldamento non aggiunge un grammo d'acqua all'aria, e le goccioline che espiri cambiano destino.</div>
+    </div>
+    <div class="stanza-riga">
+      <label for="tEst">Temperatura esterna</label>
+      <input type="range" id="tEst" min="-10" max="30" step="1" value="2" oninput="aggiornaStanza()">
+      <output id="tEstOut">2 °C</output>
+    </div>
+    <div class="stanza-riga">
+      <label for="uEst">Umidità relativa esterna</label>
+      <input type="range" id="uEst" min="40" max="95" step="1" value="80" oninput="aggiornaStanza()">
+      <output id="uEstOut">80%</output>
+    </div>
+    <canvas class="stanza-canvas" id="stanzaCanvas" width="600" height="260"></canvas>
+    <div class="stanza-numeri">
+      <div class="naso-cella"><span class="val" id="ahOut">3,9</span><span class="lab">g d'acqua per m³ d'aria (umidità assoluta)</span></div>
+      <div class="naso-cella"><span class="val" id="rhIn">22%</span><span class="lab">umidità relativa in casa a 20 °C</span></div>
+      <div class="naso-cella"><span class="val" id="tempoSosp">~9 min</span><span class="lab">permanenza in aria di una gocciolina da 20 µm</span></div>
+    </div>
+    <div class="box-testo" id="stanzaTesto"></div>
+    <div class="applet-fonte">
+      Umidità assoluta e umidità relativa interna sono calcolate in tempo reale con la formula di Magnus per la tensione di vapore saturo, assumendo che riscaldando l'aria esterna a 20 °C il contenuto d'acqua resti invariato: è il motivo per cui, come nota Linsey C. Marr, l'umidità interna d'inverno segue l'umidità <em>assoluta</em> esterna e non quella relativa. Il meccanismo dell'evaporazione delle goccioline e del tempo di sospensione è descritto in Wan Yang, Linsey C. Marr et al., <em>Mechanistic insights into the effect of humidity on airborne influenza virus survival, transmission and incidence</em>, «Journal of the Royal Society Interface» 16(150), 2019. Il tempo di caduta è ricavato dalla legge di Stokes su 2 m di altezza: è un ordine di grandezza, non una misura.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che l'aria secca conti lo si sapeva prima di sapere perché. Nel 2009 Jeffrey Shaman e Melvin Kohn, rianalizzando su «PNAS» i dati sperimentali sulle cavie, hanno mostrato che l'umidità assoluta spiega il 90% della variabilità nella sopravvivenza del virus influenzale e il 50% di quella nella trasmissione — mentre l'umidità relativa, la misura che leggiamo sulle previsioni del tempo, ne spiega rispettivamente il 36% e il 12%.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Sposta le vacanze di Natale</div>
+      <div class="applet-istruzione">Trascina il periodo di chiusura delle scuole sulla curva epidemica e guarda dove finisce il picco.</div>
+    </div>
+    <div class="curva-riga">
+      <label for="inizioVac">Inizio delle vacanze</label>
+      <input type="range" id="inizioVac" min="0" max="150" step="1" value="70" oninput="aggiornaCurva()">
+      <output id="inizioVacOut">giorno 70</output>
+    </div>
+    <div class="curva-riga">
+      <label for="durataVac">Durata della chiusura</label>
+      <input type="range" id="durataVac" min="0" max="30" step="1" value="14" oninput="aggiornaCurva()">
+      <output id="durataVacOut">14 giorni</output>
+    </div>
+    <div class="curva-box"><canvas id="curvaChart"></canvas></div>
+    <div class="curva-numeri">
+      <div class="naso-cella"><span class="val" id="picco">0%</span><span class="lab">altezza del picco rispetto allo scenario senza vacanze</span></div>
+      <div class="naso-cella"><span class="val" id="casiTot">0%</span><span class="lab">casi totali evitati nella stagione</span></div>
+    </div>
+    <div class="box-testo" id="curvaTesto"></div>
+    <div class="applet-fonte">
+      Fonte dei parametri: Simon Cauchemez, Alain-Jacques Valleron, Pierre-Yves Boëlle, Antoine Flahault, Neil M. Ferguson, <em>Estimating the impact of school closure on influenza transmission from Sentinel data</em>, «Nature» 452(7188), 10 aprile 2008, pp. 750-754, basato su 21 anni di dati giornalieri del réseau Sentinelles francese: le vacanze riducono del 20-29% la trasmissione tra i bambini e non modificano i contatti degli adulti; nelle stagioni influenzali normali evitano il 16-18% dei casi. La curva qui sopra è un modello SIR illustrativo (R₀ = 1,35, durata media dell'infettività 3 giorni) con la trasmissione ridotta del 25% nel periodo di chiusura: serve a mostrare la <em>forma</em> dell'effetto, non a prevedere una stagione reale.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Resta il fatto scomodo: senza il virus non succede niente. Nelle basi antartiche isolate le infezioni respiratorie di solito si spengono in poche settimane e tornano con la nave dei rifornimenti, a temperature che nessun inverno europeo si sogna. Nel 1973 T. R. Allen documentò l'eccezione che rende la regola interessante — sei uomini su dodici con sintomi da raffreddore dopo diciassette settimane di isolamento totale — e nessun agente causale fu mai identificato.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il freddo non ti fa venire il raffreddore: ti abbassa la guardia esattamente dove serve, mentre l'inverno ci chiude tutti nella stessa stanza ad aria secca. Il virus, quello, deve comunque arrivare da qualcuno.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Di Huang, Maie S. Taha, Angela L. Nocera, Alan D. Workman, Mansoor M. Amiji, Benjamin S. Bleier, <em>Cold exposure impairs extracellular vesicle swarm–mediated nasal antiviral immunity</em>, «Journal of Allergy and Clinical Immunology», 6 dicembre 2022 — <a href="https://www.jacionline.org/article/S0091-6749(22)01423-3/fulltext">jacionline.org</a></li>
+      <li>R. G. Douglas Jr., K. M. Lindgren, R. B. Couch, <em>Exposure to Cold Environment and Rhinovirus Common Cold: Failure to Demonstrate Effect</em>, «New England Journal of Medicine» 279(14), 3 ottobre 1968, pp. 742-747 — <a href="https://www.nejm.org/doi/full/10.1056/NEJM196810032791404">nejm.org</a></li>
+      <li>Claire Johnson, Ronald Eccles, <em>Acute cooling of the feet and the onset of common cold symptoms</em>, «Family Practice» 22(6), dicembre 2005, pp. 608-613 — <a href="https://academic.oup.com/fampra/article-abstract/22/6/608/497956">academic.oup.com</a></li>
+      <li>Ronald Eccles, <em>An Explanation for the Seasonality of Acute Upper Respiratory Tract Viral Infections</em>, «Acta Oto-Laryngologica» 122(2), 2002, pp. 183-191 (PMID 11936911)</li>
+      <li>Jeffrey Shaman, Melvin Kohn, <em>Absolute humidity modulates influenza survival, transmission, and seasonality</em>, «PNAS» 106(9), 3 marzo 2009, pp. 3243-3248 — <a href="https://www.pnas.org/doi/10.1073/pnas.0806852106">pnas.org</a></li>
+      <li>Ellen F. Foxman, James A. Storer, Akiko Iwasaki et al., <em>Temperature-dependent innate defense against the common cold virus limits viral replication at warm temperature in mouse airway cells</em>, «PNAS» 112(3), 5 gennaio 2015 — <a href="https://www.pnas.org/doi/10.1073/pnas.1411030112">pnas.org</a></li>
+      <li>Wan Yang, Linsey C. Marr et al., <em>Mechanistic insights into the effect of humidity on airborne influenza virus survival, transmission and incidence</em>, «Journal of the Royal Society Interface» 16(150), 2019</li>
+      <li>Simon Cauchemez, Alain-Jacques Valleron, Pierre-Yves Boëlle, Antoine Flahault, Neil M. Ferguson, <em>Estimating the impact of school closure on influenza transmission from Sentinel data</em>, «Nature» 452(7188), 10 aprile 2008, pp. 750-754 — <a href="https://www.nature.com/articles/nature06732">nature.com</a></li>
+      <li>T. R. Allen et al., <em>An outbreak of common colds at an Antarctic base after seventeen weeks of complete isolation</em>, «The Journal of Hygiene» 71(4), 1973 — <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2130424/">pmc.ncbi.nlm.nih.gov</a></li>
+      <li>Christopher H. Andrewes, conferenza alla Royal Society of Arts, 1948, e cronaca degli esperimenti del Common Cold Unit di Salisbury (1946-1989)</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════════ APPLET 01 · GLI ESPERIMENTI ══════════ */
+var esperimenti = [
+  { badge: 'Nessun effetto', cls: 'no', quando: 'Common Cold Unit, Salisbury, anni Quaranta-Cinquanta',
+    txt: "Christopher Andrewes faceva uscire i volontari da un bagno caldo e li lasciava mezz'ora, non asciugati, in un corridoio pieno di spifferi, in costume da bagno e poi con calze bagnate. Altri venivano mandati a camminare a lungo nelle giornate gelide, o lasciati in alloggi senza riscaldamento. Nessuno di questi trattamenti produceva raffreddori. Nel 1948, alla Royal Society of Arts, Andrewes concluse che indagare il raffreddore aveva prodotto solo «one unanswered question after another», ma che almeno su un punto si poteva stare tranquilli: <em>chilling alone cannot give you a cold</em>." },
+  { badge: 'Nessun effetto', cls: 'no', quando: 'Baylor / NEJM, 1968',
+    txt: "Douglas, Lindgren e Couch esposero 44 volontari privi di anticorpi a una stanza a 4 °C e a un bagno d'acqua a 32 °C, in momenti diversi: prima dell'inoculazione, durante l'incubazione, al culmine della malattia, in convalescenza. Misurarono infettività, gravità, quantità di virus emesso, risposta anticorpale, globuli bianchi e flora batterica delle vie aeree superiori." },
+  { badge: 'Nessun effetto', cls: 'no', quando: 'Baylor / NEJM, 1968 — braccio con virus',
+    txt: "Nel braccio in cui i volontari ricevevano il rhinovirus di tipo 15 <em>e</em> il freddo, l'unica differenza rilevata fu la scomparsa del consueto aumento dei neutrofili durante la malattia. Tutto il resto — probabilità di infettarsi, gravità dei sintomi, virus emesso — restò identico. Il titolo dell'articolo dice tutto: «Failure to Demonstrate Effect»." },
+  { badge: 'Effetto misurato', cls: 'si', quando: 'Common Cold Centre, Cardiff, 2005',
+    txt: "180 volontari sani, randomizzati: 90 con i piedi immersi in acqua a 10 °C per venti minuti, 90 con i piedi in una bacinella vuota. Nei quattro-cinque giorni seguenti, <strong>13 su 90</strong> del gruppo raffreddato dichiararono di avere il raffreddore contro <strong>5 su 90</strong> dei controlli (P = 0,047). Ma i punteggi dei sintomi non cambiavano subito dopo la procedura (P = 0,62): secondo Eccles il raffreddamento non crea l'infezione, semmai fa emergere i sintomi in chi era già infetto in modo silente." },
+  { badge: 'Il freddo non basta', cls: 'forse', quando: 'Base antartica britannica, 1973',
+    txt: "L'osservazione classica è che nelle piccole basi antartiche le infezioni respiratorie si estinguono nelle prime settimane di isolamento e ricompaiono all'arrivo delle navi o degli aerei di rifornimento — nonostante temperature ben oltre ogni inverno europeo. Il caso studiato da T. R. Allen è l'eccezione: sei uomini su dodici svilupparono sintomi da raffreddore dopo diciassette settimane di isolamento completo, e gli esami non individuarono mai l'agente responsabile." }
+];
+
+function mostraExp(i) {
+  var btns = document.querySelectorAll('.exp-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var e = esperimenti[i];
+  var badge = document.getElementById('expBadge');
+  badge.className = 'exp-badge ' + e.cls;
+  badge.textContent = e.badge;
+  document.getElementById('expQuando').textContent = e.quando;
+  document.getElementById('expTesto').innerHTML = e.txt;
+}
+
+/* ══════════ APPLET 02 · IL NASO ══════════ */
+var statiNaso = [
+  { calo: 0, ev: 100, esche: 100, rep: 1.0, colore: '#f6c6d6',
+    txt: "Mucosa a temperatura normale. Le cellule dell'epitelio, appena riconoscono l'RNA virale attraverso il recettore TLR3, liberano nel muco uno sciame di vescicole extracellulari: portano microRNA antivirali alle cellule vicine e, in superficie, recettori-esca come LDLR e ICAM-1 su cui il virus si attacca invece che sulla cellula. Più esche ci sono, meno virioni arrivano a destinazione." },
+  { calo: 2.5, ev: 71, esche: 62, rep: 1.5, colore: '#e8b4cc',
+    txt: "Una giornata fresca. Nello studio del 2022 sono state testate solo due condizioni — 23,3 °C e 4,4 °C — quindi questo stato intermedio è un'interpolazione: serve a rendere l'idea che l'effetto è graduale, non un interruttore. La vasocostrizione riduce l'afflusso di sangue alla mucosa e con esso il rifornimento di cellule e proteine di difesa." },
+  { calo: 5, ev: 58, esche: 23, rep: 2.0, colore: '#cfa8c8',
+    txt: "Quindici minuti a 4,4 °C bastano: dentro il naso si perdono circa 5 °C. La secrezione di vescicole cala del <strong>42%</strong>, il carico di microRNA antivirali si impoverisce e i recettori-esca si riducono fino al <strong>77%</strong>. Risultato misurato sulle cellule nasali: la replicazione del virus <strong>raddoppia</strong>. La porta d'ingresso è la stessa, ma la guardia è a mezzo servizio." }
+];
+
+var nasoIndice = 0;
+
+function costruisciCellule() {
+  var g = document.getElementById('cellule');
+  var html = '';
+  for (var x = 40; x < 300; x += 18) {
+    html += '<rect x="' + x + '" y="160" width="14" height="18" rx="3" fill="#d99ab5" opacity="0.85"></rect>';
+    html += '<line x1="' + (x + 4) + '" y1="160" x2="' + (x + 2) + '" y2="152" stroke="#c98aa8" stroke-width="1.4"></line>';
+    html += '<line x1="' + (x + 10) + '" y1="160" x2="' + (x + 12) + '" y2="152" stroke="#c98aa8" stroke-width="1.4"></line>';
+  }
+  g.innerHTML = html;
+}
+
+function disegnaNaso(i) {
+  var s = statiNaso[i];
+  document.getElementById('mucosa').setAttribute('fill', s.colore);
+
+  var nVes = Math.round(s.ev / 4);
+  var hv = '';
+  for (var k = 0; k < nVes; k++) {
+    var vx = 42 + ((k * 37) % 252);
+    var vy = 84 + ((k * 23) % 66);
+    var r = 2.6 + ((k % 3) * 0.7);
+    hv += '<circle cx="' + vx + '" cy="' + vy + '" r="' + r + '" fill="#8e44ad" opacity="0.55">';
+    hv += '<animate attributeName="cy" values="' + vy + ';' + (vy - 7) + ';' + vy + '" dur="' + (2.4 + (k % 5) * 0.4) + 's" repeatCount="indefinite"/>';
+    hv += '</circle>';
+  }
+  document.getElementById('vescicole').innerHTML = hv;
+
+  var passati = Math.round(s.rep * 3);
+  var hvir = '';
+  for (var j = 0; j < 10; j++) {
+    var px = 56 + j * 26;
+    var bloccato = j >= passati;
+    var py = bloccato ? 100 : 154;
+    hvir += '<g><circle cx="' + px + '" cy="' + py + '" r="4.6" fill="' + (bloccato ? '#b9a7c4' : '#c0392b') + '"></circle>';
+    hvir += '<circle cx="' + px + '" cy="' + py + '" r="6.6" fill="none" stroke="' + (bloccato ? '#b9a7c4' : '#c0392b') + '" stroke-width="1" stroke-dasharray="2 2"></circle></g>';
+  }
+  document.getElementById('virioni').innerHTML = hvir;
+
+  document.getElementById('nasoTemp').textContent = s.calo === 0 ? '0 °C' : '−' + s.calo.toString().replace('.', ',') + ' °C';
+  document.getElementById('nasoEv').textContent = s.ev + '%';
+  document.getElementById('nasoRep').textContent = '×' + s.rep.toFixed(1).replace('.', ',');
+  document.getElementById('nasoTesto').innerHTML = s.txt;
+}
+
+function mostraNaso(i) {
+  nasoIndice = i;
+  var btns = document.querySelectorAll('.naso-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  disegnaNaso(i);
+}
+
+/* ══════════ APPLET 03 · LA STANZA RISCALDATA ══════════ */
+function tensioneVapore(t) { return 6.112 * Math.exp(17.67 * t / (t + 243.5)); }
+function umiditaAssoluta(t, ur) { return 216.7 * tensioneVapore(t) * (ur / 100) / (t + 273.15); }
+
+var gocce = [];
+var stanzaRH = 22;
+
+function initGocce() {
+  gocce = [];
+  for (var i = 0; i < 46; i++) {
+    gocce.push({
+      x: 60 + Math.random() * 40,
+      y: 90 + Math.random() * 40,
+      vx: 0.5 + Math.random() * 1.5,
+      d0: 8 + Math.random() * 26,
+      d: 0,
+      eta: Math.random() * 200
+    });
+  }
+}
+
+function aggiornaStanza() {
+  var t = parseFloat(document.getElementById('tEst').value);
+  var ur = parseFloat(document.getElementById('uEst').value);
+  document.getElementById('tEstOut').textContent = t + ' °C';
+  document.getElementById('uEstOut').textContent = ur + '%';
+
+  var ah = umiditaAssoluta(t, ur);
+  var ahSat20 = umiditaAssoluta(20, 100);
+  var rhInterna = Math.min(100, ah / ahSat20 * 100);
+  stanzaRH = rhInterna;
+
+  /* gocciolina da 20 µm: se evapora fino al nucleo secco il diametro scende a circa il 30%,
+     e la velocità di Stokes scala con il quadrato del diametro */
+  var fattore = rhInterna >= 95 ? 1 : 0.3 + 0.7 * Math.pow(rhInterna / 100, 1.6);
+  var dFin = 20 * fattore;
+  /* legge di Stokes: v = rho*g*d^2/(18*mu) ~ 3,01e-5 * d^2 (d in micrometri, v in m/s) */
+  var vStokes = 3.01e-5 * dFin * dFin;
+  var minuti = (2 / vStokes) / 60;
+
+  document.getElementById('ahOut').textContent = ah.toFixed(1).replace('.', ',');
+  document.getElementById('rhIn').textContent = Math.round(rhInterna) + '%';
+  document.getElementById('tempoSosp').textContent = minuti > 60 ? '> 1 ora' : '~' + Math.round(minuti) + ' min';
+
+  var testo;
+  if (rhInterna < 30) {
+    testo = "Aria da termosifone. Con " + ah.toFixed(1).replace('.', ',') + " g d'acqua per metro cubo, riscaldare a 20 °C porta l'umidità relativa interna al " + Math.round(rhInterna) + "%: un valore che in casa si raggiunge solo con il riscaldamento acceso. Le goccioline che espiri evaporano in pochi secondi fino al nucleo secco, diventano piccolissime e restano sospese per <strong>" + (minuti > 60 ? 'più di un\'ora' : Math.round(minuti) + ' minuti') + "</strong> invece di cadere a terra in pochi metri.";
+  } else if (rhInterna < 60) {
+    testo = "Zona intermedia. L'umidità relativa interna si assesta sul " + Math.round(rhInterna) + "%: le goccioline evaporano solo in parte, la concentrazione di sali e proteine al loro interno sale rapidamente ed è proprio questa condizione che, negli esperimenti, disattiva più efficacemente il virus. Il tempo di sospensione scende a circa " + Math.round(minuti) + " minuti.";
+  } else {
+    testo = "Aria umida. Con " + Math.round(rhInterna) + "% di umidità relativa la gocciolina perde poca acqua, resta grossa e pesante e cade a terra in <strong>" + (minuti < 1 ? 'meno di un minuto' : 'circa ' + Math.round(minuti) + ' minuti') + "</strong>. È la situazione tipica dei climi temperati fuori stagione fredda — e uno dei motivi per cui l'influenza, alle nostre latitudini, non ha un picco a luglio.";
+  }
+  document.getElementById('stanzaTesto').innerHTML = testo;
+}
+
+function animaStanza() {
+  var c = document.getElementById('stanzaCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 600, 260);
+
+  /* stanza */
+  ctx.strokeStyle = '#dcd0e2';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(20, 20, 560, 220);
+  ctx.fillStyle = '#efe6f3';
+  ctx.fillRect(20, 226, 560, 14);
+
+  /* persona che espira */
+  ctx.fillStyle = '#b9a7c4';
+  ctx.beginPath(); ctx.arc(50, 100, 15, 0, Math.PI * 2); ctx.fill();
+  ctx.fillRect(38, 118, 24, 108);
+  ctx.fillStyle = '#7f8c8d';
+  ctx.font = '12px sans-serif';
+  ctx.fillText('espira', 30, 250);
+  ctx.fillText('pavimento', 500, 250);
+
+  var fattore = stanzaRH >= 95 ? 1 : 0.3 + 0.7 * Math.pow(stanzaRH / 100, 1.6);
+
+  for (var i = 0; i < gocce.length; i++) {
+    var g = gocce[i];
+    g.eta += 1;
+    var evap = Math.min(1, g.eta / 40);
+    g.d = g.d0 * (1 - evap * (1 - fattore));
+    var vy = 1.1e-2 * g.d * g.d;
+    g.x += g.vx;
+    g.y += vy;
+    if (g.x > 578 || g.y > 224) {
+      g.x = 60 + Math.random() * 20;
+      g.y = 92 + Math.random() * 24;
+      g.vx = 0.5 + Math.random() * 1.5;
+      g.d0 = 8 + Math.random() * 26;
+      g.eta = 0;
+    }
+    var r = Math.max(1.2, g.d / 6);
+    ctx.beginPath();
+    ctx.arc(g.x, g.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(142, 68, 173,' + (0.25 + 0.5 * (g.d / 34)) + ')';
+    ctx.fill();
+  }
+  requestAnimationFrame(animaStanza);
+}
+
+/* ══════════ APPLET 04 · CURVA E VACANZE ══════════ */
+var grafico = null;
+
+function simula(inizio, durata, riduzione) {
+  var N = 1, I = 0.000002, S = 1 - I, R = 0;
+  var gamma = 1 / 3, R0 = 1.35, beta0 = R0 * gamma;
+  var serie = [], cum = 0;
+  for (var g = 0; g < 200; g++) {
+    var beta = beta0;
+    if (durata > 0 && g >= inizio && g < inizio + durata) beta = beta0 * (1 - riduzione);
+    var nuovi = beta * S * I;
+    var guariti = gamma * I;
+    S -= nuovi;
+    I += nuovi - guariti;
+    R += guariti;
+    cum += nuovi;
+    serie.push({ g: g, i: I * 100000, cum: cum });
+  }
+  return serie;
+}
+
+function aggiornaCurva() {
+  var inizio = parseInt(document.getElementById('inizioVac').value, 10);
+  var durata = parseInt(document.getElementById('durataVac').value, 10);
+  document.getElementById('inizioVacOut').textContent = 'giorno ' + inizio;
+  document.getElementById('durataVacOut').textContent = durata + ' giorni';
+
+  var base = simula(0, 0, 0);
+  var con = simula(inizio, durata, 0.25);
+
+  var piccoBase = 0, piccoCon = 0, gPiccoBase = 0, gPiccoCon = 0;
+  for (var k = 0; k < base.length; k++) {
+    if (base[k].i > piccoBase) { piccoBase = base[k].i; gPiccoBase = k; }
+    if (con[k].i > piccoCon) { piccoCon = con[k].i; gPiccoCon = k; }
+  }
+  var deltaPicco = (piccoCon - piccoBase) / piccoBase * 100;
+  var deltaCasi = (con[199].cum - base[199].cum) / base[199].cum * 100;
+
+  document.getElementById('picco').textContent = (deltaPicco > 0 ? '+' : '') + deltaPicco.toFixed(1).replace('.', ',') + '%';
+  document.getElementById('casiTot').textContent = (-deltaCasi).toFixed(1).replace('.', ',') + '%';
+
+  var testo;
+  if (durata === 0) {
+    testo = "Nessuna chiusura: questa è la curva di riferimento, con il picco al giorno " + gPiccoBase + ". Sposta il cursore della durata per far scattare le vacanze.";
+  } else if (Math.abs(deltaPicco) < 2 && Math.abs(deltaCasi) < 2) {
+    testo = "Chiusura fuori tempo. Fermare un quarto dei contatti al giorno " + inizio + ", quando la curva è ancora piatta o è già scesa, cambia quasi nulla: picco " + deltaPicco.toFixed(1).replace('.', ',') + "%, casi totali " + (-deltaCasi).toFixed(1).replace('.', ',') + "%. È il motivo per cui, nei dati francesi, l'effetto delle vacanze dipende soprattutto da <em>quando</em> cadono rispetto all'epidemia.";
+  } else if (deltaPicco <= -2) {
+    testo = "Chiusura ben piazzata. Togliendo un quarto della trasmissione dal giorno " + inizio + " per " + durata + " giorni, il picco si abbassa del " + Math.abs(deltaPicco).toFixed(1).replace('.', ',') + "% e slitta dal giorno " + gPiccoBase + " al giorno " + gPiccoCon + ". Ma i casi totali evitati sono solo il " + (-deltaCasi).toFixed(1).replace('.', ',') + "%: la curva si appiattisce e si sposta, non sparisce.";
+  } else {
+    testo = "Chiusura sulla cresta dell'onda. Arrivando al giorno " + inizio + " l'altezza del picco si muove appena (" + deltaPicco.toFixed(1).replace('.', ',') + "%), ma la coda dell'epidemia si accorcia: " + (-deltaCasi).toFixed(1).replace('.', ',') + "% di casi in meno sulla stagione. Quando gran parte della popolazione è già stata infettata, togliere contatti serve a chiudere prima, non a schiacciare il picco.";
+  }
+  document.getElementById('curvaTesto').innerHTML = testo;
+
+  var etichette = [], datiBase = [], datiCon = [];
+  for (var j = 0; j < 200; j += 2) {
+    etichette.push(j);
+    datiBase.push(base[j].i);
+    datiCon.push(con[j].i);
+  }
+
+  if (grafico) {
+    grafico.data.labels = etichette;
+    grafico.data.datasets[0].data = datiBase;
+    grafico.data.datasets[1].data = datiCon;
+    grafico.update('none');
+  } else {
+    grafico = new Chart(document.getElementById('curvaChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: etichette,
+        datasets: [
+          { label: 'Senza vacanze', data: datiBase, borderColor: '#b9a7c4', borderWidth: 2, borderDash: [5, 4], pointRadius: 0, tension: 0.3, fill: false },
+          { label: 'Con la chiusura delle scuole', data: datiCon, borderColor: '#8e44ad', borderWidth: 2.5, pointRadius: 0, tension: 0.3, fill: false }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: { labels: { font: { family: 'Source Sans 3', size: 12 }, boxWidth: 22, color: '#1c1c2e' } },
+          tooltip: { callbacks: { title: function (c) { return 'Giorno ' + c[0].label; }, label: function (c) { return c.dataset.label + ': ' + c.parsed.y.toFixed(0) + ' infetti su 100.000'; } } }
+        },
+        scales: {
+          x: { title: { display: true, text: 'giorni dall\'inizio della stagione', font: { family: 'Source Sans 3', size: 11 }, color: '#7f8c8d' }, ticks: { maxTicksLimit: 9, font: { size: 11 }, color: '#7f8c8d' }, grid: { display: false } },
+          y: { title: { display: true, text: 'infetti su 100.000', font: { family: 'Source Sans 3', size: 11 }, color: '#7f8c8d' }, ticks: { font: { size: 11 }, color: '#7f8c8d' }, grid: { color: '#f0ece6' } }
+        }
+      }
+    });
+  }
+}
+
+/* ══════════ AVVIO ══════════ */
+mostraExp(0);
+costruisciCellule();
+mostraNaso(0);
+initGocce();
+aggiornaStanza();
+animaStanza();
+aggiornaCurva();
+</script>
+</body>
+</html>
