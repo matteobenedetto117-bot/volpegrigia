@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché la Groenlandia si chiama "Terra Verde" se è quasi tutta ghiacciata?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fbe6e3;
+    --accent-mid: #e74c3c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto; min-width: 92px; background: none; border: none; cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif; padding: 0; position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1; transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 2 · MAPPA STAGIONALE ── */
+  .mappa-scena { display: grid; grid-template-columns: 180px 1fr; gap: 18px; align-items: start; }
+  .mappa-wrap { background: #eef3f6; border-radius: 6px; overflow: hidden; }
+  .mappa-svg { display: block; width: 100%; height: auto; }
+  .mese-slider { width: 100%; margin: 4px 0 16px; accent-color: var(--accent); }
+  .mese-nome { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.2; margin-bottom: 10px; }
+  .clima-riga { display: flex; justify-content: space-between; font-size: 13.5px; padding: 5px 0; border-bottom: 1px dotted var(--border); }
+  .clima-riga strong { color: var(--text); font-weight: 600; }
+  .clima-riga span { color: var(--muted); }
+  .mappa-nota { font-size: 13.5px; line-height: 1.55; color: var(--text); margin-top: 12px; }
+
+  /* ── APPLET 3 · CAROTA DI GHIACCIO ── */
+  .sito-wrap { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .sito-btn {
+    flex: 1; min-width: 130px; font-family: 'Source Sans 3', sans-serif; font-size: 13.5px;
+    font-weight: 600; color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .sito-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .carota-scena { display: grid; grid-template-columns: 130px 1fr; gap: 16px; align-items: start; }
+  .carota-wrap { background: #eaf2f7; border-radius: 6px; overflow: hidden; }
+  .carota-svg { display: block; width: 100%; height: auto; }
+  .carota-seg { cursor: pointer; }
+  .carota-dett { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; min-height: 190px; }
+  .carota-dett h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+  .carota-prof { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .carota-dett p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+
+  /* ── APPLET 4 · FINE DELLA COLONIA ── */
+  .fine-wrap { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .fine-btn {
+    flex: 1; min-width: 110px; font-family: 'Source Sans 3', sans-serif; font-size: 13.5px;
+    font-weight: 600; color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .fine-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .fine-griglia { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fine-col { border: 1px solid var(--border); border-radius: 5px; padding: 12px 14px; background: #faf8f4; }
+  .fine-col.prova { background: var(--accent-light); border-color: #f0cdc7; }
+  .fine-eti { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .fine-col.prova .fine-eti { color: var(--accent); }
+  .fine-col p { font-size: 14px; line-height: 1.55; color: var(--text); }
+  .fine-studio { font-size: 13px; color: var(--muted); margin-top: 12px; padding-top: 10px; border-top: 1px dotted var(--border); }
+  .fine-studio strong { color: var(--text); font-weight: 600; }
+
+  /* ── APPLET 5 · DUE ISOLE ── */
+  .isole-btn-wrap { display: flex; gap: 8px; margin-bottom: 18px; }
+  .isole-btn {
+    flex: 1; font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .isole-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .isole-nome { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--accent); line-height: 1.2; }
+  .isole-lett { font-size: 14px; color: var(--muted); margin-bottom: 14px; font-style: italic; }
+  .isole-barra-riga { margin-bottom: 12px; }
+  .isole-barra-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .isole-barra-label strong { color: var(--text); font-weight: 600; }
+  .isole-barra-label span { color: var(--accent); font-weight: 700; }
+  .isole-track { background: #f3f1ec; border-radius: 3px; height: 14px; overflow: hidden; }
+  .isole-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.5s ease; }
+  .isole-fill.ghiaccio { background: #8fb8cf; }
+  .isole-storia { font-size: 14px; line-height: 1.6; color: var(--text); margin-top: 14px; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .mappa-scena { grid-template-columns: 120px 1fr; gap: 12px; }
+    .carota-scena { grid-template-columns: 96px 1fr; gap: 12px; }
+    .fine-griglia { grid-template-columns: 1fr; }
+    .sito-btn, .fine-btn { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Storia</div>
+    <h1>Perché la Groenlandia si chiama "Terra Verde" se è quasi tutta ghiacciata?</h1>
+    <div class="risposta-box">
+      <p>Perché è pubblicità — ma non è una bugia. Erik il Rosso, bandito dall'Islanda per omicidio nel 982, passò tre inverni a esplorare i fiordi del sud e li chiamò <em>Grœnland</em>: «perché», dice la saga, «gli uomini avrebbero avuto molta più voglia di andarci se la terra avesse avuto un bel nome». Quei fiordi sono davvero verdi: a Brattahlíð, la fattoria di Erik, la media di luglio è di 11,2 °C. Ma sono un ritaglio di costa, e per tre mesi l'anno: l'81% dell'isola sta sotto una calotta di ghiaccio.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Nell'anno 982 l'assemblea del Þórsnes, in Islanda, mise Erik Thorvaldsson al bando per tre anni: aveva ucciso Eyjólf il Sudicio e Hrafn il Duellante. Un uomo fuorilegge doveva sparire, e Erik scelse di sparire verso ovest, dove un certo Gunnbjörn figlio di Úlfr la Cornacchia aveva intravisto degli scogli mentre la tempesta lo trascinava fuori rotta.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Dall'omicidio al nome, e ritorno</div>
+      <div class="applet-istruzione">Clicca una tappa: ogni data racconta che cosa dicono davvero le fonti norrene, con le parole originali dove esistono.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonti delle tappe: <em>Eiríks saga rauða</em>, capp. 2-3 (testo norreno e traduzione inglese di Reeves-Beamish-Anderson, 1906, nell'Icelandic Saga Database); Ari Þorgilsson <em>fróði</em>, <em>Íslendingabók</em>, cap. 6 (ca. 1122-1133); lettera vescovile del 1409 sul matrimonio di Hvalsey. Le date di Erik seguono la cronologia accolta da <em>Encyclopædia Britannica</em>, voce «Erik the Red».
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La frase che spiega tutto sta in due testi diversi. Nella <em>Eiríks saga rauða</em>: «chiamò quella terra Grœnland, e disse che gli uomini avrebbero avuto molta più voglia di andarci, se la terra avesse avuto un bel nome». E già un secolo prima della saga, nell'<em>Íslendingabók</em> di Ari il Sapiente, la stessa spiegazione: il nome serviva ad attirare gente. È, per iscritto, il più antico caso documentato di marketing territoriale d'Europa.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Il verde esiste. Dura tre mesi</div>
+      <div class="applet-istruzione">Trascina il cursore da gennaio a dicembre e guarda che cosa cambia sulla costa meridionale — e che cosa, al centro dell'isola, non cambia mai.</div>
+    </div>
+    <div class="mappa-scena">
+      <div class="mappa-wrap">
+        <svg class="mappa-svg" id="mappaSvg" viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="200" height="310" fill="#dce9f0"></rect>
+          <path id="terraBase" d="M100 12 L130 18 L150 32 L162 55 L168 85 L170 115 L160 150 L148 180 L132 210 L118 240 L106 268 L98 288 L90 268 L78 240 L66 212 L52 182 L42 150 L36 118 L34 88 L40 58 L54 32 L76 16 Z" fill="#b0a99c"></path>
+          <path id="fasciaSud" d="M160 150 L148 180 L132 210 L118 240 L106 268 L98 288 L90 268 L78 240 L66 212 L52 182 L42 150 L100 138 Z" fill="#b0a99c"></path>
+          <path id="calotta" d="M100 32 L124 38 L142 52 L152 72 L156 98 L156 124 L148 154 L136 182 L124 206 L112 230 L104 246 L98 232 L88 208 L76 182 L64 154 L56 124 L54 98 L58 72 L70 50 L84 36 Z" fill="#f4fbff" stroke="#dbeaf2" stroke-width="1"></path>
+          <circle cx="96" cy="262" r="4" fill="#c0392b" stroke="#fff" stroke-width="1.5"></circle>
+          <text x="104" y="266" font-family="sans-serif" font-size="9" fill="#c0392b">Brattahlíð</text>
+          <text x="100" y="118" font-family="sans-serif" font-size="9" fill="#8fb0c2" text-anchor="middle">calotta</text>
+          <text x="100" y="130" font-family="sans-serif" font-size="9" fill="#8fb0c2" text-anchor="middle">81%</text>
+        </svg>
+      </div>
+      <div>
+        <div class="mese-nome" id="meseNome">Luglio</div>
+        <input class="mese-slider" id="meseSlider" type="range" min="0" max="11" value="6" step="1" oninput="aggiornaMese(this.value)" aria-label="Mese dell'anno">
+        <div class="clima-riga"><strong>Media del mese</strong><span id="climaMedia">11,2 °C</span></div>
+        <div class="clima-riga"><strong>Massima media</strong><span id="climaMax">15,7 °C</span></div>
+        <div class="clima-riga"><strong>Ore di sole al giorno</strong><span id="climaSole">6</span></div>
+        <div class="mappa-nota" id="mappaNota">Il mese più caldo. Nel 2012 il termometro di Narsarsuaq è arrivato a 23,6 °C in luglio: qui pascolano le pecore e si taglia il fieno per l'inverno.</div>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      Dati climatici: medie mensili 1991-2020 della stazione di Narsarsuaq (61° N, fiordo Tunulliarfik), sulla sponda opposta a Qassiarsuk, l'antica Brattahlíð di Erik il Rosso — <em>Climates to Travel</em>, scheda «Narsarsuaq (Greenland)», su base dati dell'aeroporto. Estensione della calotta: 1,71 milioni di km² su 2,166 milioni di km² di isola, circa l'81% (Britannica, <em>Greenland Ice Sheet</em>). La mappa è uno schema, non una carta in scala.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quel verde è ancora lì, e non è un ricordo. A Qassiarsuk — l'antica Brattahlíð — e attorno a Narsaq si allevano pecore reimportate dall'Islanda nel 1915, si coltivano patate e rape, e a Narsarsuaq esiste un <em>Arboretum Groenlandicum</em> dove crescono abeti, larici e pini contorti. Il record di caldo della stazione è 24,8 °C, registrato alla fine di maggio del 2012.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Millequattrocento metri più in basso</div>
+      <div class="applet-istruzione">Scegli una perforazione e clicca sulle fasce della carota, dall'alto verso il basso: sotto il ghiaccio c'è una Groenlandia che il nome di Erik descriverebbe alla perfezione.</div>
+    </div>
+    <div class="sito-wrap">
+      <button class="sito-btn attivo" data-sito="0" onclick="cambiaSito(0)">Camp Century (nord-ovest)</button>
+      <button class="sito-btn" data-sito="1" onclick="cambiaSito(1)">Dye 3 (sud)</button>
+    </div>
+    <div class="carota-scena">
+      <div class="carota-wrap">
+        <svg class="carota-svg" id="carotaSvg" viewBox="0 0 100 300" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="carota-dett" id="carotaDett"></div>
+    </div>
+    <div class="applet-fonte">
+      Fonti: A. J. Christ, P. R. Bierman <em>et al.</em>, «A multimillion-year-old record of Greenland vegetation and glacial history preserved in sediment beneath 1.4 km of ice at Camp Century», <em>PNAS</em> 118 (13), 2021; P. R. Bierman, A. J. Christ <em>et al.</em>, «Plant, insect, and fungi fossils under the center of Greenland's ice sheet are evidence of ice-free times», <em>PNAS</em> 121 (33), agosto 2024; E. Willerslev <em>et al.</em>, «Ancient biomolecules from deep ice cores reveal a forested southern Greenland», <em>Science</em> 317, 6 luglio 2007. Le profondità sono quelle dichiarate nei rispettivi studi; lo spessore delle fasce nel disegno non è in scala.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Ecco il paradosso: chi dice «si chiamava Terra Verde perché era verde» ha torto sui vichinghi e ragione sul Pleistocene — soltanto con quattrocentomila anni di scarto. Il verde che Erik vendeva era vero ma minuscolo; il verde che gli scienziati hanno trovato sotto il ghiaccio era immenso, e nessun essere umano l'ha mai visto.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Il verde è finito prima di loro</div>
+      <div class="applet-istruzione">Seleziona una spiegazione della scomparsa dei norreni e confronta quello che dice la teoria con quello che hanno misurato gli studi degli ultimi anni.</div>
+    </div>
+    <div class="fine-wrap">
+      <button class="fine-btn attivo" data-fine="0" onclick="mostraFine(0)">Il freddo</button>
+      <button class="fine-btn" data-fine="1" onclick="mostraFine(1)">La siccità</button>
+      <button class="fine-btn" data-fine="2" onclick="mostraFine(2)">L'avorio</button>
+      <button class="fine-btn" data-fine="3" onclick="mostraFine(3)">Il mare</button>
+    </div>
+    <div class="fine-griglia">
+      <div class="fine-col">
+        <div class="fine-eti">L'ipotesi</div>
+        <p id="fineIpotesi"></p>
+      </div>
+      <div class="fine-col prova">
+        <div class="fine-eti">Che cosa hanno misurato</div>
+        <p id="fineProva"></p>
+      </div>
+    </div>
+    <div class="fine-studio" id="fineStudio"></div>
+    <div class="applet-fonte">
+      Le quattro spiegazioni non si escludono: la ricerca recente le legge come crisi che si sommano. Studi citati per esteso nella sezione «Fonti dei dati» qui sotto.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Un'ultima ironia sta nel nome dell'isola vicina. Attorno all'870 il norvegese Hrafna-Flóki svernò a Vatnsfjörður, salì su una vetta, vide un fiordo intasato di ghiaccio alla deriva e chiamò quella terra <em>Ísland</em>: oggi il ghiaccio ne copre circa l'11%. Un secolo dopo Erik fece il contrario, e l'ordine dei nomi risultò rovesciato rispetto all'ordine del ghiaccio.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">Due isole, due venditori, nomi scambiati</div>
+      <div class="applet-istruzione">Passa da un'isola all'altra: stesso mare, stessi coloni norreni, strategie di nome opposte — e numeri che danno ragione al bugiardo.</div>
+    </div>
+    <div class="isole-btn-wrap">
+      <button class="isole-btn attivo" data-isola="0" onclick="mostraIsola(0)">Ísland, 870 ca.</button>
+      <button class="isole-btn" data-isola="1" onclick="mostraIsola(1)">Grœnland, 985</button>
+    </div>
+    <div class="isole-nome" id="isolaNome">Ísland</div>
+    <div class="isole-lett" id="isolaLett">Alla lettera: «terra di ghiaccio»</div>
+    <div class="isole-barra-riga">
+      <div class="isole-barra-label"><strong>Superficie sotto i ghiacci</strong><span id="isolaGhiaccioVal">11%</span></div>
+      <div class="isole-track"><div class="isole-fill ghiaccio" id="isolaGhiaccioBar" style="width:11%"></div></div>
+    </div>
+    <div class="isole-barra-riga">
+      <div class="isole-barra-label"><strong>Temperatura media di luglio</strong><span id="isolaCaldoVal">11,2 °C a Narsarsuaq</span></div>
+      <div class="isole-track"><div class="isole-fill" id="isolaCaldoBar" style="width:75%"></div></div>
+    </div>
+    <div class="isole-storia" id="isolaStoria"></div>
+    <div class="applet-fonte">
+      Fonti: <em>Landnámabók</em> per l'episodio di Hrafna-Flóki Vilgerðarson a Vatnsfjörður; copertura glaciale islandese circa l'11% del territorio (Icelandic Meteorological Office, dato ripreso dalle guide nazionali); copertura glaciale groenlandese circa l'81% (Britannica). Medie di luglio: Narsarsuaq 11,2 °C, Reykjavík 11-13 °C circa — l'isola chiamata «di ghiaccio» è, in luglio, alla pari o più calda di quella chiamata «verde». La lunghezza delle barre è proporzionale ai valori indicati.
+    </div>
+  </div>
+
+  <div class="frase-finale">
+    <p>Erik il Rosso non ha mentito sul colore: ha mentito sulle proporzioni. Ha preso il nome di un fiordo e l'ha appiccicato a un continente di ghiaccio — e per mille anni nessuno gliel'ha più tolto.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li><em>Eiríks saga rauða</em>, capp. 2-3, testo norreno e traduzione inglese (Reeves, Beamish, Anderson, <em>The Norse Discovery of America</em>, 1906) — Icelandic Saga Database, <a href="https://www.sagadb.org/eiriks_saga_rauda.on">sagadb.org</a></li>
+      <li>Ari Þorgilsson <em>fróði</em>, <em>Íslendingabók</em>, cap. 6 (composto tra il 1122 e il 1133): la più antica attestazione scritta della storia del nome</li>
+      <li><em>Landnámabók</em>, per Gunnbjörn Úlfsson e per Hrafna-Flóki Vilgerðarson, che chiamò <em>Ísland</em> l'Islanda dopo aver visto un fiordo pieno di ghiaccio alla deriva</li>
+      <li>Voce «Erik the Red», <em>Encyclopædia Britannica</em> — esilio del 982, flotta di 25 navi del 985 di cui 14 giunte a destinazione, fondazione di Brattahlíð</li>
+      <li>Medie climatiche mensili 1991-2020 di Narsarsuaq — <em>Climates to Travel</em>, scheda «Narsarsuaq (Greenland)», <a href="https://www.climatestotravel.com/climate/greenland/narsarsuaq">climatestotravel.com</a></li>
+      <li>Voce «Greenland Ice Sheet», <em>Encyclopædia Britannica</em>, e voce «Greenland ice sheet», Wikipedia in inglese — 1,71 milioni di km², circa l'81% dell'isola, 2,9 milioni di km³ di ghiaccio, equivalenti a 7,4 metri di innalzamento del livello del mare</li>
+      <li>Eske Willerslev <em>et al.</em>, «Ancient biomolecules from deep ice cores reveal a forested southern Greenland», <em>Science</em> 317, 6 luglio 2007 — DNA di pino, tasso e ontano e di farfalle, falene, mosche e coleotteri sotto la carota di Dye 3, datato tra 450.000 e 800.000 anni fa</li>
+      <li>Andrew J. Christ, Paul R. Bierman <em>et al.</em>, «A multimillion-year-old record of Greenland vegetation and glacial history preserved in sediment beneath 1.4 km of ice at Camp Century», <em>PNAS</em> 118 (13), 2021 — <a href="https://www.pnas.org/doi/10.1073/pnas.2021442118">pnas.org</a></li>
+      <li>Paul R. Bierman, Andrew J. Christ <em>et al.</em>, «Plant, insect, and fungi fossils under the center of Greenland's ice sheet are evidence of ice-free times», <em>PNAS</em> 121 (33), agosto 2024 — <a href="https://www.pnas.org/doi/10.1073/pnas.2407465121">pnas.org</a></li>
+      <li>Boyang Zhao <em>et al.</em>, «Prolonged drying trend coincident with the demise of Norse settlement in southern Greenland», <em>Science Advances</em> 8 (12), marzo 2022 — carota del Lago 578 presso Narsaq, 2.000 anni di record continuo — <a href="https://www.science.org/doi/10.1126/sciadv.abm4346">science.org</a></li>
+      <li>Bastiaan Star <em>et al.</em>, «Ancient DNA reveals the chronology of walrus ivory trade from Norse Greenland», <em>Proceedings of the Royal Society B</em> 285 (1884), agosto 2018 — <a href="https://royalsocietypublishing.org/rspb/article/285/1884/20180978/102253/Ancient-DNA-reveals-the-chronology-of-walrus-ivory">royalsocietypublishing.org</a></li>
+      <li>Marisa Borreggine <em>et al.</em>, «Sea-level rise in Southwest Greenland as a contributor to Viking abandonment», <em>PNAS</em> 120 (17), aprile 2023 — <a href="https://www.pnas.org/doi/10.1073/pnas.2209615120">pnas.org</a></li>
+      <li>Voci «Eastern Settlement» e «Western Settlement», Wikipedia in inglese — circa 500 gruppi di rovine di fattorie nell'Insediamento Orientale e 95 in quello Occidentale, popolazione al culmine stimata in 2.000-3.000 persone</li>
+      <li>Voce «Hvalsey Church», Wikipedia in inglese, e Nunatsiaq News, «A wedding at Hvalsey Church» — matrimonio di Sigríðr Björnsdóttir e Þorsteinn Ólafsson, 16 settembre 1408, ultimo documento datato sui norreni di Groenlandia</li>
+      <li>Trap Greenland, «Agriculture in Greenland» e «Locations with agriculture and sheep farming»; Governo della Groenlandia, scheda sul Sud — pecore reimportate dall'Islanda nel 1915, patate e rape attorno a Narsaq</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ── APPLET 01 · LINEA DEL TEMPO ── */
+var tappe = [
+  { anno: '982', tit: 'Il bando del Þórsnes',
+    txt: "L'assemblea del Þórsnes condanna Erik Thorvaldsson a tre anni di esilio per l'uccisione di Eyjólf il Sudicio e di Hrafn il Duellante. La saga racconta che Erik dovette nascondersi a Dímunarvágr mentre Þorgestr lo cercava tra le isole, e che salpò aiutato dagli amici Þorbjörn, Eyjólfr e Styrr.",
+    cit: "«Eirik e i suoi furono messi al bando all'assemblea del Þórsnes.»" },
+  { anno: '982-985', tit: 'Tre inverni a dare nomi',
+    txt: "Erik non trova un paese vuoto e basta: lo battezza pezzo per pezzo. Primo inverno a Eiríksey, poi Eiríksfjörðr, il secondo inverno alle Eiríksholmar davanti a Capo Addio, il terzo risalendo a nord fino a Snæfell e a Hrafnsfjörðr. La saga dice che «diede nomi ai luoghi in lungo e in largo».",
+    cit: "«Passò il primo inverno a Eiríksey, nel mezzo; la primavera seguente si spostò a Eiríksfjörðr e vi fissò la sua dimora.»" },
+  { anno: '985', tit: 'Il nome',
+    txt: "Tornato in Islanda e riappacificatosi con Þorgestr dopo uno scontro perso, Erik riparte per la terra scoperta e le dà il nome che tutti conosciamo. Le fonti sono esplicite sul motivo: è una scelta di richiamo, non una descrizione.",
+    cit: "«…ok kvað menn þat myndu fýsa þangat farar, at landit ætti nafn gott» — «e disse che gli uomini avrebbero avuto molta più voglia di andarci, se la terra avesse avuto un bel nome»." },
+  { anno: '985-986', tit: 'Venticinque navi, quattordici arrivi',
+    txt: "Il nome funziona: dall'Islanda salpano venticinque navi cariche di coloni, masserizie e bestiame. Ne arrivano quattordici. Le altre tornano indietro o si perdono nel mare del Labrador. Erik si stabilisce a Brattahlíð, oggi Qassiarsuk; altri proseguono a nord, verso i fiordi dell'attuale Nuuk." },
+  { anno: '1122-1133', tit: 'Ari il Sapiente mette per iscritto',
+    txt: "Ari Þorgilsson <em>fróði</em>, il primo storico islandese, scrive l'<em>Íslendingabók</em> e registra la colonizzazione della Groenlandia «da parte dell'Islanda» attorno al 985, ripetendo la spiegazione del nome. È la più antica testimonianza scritta della storia: circa 140 anni dopo i fatti, un secolo prima delle saghe." },
+  { anno: '1300 ca.', tit: 'Il massimo',
+    txt: "Gli archeologi hanno censito circa 500 gruppi di rovine di fattorie nell'Insediamento Orientale, attorno agli attuali Qaqortoq e Narsaq, e 95 in quello Occidentale, presso Nuuk. La popolazione al culmine è stimata in 2.000-3.000 persone: una diocesi con vescovo, chiese in pietra, pascoli e fienili." },
+  { anno: '1408', tit: 'Un matrimonio, poi il silenzio',
+    txt: "Il 16 settembre 1408, nella chiesa di Hvalsey, Sigríðr Björnsdóttir e Þorsteinn Ólafsson si sposano davanti a testimoni. La notizia arriva a noi solo perché finisce in lettere tra ecclesiastici islandesi e la Santa Sede. È l'ultimo documento datato che riguardi i norreni di Groenlandia: dopo, nessuno scrive più nulla." }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ── APPLET 02 · MAPPA STAGIONALE ── */
+var mesi = [
+  { nome: 'Gennaio',   media: '-6,3 °C',  max: '-2,1 °C',  sole: '1',   col: '#e9eef2',
+    nota: "Il fiordo di Erik è gelato e il sole resta sopra l'orizzonte poco più di sei ore e mezza. Di verde non se ne vede: la costa è indistinguibile dalla calotta." },
+  { nome: 'Febbraio',  media: '-6,8 °C',  max: '-2,6 °C',  sole: '2,5', col: '#e7edf1',
+    nota: "Il mese più freddo dell'anno. Nel febbraio 1993 la stazione è scesa a -32 °C, ma nel 2005 un giorno di febbraio ha toccato 15,4 °C: il fiordo protegge dalle tempeste e lascia passare l'aria mite." },
+  { nome: 'Marzo',     media: '-4,9 °C',  max: '-0,7 °C',  sole: '4,5', col: '#e2ebee',
+    nota: "La media resta sotto zero anche di giorno, ma le ore di luce sono già dodici. La neve comincia a cedere sui versanti esposti a sud." },
+  { nome: 'Aprile',    media: '1,2 °C',   max: '4,9 °C',   sole: '5,5', col: '#cfc9ac',
+    nota: "Il primo mese sopra zero. La copertura nevosa si ritira e il terreno che affiora è ancora bruno: l'erba non è partita, il pascolo non c'è." },
+  { nome: 'Maggio',    media: '5,8 °C',   max: '10 °C',    sole: '5,5', col: '#9fbb6d',
+    nota: "Il verde arriva. Il 2012 ha lasciato qui il record assoluto della stazione, 24,8 °C: nei fiordi del sud, a fine maggio, si può stare in maniche di camicia." },
+  { nome: 'Giugno',    media: '9,6 °C',   max: '14 °C',    sole: '6',   col: '#78a844',
+    nota: "Diciannove ore di luce al giorno. Le notti bianche vanno dal 7 maggio al 5 agosto: è la stagione in cui i norreni facevano il fieno e le pecore di oggi salgono al pascolo." },
+  { nome: 'Luglio',    media: '11,2 °C',  max: '15,7 °C',  sole: '6',   col: '#5f9a35',
+    nota: "Il mese più caldo. Nel 2012 il termometro di Narsarsuaq è arrivato a 23,6 °C in luglio: qui pascolano le pecore e si taglia il fieno per l'inverno." },
+  { nome: 'Agosto',    media: '10 °C',    max: '14,1 °C',  sole: '5',   col: '#71a441',
+    nota: "Ancora pieno verde, ma comincia il periodo più piovoso: 66 mm in agosto, 80 in settembre. È l'acqua di fine estate che riempie i fienili — e che, secondo gli studi recenti, cominciò a mancare ai norreni." },
+  { nome: 'Settembre', media: '6,1 °C',   max: '9,9 °C',   sole: '4,5', col: '#a8a457',
+    nota: "L'erba ingiallisce e le giornate tornano a dodici ore. Nel settembre 1408 si celebrava a Hvalsey l'ultimo matrimonio di cui abbiamo notizia." },
+  { nome: 'Ottobre',   media: '1,5 °C',   max: '5,1 °C',   sole: '3',   col: '#c3b58f',
+    nota: "Torna il bruno. Il bestiame va ricoverato: da qui in avanti si vive di quello che si è raccolto in tre mesi di verde." },
+  { nome: 'Novembre',  media: '-3,4 °C',  max: '0,4 °C',   sole: '1,5', col: '#dfe6e8',
+    nota: "Prima neve stabile e sette ore di luce. Nel novembre 2015 la stazione è scesa a -30,3 °C." },
+  { nome: 'Dicembre',  media: '-5,7 °C',  max: '-1,6 °C',  sole: '0,5', col: '#e9eef2',
+    nota: "Cinque ore e mezza di giorno e mezz'ora di sole in media. L'isola torna a somigliare interamente al suo interno: bianca." }
+];
+
+function aggiornaMese(v) {
+  var i = parseInt(v, 10);
+  var m = mesi[i];
+  document.getElementById('meseNome').textContent = m.nome;
+  document.getElementById('climaMedia').textContent = m.media;
+  document.getElementById('climaMax').textContent = m.max;
+  document.getElementById('climaSole').textContent = m.sole;
+  document.getElementById('mappaNota').textContent = m.nota;
+  document.getElementById('fasciaSud').setAttribute('fill', m.col);
+}
+
+/* ── APPLET 03 · CAROTA DI GHIACCIO ── */
+var siti = [
+  { nome: 'Camp Century',
+    fasce: [
+      { y: 0,   h: 34,  col: '#ffffff', prof: 'Superficie · 1966',
+        tit: 'Una base militare sotto il ghiaccio',
+        txt: "Camp Century era un avamposto dell'esercito statunitense scavato nella calotta della Groenlandia nord-occidentale, a circa 120 km dalla costa. Nel 1966 i militari perforarono fino al fondo e portarono su, oltre al ghiaccio, un tubo di sedimento congelato. Poi il campione finì in un congelatore e fu dimenticato per mezzo secolo." },
+      { y: 34,  h: 82,  col: '#f0f8fc', prof: '0-400 metri',
+        tit: 'Il ghiaccio recente',
+        txt: "Strati annuali ancora leggibili come gli anelli di un albero: ogni banda è una nevicata compattata. Qui si legge il clima degli ultimi millenni, comprese le annate che i coloni norreni passarono a 1.500 km più a sud." },
+      { y: 116, h: 84,  col: '#dcedf6', prof: '400-1.000 metri',
+        tit: 'Il ghiaccio glaciale',
+        txt: "Ghiaccio depositato durante l'ultima glaciazione. La pressione ha schiacciato gli strati fino a renderli sottilissimi: qui il tempo si comprime e migliaia di anni stanno in pochi metri." },
+      { y: 200, h: 62,  col: '#b8d9e9', prof: '1.000-1.375 metri',
+        tit: 'Il fondo del ghiaccio',
+        txt: "Ghiaccio sporco, mescolato a detriti strappati alla roccia. Per decenni questa parte è stata considerata inutilizzabile: troppo contaminata per la climatologia classica. È esattamente lì che si nascondeva la scoperta." },
+      { y: 262, h: 38,  col: '#8a6f4e', prof: '1.375-1.390 metri · sedimento',
+        tit: 'Rametti di salice e un occhio di insetto',
+        txt: "Nel sedimento sotto 1,4 km di ghiaccio i ricercatori hanno trovato ramoscelli di salice, muschi, spore di funghi e l'occhio composto di un insetto: i resti di un'intera tundra, forse con alberi stentati, vissuta qui circa 416.000 anni fa. Dove oggi il ghiaccio è spesso più di un chilometro, allora c'era terreno scoperto." }
+    ] },
+  { nome: 'Dye 3',
+    fasce: [
+      { y: 0,   h: 40,  col: '#ffffff', prof: 'Superficie · 1981',
+        tit: 'Una stazione radar sulla calotta meridionale',
+        txt: "Dye 3 era un radar della linea di allarme americana, piazzato sul ghiaccio della Groenlandia centro-meridionale. Nel 1981 vi fu estratta una carota lunga più di due chilometri: il fondo, schiacciato dalla pressione e mescolato a terra, sembrava rovinato e fu messo da parte." },
+      { y: 40,  h: 130, col: '#e6f2f9', prof: '0-1.800 metri',
+        tit: 'Duemila metri di neve compressa',
+        txt: "La parte alta della carota è ghiaccio pulito, con la successione degli strati annuali intatta: la fonte classica dei dati su temperature, polveri e gas serra del passato." },
+      { y: 170, h: 60,  col: '#c2dced', prof: '1.800-2.000 metri',
+        tit: 'Dove gli strati si perdono',
+        txt: "In prossimità della roccia il flusso del ghiaccio ha piegato e mescolato gli strati. La cronologia annuale salta: è la ragione per cui i primi ricercatori considerarono il fondo un rifiuto." },
+      { y: 230, h: 70,  col: '#7e6749', prof: 'Fondo · oltre 2.000 metri',
+        tit: 'Una foresta di conifere',
+        txt: "Dal fango del fondo Eske Willerslev e il suo gruppo hanno estratto DNA di pino, tasso e ontano, insieme a tracce genetiche di farfalle, falene, mosche e coleotteri. Il materiale è stato datato tra 450.000 e 800.000 anni fa: la Groenlandia meridionale, allora, aveva un clima simile a quello della Svezia del sud di oggi." }
+    ] }
+];
+
+var sitoAttivo = 0;
+
+function disegnaCarota(s) {
+  var svg = document.getElementById('carotaSvg');
+  svg.innerHTML = '';
+  var ns = 'http://www.w3.org/2000/svg';
+  var fasce = siti[s].fasce;
+  for (var i = 0; i < fasce.length; i++) {
+    var r = document.createElementNS(ns, 'rect');
+    r.setAttribute('x', 20); r.setAttribute('y', fasce[i].y);
+    r.setAttribute('width', 60); r.setAttribute('height', fasce[i].h);
+    r.setAttribute('fill', fasce[i].col);
+    r.setAttribute('stroke', '#c0392b');
+    r.setAttribute('stroke-width', i === 0 ? 2.5 : 0.6);
+    r.setAttribute('class', 'carota-seg');
+    r.setAttribute('data-f', i);
+    r.onclick = (function (k) { return function () { mostraFascia(k); }; })(i);
+    svg.appendChild(r);
+  }
+  var frecciaTxt = document.createElementNS(ns, 'text');
+  frecciaTxt.setAttribute('x', 8); frecciaTxt.setAttribute('y', 150);
+  frecciaTxt.setAttribute('font-family', 'sans-serif');
+  frecciaTxt.setAttribute('font-size', 8);
+  frecciaTxt.setAttribute('fill', '#7f8c8d');
+  frecciaTxt.setAttribute('transform', 'rotate(-90 8 150)');
+  frecciaTxt.setAttribute('text-anchor', 'middle');
+  frecciaTxt.textContent = 'profondità →';
+  svg.appendChild(frecciaTxt);
+  mostraFascia(0);
+}
+
+function mostraFascia(i) {
+  var segs = document.querySelectorAll('.carota-seg');
+  for (var k = 0; k < segs.length; k++) segs[k].setAttribute('stroke-width', k === i ? 2.5 : 0.6);
+  var f = siti[sitoAttivo].fasce[i];
+  document.getElementById('carotaDett').innerHTML =
+    '<div class="carota-prof">' + f.prof + '</div><h4>' + f.tit + '</h4><p>' + f.txt + '</p>';
+}
+
+function cambiaSito(s) {
+  sitoAttivo = s;
+  var btns = document.querySelectorAll('.sito-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === s);
+  disegnaCarota(s);
+}
+
+/* ── APPLET 04 · LA FINE ── */
+var fini = [
+  { ip: "La spiegazione classica da manuale: la Piccola Era Glaciale avrebbe abbassato le temperature dal Trecento in poi, accorciando la stagione del fieno fino a rendere impossibile far svernare le mandrie. I norreni sarebbero morti di freddo, o fuggiti.",
+    pr: "La carota del Lago 578, a pochi passi da una fattoria norrena presso Narsaq, contiene 2.000 anni di record continuo. La temperatura cambia pochissimo per tutta la durata dell'insediamento, e soprattutto non c'è nessun crollo improvviso attorno all'abbandono.",
+    st: "<strong>Boyang Zhao et al.</strong>, <em>Science Advances</em>, marzo 2022. Tre anni di campionamenti sul Lago 578, Insediamento Orientale." },
+  { ip: "Non il freddo ma la sete: le estati sarebbero diventate progressivamente più secche, riducendo la resa dei prati. Meno erba significa meno fieno, e meno fieno significa non riuscire a portare vive le vacche fino alla primavera.",
+    pr: "Gli stessi sedimenti del Lago 578 mostrano un inaridimento continuo e prolungato per tutto il periodo norreno. Gli autori concludono che la siccità crescente ha pesato più delle piccole variazioni di temperatura nel rendere insostenibile l'Insediamento Orientale.",
+    st: "<strong>Boyang Zhao et al.</strong>, «Prolonged drying trend coincident with the demise of Norse settlement in southern Greenland», <em>Science Advances</em> 8 (12), 2022." },
+  { ip: "Un crac economico, non climatico. La colonia viveva di un prodotto d'esportazione unico — l'avorio di tricheco — con cui pagava ferro, legname e tessuti europei. Quando quel mercato è saltato, è saltata la ragione stessa di stare lassù.",
+    pr: "Il DNA antico degli avori lavorati in Europa mostra che la Groenlandia norrena ne aveva un quasi monopolio. Dal Duecento l'avorio di elefante inonda i mercati europei e la moda cambia; dopo il 1400 non c'è quasi più traccia di importazioni di avorio di tricheco.",
+    st: "<strong>Bastiaan Star et al.</strong>, <em>Proceedings of the Royal Society B</em> 285 (1884), agosto 2018, con il gruppo di ricerca di Cambridge e Oslo." },
+  { ip: "Il colpevole meno intuitivo: il mare. Il peso crescente della calotta glaciale fa sprofondare la crosta terrestre attorno a sé, e il livello del mare rispetto alla costa sale — proprio dove stavano i pascoli migliori, quelli sul fondo dei fiordi.",
+    pr: "La modellazione indica un innalzamento relativo fino a circa 3,3 metri durante i secoli dell'insediamento, con 204 km² di terra sommersa. Il 75% dei siti norreni conosciuti si trova entro mille metri da un'area allagata, e la dieta si sposta progressivamente dal cibo di fattoria a quello di mare.",
+    st: "<strong>Marisa Borreggine et al.</strong>, «Sea-level rise in Southwest Greenland as a contributor to Viking abandonment», <em>PNAS</em> 120 (17), aprile 2023." }
+];
+
+function mostraFine(i) {
+  var btns = document.querySelectorAll('.fine-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('fineIpotesi').innerHTML = fini[i].ip;
+  document.getElementById('fineProva').innerHTML = fini[i].pr;
+  document.getElementById('fineStudio').innerHTML = fini[i].st;
+}
+
+/* ── APPLET 05 · DUE ISOLE ── */
+var isole = [
+  { nome: 'Ísland', lett: 'Alla lettera: «terra di ghiaccio»',
+    ghiaccioVal: '11% del territorio', ghiaccioW: 11,
+    caldoVal: '11-13 °C a Reykjavík', caldoW: 78,
+    storia: "Attorno all'870 Hrafna-Flóki Vilgerðarson sverna a Vatnsfjörður, perde il bestiame in una stagione durissima, sale sulla vetta più alta dei dintorni e vede un fiordo intasato di ghiaccio alla deriva. Chiama l'isola <em>Ísland</em>. Il <em>Landnámabók</em> racconta che il nome scoraggiò i coloni per un pezzo — un errore di comunicazione che Erik, un secolo dopo, non ripeterà." },
+  { nome: 'Grœnland', lett: 'Alla lettera: «terra verde»',
+    ghiaccioVal: '81% del territorio', ghiaccioW: 81,
+    caldoVal: '11,2 °C a Narsarsuaq', caldoW: 75,
+    storia: "Erik il Rosso fa l'operazione opposta: prende il tratto migliore della costa e ne fa il nome dell'isola intera. Il risultato è che l'isola col nome di ghiaccio ha l'11% di ghiaccio e quella col nome verde l'81% — e in luglio, nei rispettivi capoluoghi, fa praticamente la stessa temperatura." }
+];
+
+function mostraIsola(i) {
+  var btns = document.querySelectorAll('.isole-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var o = isole[i];
+  document.getElementById('isolaNome').textContent = o.nome;
+  document.getElementById('isolaLett').textContent = o.lett;
+  document.getElementById('isolaGhiaccioVal').textContent = o.ghiaccioVal;
+  document.getElementById('isolaGhiaccioBar').style.width = o.ghiaccioW + '%';
+  document.getElementById('isolaCaldoVal').textContent = o.caldoVal;
+  document.getElementById('isolaCaldoBar').style.width = o.caldoW + '%';
+  document.getElementById('isolaStoria').innerHTML = o.storia;
+}
+
+costruisciTimeline();
+aggiornaMese(6);
+disegnaCarota(0);
+mostraFine(0);
+mostraIsola(0);
+</script>
+</body>
+</html>
