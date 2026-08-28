@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché un aereo consuma più carburante nei primi minuti di decollo che in ore di crociera?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #f39c12;
+    --accent-light: #fdf1dc;
+    --accent-mid: #e67e22;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-mid);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent-mid);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-mid); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent-mid); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · PROFILO DI VOLO E CONTATORI ── */
+  .volo-controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .volo-btn {
+    flex: 1;
+    min-width: 130px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .volo-btn.primario { background: var(--accent-mid); border-color: var(--accent-mid); color: #fff; }
+  .volo-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .volo-scena { background: #fdf6ea; border-radius: 6px; overflow: hidden; margin-bottom: 14px; }
+  .volo-svg { display: block; width: 100%; height: auto; }
+
+  .volo-quadri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .volo-q { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 9px 8px; text-align: center; }
+  .volo-q-lab { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+  .volo-q-val { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--accent-mid); line-height: 1.25; }
+  .volo-q-sub { font-size: 11px; color: var(--muted); }
+
+  .volo-registro {
+    background: #faf8f4;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    overflow-y: auto;
+    height: 118px;
+  }
+  .volo-registro div { padding: 2px 0; color: var(--muted); }
+  .volo-registro div.chiave { color: var(--accent-mid); font-weight: 600; }
+  .volo-registro div.finale { color: var(--text); font-weight: 600; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; }
+
+  /* ── APPLET 2 · CICLO LTO ── */
+  .lto-tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .lto-tab {
+    flex: 1;
+    min-width: 100px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lto-tab.attivo { background: var(--accent-mid); border-color: var(--accent-mid); color: #fff; }
+
+  .lto-lista { display: grid; gap: 11px; margin-bottom: 14px; }
+  .lto-riga { display: grid; grid-template-columns: 130px 1fr; gap: 10px; align-items: center; }
+  .lto-nome { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.25; }
+  .lto-nome span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
+  .lto-barra { background: #f3f1ec; border-radius: 3px; height: 26px; position: relative; overflow: hidden; }
+  .lto-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.55s cubic-bezier(.4,0,.2,1); }
+  .lto-fill.top { background: var(--accent-mid); }
+  .lto-cifra { position: absolute; top: 0; left: 10px; height: 26px; line-height: 26px; font-size: 12.5px; font-weight: 600; color: var(--text); }
+
+  /* ── APPLET 3 · MOTORE ── */
+  .mot-svg { display: block; width: 100%; height: auto; background: #fdf6ea; border-radius: 6px; margin-bottom: 4px; }
+  .mot-slider { width: 100%; margin: 12px 0 4px; accent-color: var(--accent-mid); }
+  .mot-vel { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .mot-vel strong { color: var(--accent-mid); font-size: 16px; }
+  .mot-quadri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .mot-q { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 9px 8px; text-align: center; }
+  .mot-q-lab { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); line-height: 1.3; }
+  .mot-q-val { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--accent-mid); line-height: 1.3; }
+  .mot-tacche { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .mot-tacca { flex: 1; min-width: 88px; font-family: 'Source Sans 3', sans-serif; font-size: 12px; font-weight: 600; color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border); border-radius: 4px; padding: 7px 6px; cursor: pointer; }
+  .mot-tacca.attivo { background: var(--accent-mid); border-color: var(--accent-mid); color: #fff; }
+
+  /* ── APPLET 4 · BUDGET ENERGETICO ── */
+  .bud-wrap { display: grid; grid-template-columns: 96px 1fr; gap: 14px; margin-bottom: 14px; }
+  .bud-svg { display: block; width: 100%; height: auto; background: #fdf6ea; border-radius: 6px; }
+  .bud-voci { display: grid; gap: 7px; align-content: start; }
+  .bud-btn {
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px;
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .bud-btn.attivo { background: var(--accent-mid); border-color: var(--accent-mid); color: #fff; }
+  .bud-btn em { font-style: normal; font-weight: 700; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent-mid); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent-mid); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .volo-btn { min-width: 100%; }
+    .lto-riga { grid-template-columns: 104px 1fr; }
+    .bud-wrap { grid-template-columns: 74px 1fr; gap: 10px; }
+    .volo-q-val, .mot-q-val { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Fisica</div>
+    <h1>Perché un aereo consuma più carburante nei primi minuti di decollo che in ore di crociera?</h1>
+    <div class="risposta-box">
+      <p>Non è vero — ma quasi. Al <em>ritmo</em> sì: sotto i 950 metri di quota un A320 beve 2,1 kg di cherosene al secondo, in crociera 0,65, tre volte meno. Al <em>totale</em> no, e non c'è partita: la corsa di decollo dura 42 secondi e brucia 88 kg, cioè quanto due minuti e un quarto di crociera. È la salita fino a quota, non il decollo, a costare davvero: due tonnellate.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>La sensazione è inequivocabile: la schiena schiacciata sul sedile, il rumore che sale di due ottave, l'idea che là fuori si stia consumando qualcosa di enorme. E in parte è vero. Su 169 voli reali di Airbus A320-214 registrati dai flight data recorder e analizzati al MIT da Yashovardhan Chati e Hamsa Balakrishnan, la portata di carburante sotto i 950 metri di quota è di 1,05 kg al secondo per motore; sopra i 9.331 metri scende a 0,45; in crociera stabile si assesta intorno a 0,33.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">La gara dei due contatori</div>
+      <div class="applet-istruzione">Rilascia i freni e guarda due numeri correre insieme: il rubinetto (quanti kg al secondo) e il conto (quanti kg in tutto). Il primo crolla, il secondo non si ferma mai.</div>
+    </div>
+    <div class="volo-controls">
+      <button class="volo-btn primario" id="btnVia" onclick="avviaVolo()">Rilascia i freni</button>
+      <button class="volo-btn" id="btnVeloce" onclick="cambiaVelocita()">Velocità × 60</button>
+    </div>
+    <div class="volo-scena">
+      <svg class="volo-svg" id="voloSvg" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8edf5"></stop>
+            <stop offset="100%" stop-color="#fdf6ea"></stop>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="420" height="150" fill="url(#cielo)"></rect>
+        <line x1="0" y1="30" x2="420" y2="30" stroke="#d8d2c6" stroke-width="1" stroke-dasharray="3 4"></line>
+        <text x="4" y="26" font-family="sans-serif" font-size="8.5" fill="#a9a296">FL350 · 10.668 m</text>
+        <line x1="0" y1="122" x2="420" y2="122" stroke="#c9b79a" stroke-width="2"></line>
+        <rect x="14" y="118" width="96" height="4" fill="#8d8577"></rect>
+        <text x="14" y="136" font-family="sans-serif" font-size="8.5" fill="#a9a296">pista</text>
+        <path id="traccia" d="M 20 120 L 20 120" fill="none" stroke="#e67e22" stroke-width="1.6" stroke-linecap="round" opacity="0.85"></path>
+        <g id="aereo" transform="translate(20,120)">
+          <g id="aereoRot">
+            <path d="M -9 0 L 7 0 L 11 -1.5 L 7 -3 L -6 -3 Z" fill="#1c1c2e"></path>
+            <path d="M -3 -2 L 2 -9 L 4 -9 L 1 -2 Z" fill="#1c1c2e"></path>
+            <path d="M -8 -2 L -6 -7 L -4.5 -7 L -5 -2 Z" fill="#1c1c2e"></path>
+            <circle cx="-1" cy="1.5" r="1.6" fill="#e67e22"></circle>
+          </g>
+        </g>
+        <g id="fase">
+          <text x="416" y="14" text-anchor="end" font-family="sans-serif" font-size="10" font-weight="bold" fill="#e67e22" id="faseTxt">fermo ai blocchi</text>
+        </g>
+      </svg>
+    </div>
+    <div class="volo-quadri">
+      <div class="volo-q">
+        <div class="volo-q-lab">Rubinetto</div>
+        <div class="volo-q-val" id="qPortata">0,00</div>
+        <div class="volo-q-sub">kg/s, due motori</div>
+      </div>
+      <div class="volo-q">
+        <div class="volo-q-lab">Conto</div>
+        <div class="volo-q-val" id="qTotale">0</div>
+        <div class="volo-q-sub">kg bruciati</div>
+      </div>
+      <div class="volo-q">
+        <div class="volo-q-lab">Orologio</div>
+        <div class="volo-q-val" id="qTempo">0:00</div>
+        <div class="volo-q-sub">dal rilascio freni</div>
+      </div>
+    </div>
+    <div class="volo-registro" id="voloRegistro">
+      <div>Aereo ai blocchi, motori al minimo. Premi «Rilascia i freni».</div>
+    </div>
+    <div class="applet-fonte">
+      Portate: modello CART su dati di flight data recorder di 169 voli A320-214 con motori CFM56-5B4, in Y. S. Chati e H. Balakrishnan, <em>Statistical Modeling of Aircraft Engine Fuel Flow Rate</em>, ICAS 2016, fig. 1 e 2 (valori per motore, qui raddoppiati). Durata della corsa di decollo: 42 s, valore standard del ciclo LTO dell'ICAO. Profilo di salita e ritmi di variometro sono una ricostruzione nostra coerente con quelle portate: il totale che ne esce, 2.132 kg fino a FL350, è dell'ordine delle due tonnellate riportate come tipiche per la famiglia A320.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quei 42 secondi di corsa costano 88 kg di cherosene: 110 litri, due pieni d'automobile. In crociera lo stesso aereo li consuma in 2 minuti e 15 secondi. E c'è di peggio per la nostra intuizione: secondo i piani di volo Airbus pubblicati da <em>Aircraft Commerce</em>, un A320 spende 240-255 libbre — 110-116 kg — solo per rullare fino alla pista. Arrivare alla soglia costa più che decollare.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Le quattro fasi a terra: la classifica si rovescia</div>
+      <div class="applet-istruzione">Guarda le stesse quattro fasi con tre metri diversi. Cambia il metro e l'ultima diventa la prima.</div>
+    </div>
+    <div class="lto-tabs">
+      <button class="lto-tab attivo" onclick="mostraLto(0)">Rubinetto</button>
+      <button class="lto-tab" onclick="mostraLto(1)">Durata</button>
+      <button class="lto-tab" onclick="mostraLto(2)">Carburante</button>
+    </div>
+    <div class="lto-lista" id="ltoLista"></div>
+    <div class="box-testo" id="ltoTesto"></div>
+    <div class="applet-fonte">
+      Regimi e durate: ciclo LTO standard dell'ICAO (decollo 100% di spinta per 42 s, salita iniziale fino a 3.000 ft all'85% per 132 s, avvicinamento al 30% per 240 s, rullaggio e minimo al 7% per 1.560 s), come tabulati in Y. S. Chati e H. Balakrishnan, <em>Analysis of Aircraft Fuel Burn and Emissions in the Landing and Take Off Cycle using Operational Data</em>, ICRAT 2014. Portate: stesse fonti dell'applet 01 per decollo, salita e avvicinamento; per il rullaggio, ricavata dai 240-255 lb per estremità del piano di volo Airbus (<em>Aircraft Commerce</em> n. 50, 2007) su 10 minuti. Il prodotto durata × portata è un nostro calcolo. Attenzione: gli stessi autori mostrano che le durate ICAO sovrastimano quelle reali (fino al 52% per la salita iniziale) e che il consumo LTO effettivo vale lo 0,6-0,8% del peso massimo al decollo, cioè 460-620 kg per un A320.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il rubinetto è spalancato per una ragione brutale: al decollo i due CFM56-5B4 devono produrre 27.000 libbre di spinta ciascuno — 240 kN in tutto — contro i circa 40 kN che bastano in crociera. L'aereo non sarà mai più pesante di così, l'aria a livello del mare è la più densa che incontrerà, e la resistenza cresce con la densità. Tanto che le compagnie decollano quasi sempre a spinta ridotta: uno studio GE sui motori CF6-80 citato dalla Flight Safety Foundation trovò che usare regolarmente il derate massimo del 25% porta i cicli prima del cedimento delle palette da 1.000-2.000 a 5.000-10.000.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Il motore che, ai blocchi, ha rendimento zero</div>
+      <div class="applet-istruzione">Trascina la velocità dell'aereo lungo la pista. Il rubinetto non si muove di un grammo: quello che cambia è quanta di quell'energia diventa movimento.</div>
+    </div>
+    <svg class="mot-svg" id="motSvg" viewBox="0 0 420 128" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="420" height="128" fill="#fdf6ea"></rect>
+      <text x="10" y="18" font-family="sans-serif" font-size="9" fill="#a9a296">aria in ingresso — alla velocità dell'aereo</text>
+      <g id="frecceIn"></g>
+      <ellipse cx="196" cy="64" rx="46" ry="30" fill="#e8e2d6"></ellipse>
+      <rect x="150" y="46" width="92" height="36" rx="6" fill="#d9d2c3"></rect>
+      <rect x="150" y="52" width="18" height="24" rx="3" fill="#b9b2a2"></rect>
+      <rect x="196" y="56" width="46" height="16" rx="3" fill="#8d8577"></rect>
+      <circle cx="159" cy="64" r="26" fill="none" stroke="#8d8577" stroke-width="2.5"></circle>
+      <text x="150" y="106" font-family="sans-serif" font-size="9" fill="#a9a296">CFM56-5B4</text>
+      <text x="410" y="18" text-anchor="end" font-family="sans-serif" font-size="9" fill="#a9a296">getto in uscita — 400 m/s, sempre</text>
+      <g id="frecceOut"></g>
+      <text x="410" y="106" text-anchor="end" font-family="sans-serif" font-size="9.5" font-weight="bold" fill="#e67e22" id="motSpreco">tutto sprecato nella scia</text>
+    </svg>
+    <input class="mot-slider" id="motSlider" type="range" min="0" max="90" value="0" step="1" oninput="aggiornaMotore(this.value)">
+    <div class="mot-vel">Velocità dell'aereo: <strong id="motV">0</strong> m/s <span id="motNodi">(0 nodi)</span></div>
+    <div class="mot-tacche">
+      <button class="mot-tacca attivo" id="tacca0" onclick="vaiA(0)">Rilascio freni</button>
+      <button class="mot-tacca" id="tacca1" onclick="vaiA(41)">Metà pista</button>
+      <button class="mot-tacca" id="tacca2" onclick="vaiA(82)">Rotazione</button>
+    </div>
+    <div class="mot-quadri">
+      <div class="mot-q">
+        <div class="mot-q-lab">Energia bruciata</div>
+        <div class="mot-q-val">90</div>
+        <div class="mot-q-lab" style="text-transform:none;font-weight:400;">MW di cherosene</div>
+      </div>
+      <div class="mot-q">
+        <div class="mot-q-lab">Potenza utile</div>
+        <div class="mot-q-val" id="motPot">0</div>
+        <div class="mot-q-lab" style="text-transform:none;font-weight:400;">MW (spinta × velocità)</div>
+      </div>
+      <div class="mot-q">
+        <div class="mot-q-lab">Rendimento propulsivo</div>
+        <div class="mot-q-val" id="motEta">0%</div>
+        <div class="mot-q-lab" style="text-transform:none;font-weight:400;">2V/(V+Vgetto)</div>
+      </div>
+    </div>
+    <div class="box-testo" id="motTesto"></div>
+    <div class="applet-fonte">
+      Formula del rendimento propulsivo e velocità del getto (circa 400 m/s per un turbofan moderno a doppio flusso): IPCC, <em>Aviation and the Global Atmosphere</em>, 1999, § 7.4.1.2, che per la crociera a Mach 0,85 e 10,7 km dà un rendimento propulsivo del 77% e un rendimento complessivo del 30-37%. Spinta di decollo 27.000 lb per motore: dati CFM riportati in <em>Aircraft Commerce</em> n. 50, 2007. Potenza chimica: 2,10 kg/s × 43,0 MJ/kg di potere calorifico del Jet A-1. La spinta è qui trattata come costante lungo la corsa: in realtà cala leggermente con la velocità.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Questo è il cuore della faccenda, e ribalta l'intuizione: la spinta è forza, non potenza. La potenza utile è spinta per velocità, e al rilascio dei freni la velocità è zero. Il motore sta bruciando 90 megawatt di cherosene e ne sta restituendo esattamente zero al movimento dell'aereo: tutto finisce nel getto rovente che spazza la pista. In crociera, dice l'IPCC, lo stesso motore converte in movimento il 30-37% dell'energia del carburante.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Dove finiscono le due tonnellate della salita</div>
+      <div class="applet-istruzione">Il serbatoio di sinistra è il carburante bruciato per arrivare a quota. Clicca una destinazione per vedere quanta di quell'energia ci è davvero finita dentro.</div>
+    </div>
+    <div class="bud-wrap">
+      <svg class="bud-svg" id="budSvg" viewBox="0 0 96 210" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="96" height="210" fill="#fdf6ea"></rect>
+        <rect x="26" y="16" width="44" height="176" rx="5" fill="#efe8db" stroke="#d9d2c3" stroke-width="1.5"></rect>
+        <rect id="budQuota" x="26" y="16" width="44" height="15" fill="#f7c873"></rect>
+        <rect id="budVel" x="26" y="31" width="44" height="4" fill="#f0a93c"></rect>
+        <rect id="budAttrito" x="26" y="35" width="44" height="26" fill="#e67e22"></rect>
+        <rect id="budMotore" x="26" y="61" width="44" height="131" fill="#b9b2a2"></rect>
+        <rect id="budEvid" x="24" y="14" width="48" height="0" fill="none" stroke="#1c1c2e" stroke-width="2.5" rx="3"></rect>
+        <text x="48" y="206" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#a9a296">88 GJ</text>
+        <text x="48" y="11" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#a9a296">2.044 kg</text>
+      </svg>
+      <div class="bud-voci" id="budVoci"></div>
+    </div>
+    <div class="box-testo" id="budTesto"></div>
+    <div class="applet-fonte">
+      Carburante di salita: 2.044 kg, dal profilo dell'applet 01 (2.132 kg contando anche la corsa di decollo). Energia chimica: 43,0 MJ/kg (potere calorifico inferiore del Jet A-1). Le quattro voci sono un nostro calcolo con ipotesi dichiarate: massa 70 t al decollo e 68 t a fine salita, quota di crociera FL350 (10.668 m), velocità vera finale 237 m/s (Mach 0,78), efficienza aerodinamica L/D = 15 e percorso di salita di 289 km. Il rendimento complessivo che ne risulta, il 25%, sta dentro l'intervallo del 20-40% indicato dall'IPCC (<em>Aviation and the Global Atmosphere</em>, 1999, § 7.4.1.2) e sotto il 30-37% tipico della crociera, come ci si aspetta a bassa velocità.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il conto vero, quindi, non è il decollo: è la salita, e più il volo è corto più pesa. Analizzando dieci voli in partenza da Londra Heathrow il 28 gennaio 2022, Becca Rowland di OAG ha trovato che sul volo Air France per Parigi Charles de Gaulle — 348 km su un A319 — la crociera vale appena il 62% del carburante, e il rullaggio da solo fino al 17%. Sul Cathay Pacific per Hong Kong, dodici ore di A350, la crociera arriva al 96%.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il decollo è la parte più spettacolare del volo e una delle meno costose: quello che ti schiaccia sul sedile non è il carburante che se ne va, è l'energia che, per quaranta secondi, non riesce ancora a diventare viaggio.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Yashovardhan S. Chati, Hamsa Balakrishnan, <em>Statistical Modeling of Aircraft Engine Fuel Flow Rate</em>, 30th Congress of the International Council of the Aeronautical Sciences (ICAS), Daejeon 2016 — portate di carburante per fase e quota da 169 voli A320-214 registrati dai flight data recorder — <a href="https://www.mit.edu/~hamsa/pubs/ChatiBalakrishnanICAS2016.pdf">mit.edu</a></li>
+      <li>Yashovardhan S. Chati, Hamsa Balakrishnan, <em>Analysis of Aircraft Fuel Burn and Emissions in the Landing and Take Off Cycle using Operational Data</em>, 6th International Conference on Research in Air Transportation (ICRAT), Istanbul 2014 — durate e regimi del ciclo LTO ICAO, e confronto con i dati operativi reali — <a href="https://www.mit.edu/~hamsa/pubs/ICRAT_2014_YSC_HB_final.pdf">mit.edu</a></li>
+      <li>IPCC, <em>Aviation and the Global Atmosphere</em>, a cura di J. E. Penner et al., Cambridge University Press 1999, § 7.4.1.2 «Propulsive and Overall Efficiency» — formula del rendimento propulsivo, velocità del getto, rendimento complessivo in crociera — <a href="https://www.grida.no/climate/ipcc/aviation/097.htm">grida.no</a></li>
+      <li>Becca Rowland, <em>Which Part of a Flight Uses the Most Fuel?</em>, OAG, 3 febbraio 2022 — ripartizione del consumo per fase su dieci voli da Londra Heathrow del 28 gennaio 2022 — <a href="https://www.oag.com/blog/which-part-flight-uses-most-fuel">oag.com</a></li>
+      <li><em>CFM56-5A/5B fuel burn performance</em>, in «Aircraft Owner's &amp; Operator's Guide», Aircraft Commerce n. 50, febbraio-marzo 2007 — piani di volo Airbus per la famiglia A320, consumi di blocco e di rullaggio, spinte certificate — <a href="https://www.aircraft-commerce.com/wp-content/uploads/aircraft-commerce-docs/Aircraft%20guides/CFM56-5A-5B/ISSUE%2050-CFM56-5A-5B%20FUEL.pdf">aircraft-commerce.com</a></li>
+      <li>Patrick Chiles, <em>When Less Is More</em>, in «AeroSafety World», Flight Safety Foundation, marzo 2011, pp. 11-13 — decolli a spinta ridotta, derate fissi e metodo della temperatura assunta; cita Jack Stopkotte, <em>Minimizing Costs While Maintaining Performance Margins</em>, GE Aircraft Engines, settembre 2003 — <a href="https://flightsafety.org/wp-content/uploads/2016/10/asw_mar11_p11-13.pdf">flightsafety.org</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════ APPLET 01 · PROFILO DI VOLO E CONTATORI ══════ */
+/* Portate in kg/s per DUE motori (dati per motore x2, ICAS 2016) */
+var SEGMENTI = [
+  { fino: 0,      vz: 0,    ff: 2.10, nome: 'corsa di decollo', durata: 42 },
+  { fino: 950,    vz: 12.0, ff: 2.10, nome: 'salita iniziale' },
+  { fino: 2550,   vz: 11.0, ff: 1.72, nome: 'salita' },
+  { fino: 4646,   vz: 9.0,  ff: 1.56, nome: 'salita' },
+  { fino: 7661,   vz: 7.0,  ff: 1.30, nome: 'salita' },
+  { fino: 9331,   vz: 5.0,  ff: 1.08, nome: 'salita' },
+  { fino: 10668,  vz: 3.5,  ff: 0.90, nome: 'ultima salita' },
+  { fino: 10668,  vz: 0,    ff: 0.65, nome: 'crociera', durata: 99999 }
+];
+var FF_CROCIERA = 0.65;
+var voloAttivo = false, voloT = 0, voloKg = 0, voloQuota = 0, voloSeg = 0, voloSegT = 0;
+var voloRaf = null, voloUltimo = 0, voloFattore = 60;
+var tappeFatte = {}, KG_TOC = 2132;
+
+function logVolo(testo, classe) {
+  var reg = document.getElementById('voloRegistro');
+  var r = document.createElement('div');
+  if (classe) r.className = classe;
+  r.innerHTML = testo;
+  reg.appendChild(r);
+  reg.scrollTop = reg.scrollHeight;
+}
+
+function fmtTempo(s) {
+  var m = Math.floor(s / 60), r = Math.floor(s % 60);
+  if (m >= 60) return Math.floor(m / 60) + 'h' + ('0' + (m % 60)).slice(-2);
+  return m + ':' + ('0' + r).slice(-2);
+}
+
+function cambiaVelocita() {
+  var v = [60, 240, 900];
+  var i = v.indexOf(voloFattore);
+  voloFattore = v[(i + 1) % v.length];
+  document.getElementById('btnVeloce').textContent = 'Velocità × ' + voloFattore;
+}
+
+function avviaVolo() {
+  if (voloRaf) cancelAnimationFrame(voloRaf);
+  voloAttivo = true; voloT = 0; voloKg = 0; voloQuota = 0; voloSeg = 0; voloSegT = 0;
+  tappeFatte = {};
+  document.getElementById('voloRegistro').innerHTML = '';
+  document.getElementById('btnVia').disabled = true;
+  logVolo('Freni rilasciati. Manette avanti: due motori a 2,10 kg/s.');
+  document.getElementById('traccia').setAttribute('d', 'M 20 120 L 20 120');
+  voloUltimo = performance.now();
+  voloRaf = requestAnimationFrame(passoVolo);
+}
+
+function passoVolo(ts) {
+  var rimasto = Math.min((ts - voloUltimo) / 1000, 0.1) * voloFattore;
+  voloUltimo = ts;
+  var guardia = 0;
+  while (rimasto > 0.00001 && voloAttivo && guardia++ < 500) {
+    var s = SEGMENTI[voloSeg];
+    var dt = Math.min(rimasto, 2);
+    var resto = s.durata ? (s.durata - voloSegT) : ((s.fino - voloQuota) / s.vz);
+    if (resto < dt) dt = Math.max(resto, 0.001);
+    voloT += dt; voloSegT += dt; voloKg += s.ff * dt;
+    if (s.vz > 0) voloQuota = Math.min(voloQuota + s.vz * dt, s.fino);
+    rimasto -= dt;
+
+    var finito = s.durata ? (voloSegT >= s.durata - 0.001) : (voloQuota >= s.fino - 0.001);
+    if (finito && voloSeg < SEGMENTI.length - 1) {
+      voloSeg++; voloSegT = 0;
+      if (voloSeg === 1) logVolo('<strong>42 s</strong> — ruote staccate. Corsa di decollo: <strong>' + Math.round(voloKg) + ' kg</strong>.', 'chiave');
+      if (voloSeg === 7) { KG_TOC = voloKg; logVolo('<strong>' + fmtTempo(voloT) + '</strong> — livellato a FL350. La sola salita è costata <strong>' + Math.round(voloKg - 88).toLocaleString('it-IT') + ' kg</strong>. Il rubinetto scende a 0,65 kg/s.', 'chiave'); }
+    }
+
+    if (voloSeg === 7) {
+      var kgCroc = voloKg - KG_TOC;
+      if (!tappeFatte.a && kgCroc >= 88) { tappeFatte.a = 1; logVolo('La crociera ha appena pareggiato la corsa di decollo: c\'è voluto poco più di <strong>2 minuti</strong>.'); }
+      if (!tappeFatte.b && kgCroc >= KG_TOC) { tappeFatte.b = 1; logVolo('La crociera ha pareggiato decollo <em>e</em> salita messi insieme: <strong>55 minuti</strong>.', 'chiave'); }
+      if (!tappeFatte.c && voloT >= 8846) { tappeFatte.c = 1; logVolo('Due ore di crociera: <strong>' + Math.round(kgCroc).toLocaleString('it-IT') + ' kg</strong> contro i ' + Math.round(KG_TOC).toLocaleString('it-IT') + ' kg di decollo e salita.'); }
+      if (!tappeFatte.d && voloT >= 32400) {
+        tappeFatte.d = 1;
+        logVolo('Nove ore, un Roma-New York: <strong>' + (Math.round(kgCroc / 100) / 10).toFixed(1).replace('.', ',') + ' t</strong> di crociera contro <strong>2,1 t</strong> di decollo e salita. Insieme valgono il 10% del volo; la sola corsa di decollo, lo <strong>0,4%</strong>.', 'finale');
+        voloAttivo = false;
+        document.getElementById('btnVia').disabled = false;
+      }
+    }
+  }
+  disegnaVolo();
+  if (voloAttivo) voloRaf = requestAnimationFrame(passoVolo);
+}
+
+function disegnaVolo() {
+  var s = SEGMENTI[voloSeg];
+  document.getElementById('qPortata').textContent = s.ff.toFixed(2).replace('.', ',');
+  document.getElementById('qTotale').textContent = Math.round(voloKg).toLocaleString('it-IT');
+  document.getElementById('qTempo').textContent = fmtTempo(voloT);
+  document.getElementById('faseTxt').textContent = s.nome;
+
+  var x, y = 120 - (voloQuota / 10668) * 90;
+  if (voloSeg === 0) x = 20 + (voloSegT / 42) * 88;
+  else if (voloSeg === 7) x = Math.min(230 + (voloT - 1646) / 30, 405);
+  else x = 108 + (voloQuota / 10668) * 122;
+  document.getElementById('aereo').setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+  var ang = (voloSeg >= 1 && voloSeg <= 6) ? -14 : 0;
+  document.getElementById('aereoRot').setAttribute('transform', 'rotate(' + ang + ')');
+  var tr = document.getElementById('traccia'), d = tr.getAttribute('d');
+  var ult = d.slice(d.lastIndexOf('L') + 1).trim().split(' ');
+  if (Math.abs(x - parseFloat(ult[0])) > 1.2 || Math.abs(y - parseFloat(ult[1])) > 1.2) tr.setAttribute('d', d + ' L ' + x.toFixed(1) + ' ' + y.toFixed(1));
+}
+
+/* ══════ APPLET 02 · CICLO LTO ══════ */
+var LTO = [
+  { nome: 'Corsa di decollo', sub: '100% di spinta', ff: 2.10, sec: 42,   kg: 88 },
+  { nome: 'Salita iniziale',  sub: '85%, fino a 3.000 ft', ff: 2.10, sec: 132, kg: 277 },
+  { nome: 'Avvicinamento',    sub: '30%, da 3.000 ft', ff: 0.42, sec: 240,  kg: 101 },
+  { nome: 'Rullaggio',        sub: '7%, motori al minimo', ff: 0.19, sec: 1560, kg: 296 }
+];
+var VISTE = [
+  { chiave: 'ff',  fmt: function (v) { return v.toFixed(2).replace('.', ',') + ' kg/s'; },
+    txt: "Misurata al secondo, la corsa di decollo è imbattibile: <strong>2,10 kg/s</strong> contro gli 0,19 del rullaggio, undici volte tanto. È questa la sensazione che abbiamo tutti seduti in fondo alla cabina — ed è vera. Ma è una velocità di svuotamento, non una quantità." },
+  { chiave: 'sec', fmt: function (v) { if (v < 60) return v + ' s'; var m = Math.floor(v / 60), r = v % 60; return m + ' min' + (r ? ' ' + r + ' s' : ''); },
+    txt: "Con il cronometro la classifica si capovolge del tutto. L'ICAO assegna al rullaggio <strong>1.560 secondi</strong>, ventisei minuti, contro i 42 della corsa di decollo: trentasette volte di più. La fase più rumorosa del volo è anche la più breve di tutte." },
+  { chiave: 'kg',  fmt: function (v) { return v + ' kg'; },
+    txt: "Moltiplicando le due colonne si ottiene il verdetto, e il decollo finisce ultimo: <strong>88 kg</strong> contro i 296 del rullaggio. La fase con il rubinetto più aperto è quella che consuma meno di tutte, perché dura quasi niente; la fase con il rubinetto quasi chiuso consuma di più, perché non finisce mai." }
+];
+var ltoVista = 0;
+
+function costruisciLto() {
+  var c = document.getElementById('ltoLista');
+  for (var i = 0; i < LTO.length; i++) {
+    var d = document.createElement('div');
+    d.className = 'lto-riga';
+    d.innerHTML = '<div class="lto-nome">' + LTO[i].nome + '<span>' + LTO[i].sub + '</span></div>' +
+      '<div class="lto-barra"><div class="lto-fill" id="ltoFill' + i + '" style="width:0%"></div>' +
+      '<div class="lto-cifra" id="ltoCifra' + i + '"></div></div>';
+    c.appendChild(d);
+  }
+  mostraLto(0);
+}
+
+function mostraLto(v) {
+  ltoVista = v;
+  var tabs = document.querySelectorAll('.lto-tab');
+  for (var k = 0; k < tabs.length; k++) tabs[k].classList.toggle('attivo', k === v);
+  var ch = VISTE[v].chiave, max = 0;
+  for (var i = 0; i < LTO.length; i++) if (LTO[i][ch] > max) max = LTO[i][ch];
+  for (i = 0; i < LTO.length; i++) {
+    var val = LTO[i][ch];
+    var f = document.getElementById('ltoFill' + i);
+    f.style.width = (val / max * 100) + '%';
+    f.classList.toggle('top', val === max);
+    document.getElementById('ltoCifra' + i).textContent = VISTE[v].fmt(val);
+  }
+  document.getElementById('ltoTesto').innerHTML = VISTE[v].txt;
+}
+
+/* ══════ APPLET 03 · MOTORE ══════ */
+var SPINTA = 240000;      /* N, due CFM56-5B4 al decollo */
+var VGETTO = 400;         /* m/s, IPCC 1999 */
+var POT_CHIM = 90.3e6;    /* W: 2,10 kg/s x 43,0 MJ/kg */
+
+function aggiornaMotore(v) {
+  v = parseFloat(v);
+  var eta = v === 0 ? 0 : 2 * v / (v + VGETTO);
+  var pot = SPINTA * v;
+  document.getElementById('motV').textContent = Math.round(v);
+  document.getElementById('motNodi').textContent = '(' + Math.round(v * 1.94384) + ' nodi)';
+  document.getElementById('motPot').textContent = (pot / 1e6).toFixed(1).replace('.', ',');
+  document.getElementById('motEta').textContent = Math.round(eta * 100) + '%';
+
+  /* frecce: ingresso proporzionale a v, uscita sempre piena */
+  var gin = document.getElementById('frecceIn'), gout = document.getElementById('frecceOut');
+  gin.innerHTML = ''; gout.innerHTML = '';
+  var lin = 6 + (v / 90) * 62;
+  for (var i = 0; i < 3; i++) {
+    var y = 46 + i * 18;
+    gin.innerHTML += '<line x1="' + (140 - lin) + '" y1="' + y + '" x2="140" y2="' + y + '" stroke="#8d8577" stroke-width="2.5" stroke-linecap="round"></line>' +
+      '<path d="M 140 ' + y + ' l -5 -3.5 l 0 7 Z" fill="#8d8577"></path>';
+    gout.innerHTML += '<line x1="248" y1="' + y + '" x2="' + (248 + 74) + '" y2="' + y + '" stroke="#e67e22" stroke-width="2.5" stroke-linecap="round"></line>' +
+      '<path d="M ' + (248 + 79) + ' ' + y + ' l -5 -3.5 l 0 7 Z" fill="#e67e22"></path>';
+  }
+  document.getElementById('motSpreco').textContent = v === 0 ? 'tutto sprecato nella scia' :
+    Math.round((1 - eta) * 100) + '% sprecato nella scia';
+
+  var t;
+  if (v === 0) t = "Ai blocchi il motore brucia <strong>90 MW</strong> di cherosene e ne restituisce all'aereo <strong>zero</strong>. La spinta c'è tutta — 240.000 newton — ma la potenza è spinta per velocità, e la velocità è nulla: tutta l'energia se ne va nel getto che spazza la pista.";
+  else if (v < 30) t = "L'aereo si muove, e per la prima volta una parte dell'energia diventa movimento: <strong>" + (pot / 1e6).toFixed(1).replace('.', ',') + " MW</strong> su 90. Il rubinetto però non è cambiato di un grammo dal rilascio dei freni.";
+  else if (v < 70) t = "A metà pista il rendimento è ancora sotto il 20%: il getto esce a 400 m/s e l'aereo ne fa appena " + Math.round(v) + ". La differenza tra le due velocità è, letteralmente, energia buttata dietro.";
+  else t = "Alla rotazione siamo a <strong>" + Math.round(eta * 100) + "%</strong>. È il massimo che il decollo concede: in crociera, con l'aereo a 237 m/s, lo stesso rapporto sale al 74-77% — e il rubinetto nel frattempo si è chiuso a un terzo.";
+  document.getElementById('motTesto').innerHTML = t;
+
+  var tacche = [0, 41, 82];
+  for (i = 0; i < 3; i++) document.getElementById('tacca' + i).classList.toggle('attivo', Math.abs(v - tacche[i]) < 3);
+}
+
+function vaiA(v) {
+  document.getElementById('motSlider').value = v;
+  aggiornaMotore(v);
+}
+
+/* ══════ APPLET 04 · BUDGET ENERGETICO DELLA SALITA ══════ */
+var BUDGET = [
+  { id: 'budQuota', nome: 'Quota guadagnata', gj: 7.33, pc: 8.3,
+    txt: "Sollevare 70 tonnellate a 10.668 metri costa <strong>7,33 GJ</strong> di energia potenziale: l'8,3% del carburante bruciato in salita. Sorprendentemente poco — ed è energia che l'aereo non perde: la restituisce in discesa, planando a motori quasi al minimo." },
+  { id: 'budVel', nome: 'Velocità guadagnata', gj: 1.91, pc: 2.2,
+    txt: "Portare l'aereo da fermo a 237 metri al secondo — Mach 0,78 — costa <strong>1,91 GJ</strong>, appena il 2,2%. È la voce più piccola del bilancio, e anche questa viene in gran parte restituita rallentando in discesa." },
+  { id: 'budAttrito', nome: 'Attrito con l\'aria', gj: 13.0, pc: 14.8,
+    txt: "Lungo i 289 km di salita l'aria oppone circa 45 kN di resistenza: <strong>13,0 GJ</strong> di lavoro, il 14,8%, che si trasformano in calore nell'atmosfera e non tornano indietro. È già quasi il doppio di quanto costa la quota." },
+  { id: 'budMotore', nome: 'Perso dal motore', gj: 65.8, pc: 74.7,
+    txt: "Tre quarti del carburante — <strong>65,8 GJ</strong> — non arrivano mai all'aereo: escono come calore dallo scarico e come energia cinetica del getto. È il prezzo termodinamico di un motore che a bassa velocità lavora male, ed è esattamente ciò che l'aereo smette di pagare appena si livella in crociera." }
+];
+
+function costruisciBudget() {
+  var c = document.getElementById('budVoci');
+  for (var i = 0; i < BUDGET.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'bud-btn' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<span>' + BUDGET[i].nome + '</span><em>' + BUDGET[i].pc.toString().replace('.', ',') + '%</em>';
+    b.onclick = (function (k) { return function () { mostraBudget(k); }; })(i);
+    c.appendChild(b);
+  }
+  mostraBudget(0);
+}
+
+function mostraBudget(i) {
+  var btns = document.querySelectorAll('.bud-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var r = document.getElementById(BUDGET[i].id);
+  var ev = document.getElementById('budEvid');
+  ev.setAttribute('y', parseFloat(r.getAttribute('y')) - 2);
+  ev.setAttribute('height', parseFloat(r.getAttribute('height')) + 4);
+  ev.setAttribute('fill', 'none');
+  ev.setAttribute('stroke', '#1c1c2e');
+  document.getElementById('budTesto').innerHTML = BUDGET[i].txt;
+}
+
+costruisciLto();
+costruisciBudget();
+aggiornaMotore(0);
+</script>
+</body>
+</html>
