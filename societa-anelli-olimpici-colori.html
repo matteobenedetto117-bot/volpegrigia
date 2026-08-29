@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché gli anelli olimpici hanno proprio quei cinque colori?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fae8e5;
+    --accent-mid: #e74c3c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+    --spento: #d4cfc7;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · TAVOLOZZA ── */
+  .tav-svg { display: block; width: 100%; height: auto; max-width: 400px; margin: 0 auto 6px; }
+  .tav-anello { cursor: pointer; transition: stroke 0.35s ease; }
+  .tav-anello:hover { opacity: 0.75; }
+  .tav-bianco {
+    display: flex; align-items: center; gap: 8px; justify-content: center;
+    font-size: 12.5px; color: var(--muted); margin-bottom: 16px; text-align: center;
+  }
+  .tav-bianco i { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 1.5px solid var(--border); display: inline-block; flex: 0 0 auto; }
+
+  .tav-conta {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    font-size: 13px; color: var(--muted); margin-bottom: 6px;
+  }
+  .tav-conta strong { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--accent); }
+  .tav-barra { background: #f3f1ec; border-radius: 3px; height: 10px; overflow: hidden; margin-bottom: 18px; }
+  .tav-barra i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width 0.45s ease; }
+
+  .tav-griglia { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 12px; margin-bottom: 16px; }
+  .tav-naz { opacity: 0.42; transition: opacity 0.35s ease; }
+  .tav-naz.ok { opacity: 1; }
+  .tav-naz-nome { font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+  .tav-naz.ok .tav-naz-nome { color: var(--text); }
+  .tav-bandiera { display: flex; height: 16px; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+  .tav-bandiera span { flex: 1; background: var(--spento); transition: background 0.35s ease; }
+  .tav-reset {
+    font-family: 'Source Sans 3', sans-serif; font-size: 12.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 7px 14px; cursor: pointer;
+  }
+
+  /* ── APPLET 2 · MAPPA ── */
+  .map-toggle { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .map-btn {
+    flex: 1; min-width: 150px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s; line-height: 1.35;
+  }
+  .map-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .map-wrap { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 14px; }
+  .map-svg { display: block; width: 100%; height: auto; }
+  .map-svg path { transition: fill 0.5s ease; }
+  .map-svg text { font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600; transition: fill 0.5s ease; }
+
+  /* ── APPLET 3 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto; min-width: 96px; background: none; border: none; cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif; padding: 0; position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1; transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  /* ── APPLET 4 · SETACCIO ── */
+  .set-scelta { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+  .set-btn {
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 8px 12px; cursor: pointer; transition: all 0.15s;
+  }
+  .set-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .set-scena { display: grid; grid-template-columns: 190px 1fr; gap: 16px; align-items: start; margin-bottom: 14px; }
+  .set-flag-wrap { background: #faf8f4; border: 1px solid var(--border); border-radius: 4px; padding: 10px; }
+  .set-flag-wrap svg { display: block; width: 100%; height: auto; border: 1px solid var(--border); }
+  .set-flag-wrap svg * { transition: fill 0.4s ease, stroke 0.4s ease; }
+  .set-flag-wrap.setacciato .ok { fill: #edeae4; }
+  .set-flag-wrap.setacciato .ok-stroke { stroke: #edeae4; }
+  .set-flag-wrap.setacciato .ko { stroke: #1c1c2e; stroke-width: 2.5; stroke-dasharray: 5 3; }
+  .set-verdetto { font-size: 14px; line-height: 1.6; color: var(--text); }
+  .set-verdetto h5 { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+  .set-esito { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 2px; margin-bottom: 8px; }
+  .set-esito.dentro { background: #e4f1e6; color: #1e7a3c; }
+  .set-esito.fuori { background: var(--accent-light); color: var(--accent); }
+  .set-campione { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-top: 9px; }
+  .set-campione i { width: 22px; height: 22px; border-radius: 3px; border: 1px solid var(--border); display: inline-block; flex: 0 0 auto; }
+  .set-azione {
+    width: 100%; font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: #fff; background: var(--accent); border: 1.5px solid var(--accent);
+    border-radius: 4px; padding: 10px; cursor: pointer; margin-top: 10px;
+  }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .tav-griglia { grid-template-columns: 1fr; }
+    .map-btn { min-width: 100%; }
+    .set-scena { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Società</div>
+    <h1>Perché gli anelli olimpici hanno proprio quei cinque colori?</h1>
+    <div class="risposta-box">
+      <p>Non per i continenti: quella corrispondenza è arrivata dopo, è stata stampata nel manuale ufficiale del CIO nel 1949 ed è stata cancellata dal Comitato esecutivo nel gennaio 1951. Coubertin scelse blu, giallo, nero, verde e rosso — più il bianco dello sfondo — per una ragione da tipografo: con sei colori, scriveva nell'agosto 1913, si riproducono quelli «di tutte le nazioni senza eccezione». Nessun anello ha mai avuto un continente assegnato.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>La versione che tutti abbiamo imparato è precisa e ordinata: blu l'Europa, giallo l'Asia, nero l'Africa, verde l'Oceania, rosso l'America. Non è un'invenzione di internet — quella tabella è esistita davvero, a pagina 18 del manuale ufficiale del Comitato Internazionale Olimpico del 1949. È durata poco: due anni dopo il CIO l'ha ritirata perché non riusciva a provarla.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">La tavolozza di Coubertin</div>
+      <div class="applet-istruzione">Clicca gli anelli uno alla volta per accendere i colori: sotto si completano le bandiere che Coubertin elenca di suo pugno nel testo del 1913. Servono tutti e cinque — più il bianco.</div>
+    </div>
+    <svg class="tav-svg" id="tavSvg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="I cinque anelli olimpici, cliccabili">
+      <circle class="tav-anello" data-col="blu" cx="110" cy="55" r="40" fill="none" stroke="#d4cfc7" stroke-width="11"></circle>
+      <circle class="tav-anello" data-col="nero" cx="200" cy="55" r="40" fill="none" stroke="#d4cfc7" stroke-width="11"></circle>
+      <circle class="tav-anello" data-col="rosso" cx="290" cy="55" r="40" fill="none" stroke="#d4cfc7" stroke-width="11"></circle>
+      <circle class="tav-anello" data-col="giallo" cx="155" cy="95" r="40" fill="none" stroke="#d4cfc7" stroke-width="11"></circle>
+      <circle class="tav-anello" data-col="verde" cx="245" cy="95" r="40" fill="none" stroke="#d4cfc7" stroke-width="11"></circle>
+    </svg>
+    <div class="tav-bianco"><i></i> il sesto colore è il bianco dello sfondo — sempre acceso</div>
+    <div class="tav-conta"><span>Bandiere completabili con la tavolozza accesa</span><strong id="tavConta">0/14</strong></div>
+    <div class="tav-barra"><i id="tavBarra"></i></div>
+    <div class="tav-griglia" id="tavGriglia"></div>
+    <button class="tav-reset" onclick="tavReset()">Spegni tutto e ricomincia</button>
+    <div class="applet-fonte">
+      Le quattordici bandiere sono esattamente quelle che Pierre de Coubertin nomina nell'articolo di presentazione del simbolo, <em>Revue Olympique</em> («Olympique»), agosto 1913: «le bleu et jaune de Suède, le bleu et blanc de Grèce, les tricolores français, anglais, américain, allemand, belge, italien, hongrois, le jaune et rouge d'Espagne voisinent avec les innovations brésilienne ou australienne, avec le vieux Japon et la jeune Chine». Sono nella versione in uso nel 1913 (Impero tedesco, Regno d'Italia, Repubblica di Cina) e schematizzate ai soli colori dominanti: stemmi e dettagli araldici non sono rappresentati.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quello che Coubertin fece davvero è documentato al giorno. Il 15 luglio 1913, a Parigi, disegnò e colorò a mano i cinque cerchi intrecciati su una lettera scritta su carta intestata del congresso convocato per il 1914: è il primo documento noto del simbolo. Nell'agosto seguente lo presentò in pubblico, e la frase che usò non parla di continenti ma di stampa: i sei colori così combinati, scrive, «riproducono quelli di tutte le nazioni senza eccezione».</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">L'atlante che il CIO ha cancellato</div>
+      <div class="applet-istruzione">Passa da un documento all'altro: nel manuale del 1949 ogni continente ha il suo anello, nella delibera del gennaio 1951 non ne ha più nessuno.</div>
+    </div>
+    <div class="map-toggle">
+      <button class="map-btn attivo" id="mapBtn0" onclick="mostraMappa(0)">Manuale ufficiale del CIO<br>1949 (ed. inglese 1950), p. 18</button>
+      <button class="map-btn" id="mapBtn1" onclick="mostraMappa(1)">Delibera del Comitato esecutivo<br>Bulletin du CIO n. 25, gennaio 1951</button>
+    </div>
+    <div class="map-wrap">
+      <svg class="map-svg" viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mappa schematica dei continenti">
+        <rect x="0" y="0" width="620" height="320" fill="#faf8f4"></rect>
+        <path id="cAmerica" d="M120,42 L176,54 L192,96 L162,120 L152,152 L168,178 L162,232 L142,292 L116,272 L110,216 L92,176 L68,140 L60,94 L86,58 Z" fill="#d4cfc7" stroke="#faf8f4" stroke-width="2"></path>
+        <path id="cEuropa" d="M300,52 L348,46 L362,72 L344,96 L306,102 L286,80 Z" fill="#d4cfc7" stroke="#faf8f4" stroke-width="2"></path>
+        <path id="cAfrica" d="M298,112 L346,108 L354,152 L336,204 L310,248 L288,216 L282,166 L286,132 Z" fill="#d4cfc7" stroke="#faf8f4" stroke-width="2"></path>
+        <path id="cAsia" d="M368,44 L508,38 L568,68 L588,112 L534,134 L470,122 L420,144 L386,122 L362,88 Z" fill="#d4cfc7" stroke="#faf8f4" stroke-width="2"></path>
+        <path id="cOceania" d="M498,218 L556,206 L586,238 L562,268 L512,260 L490,238 Z" fill="#d4cfc7" stroke="#faf8f4" stroke-width="2"></path>
+        <text id="tAmerica" x="128" y="170" text-anchor="middle" fill="#8b857c">America</text>
+        <text id="tEuropa" x="324" y="80" text-anchor="middle" fill="#8b857c">Europa</text>
+        <text id="tAfrica" x="316" y="172" text-anchor="middle" fill="#8b857c">Africa</text>
+        <text id="tAsia" x="474" y="92" text-anchor="middle" fill="#8b857c">Asia</text>
+        <text id="tOceania" x="538" y="242" text-anchor="middle" fill="#8b857c">Oceania</text>
+      </svg>
+    </div>
+    <div class="box-testo" id="mapTesto"></div>
+    <div class="applet-fonte">
+      Fonte: <em>Le Comité International Olympique et les Jeux olympiques modernes</em>, CIO, Losanna 1949, p. 18 (ed. inglese <em>The International Olympic Committee and the modern Olympic Games</em>, 1950, p. 18), dove l'attribuzione dei colori ai continenti compare per iscritto; <em>Decision adopted by the Executive Committee</em>, in «Bulletin du Comité International Olympique / Olympic Review» n. 25, Losanna, gennaio 1951, p. 32, che la cancella. La mappa è uno schema, non una carta geografica.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>L'elenco che Coubertin infila nel 1913 non è retorica: è la verifica del suo stesso conto. E la chiusa — «il vecchio Giappone e la giovane Cina» — è più letterale di quanto sembri. La Repubblica di Cina aveva appena adottato, nel 1912, la bandiera detta <em>wǔsèqí</em>, «a cinque colori»: rosso, giallo, blu, bianco e nero. Cinque dei suoi sei colori stavano già tutti su una bandiera sola.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Come un calcolo tipografico è diventato una favola sui continenti</div>
+      <div class="applet-istruzione">Clicca una tappa per vedere che cosa è stato scritto, e da chi, in quella data.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Cronologia ricostruita da: Karl Lennartz, <em>The Story of the Rings</em>, «Journal of Olympic History», vol. 10, n. 1, 2002, pp. 29-61 (in particolare pp. 31-32); Robert Knight Barney, <em>This Great Symbol</em>, «Olympic Review» n. 301, novembre 1992; schede <em>Olympic rings</em> e <em>Olympic flag</em> del Comitato Internazionale Olimpico, olympics.com.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>C'è anche un secondo ramo del mito, quello dell'antichità. Nel 1936 Carl Diem, organizzatore dei Giochi di Berlino e inventore della staffetta della fiamma, fece scolpire per la cerimonia di Delfi un cippo di pietra alto quasi un metro con i cinque anelli incisi sui fianchi, e lo lasciò lì. Vent'anni dopo Lynn e Gray Poole lo videro, lo presero per un reperto e nel 1963 scrissero che il simbolo veniva dalla Grecia antica. La pietra è ancora a Delfi, spostata vicino alla biglietteria e catalogata per quello che è.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Il setaccio dei sei colori</div>
+      <div class="applet-istruzione">Scegli una bandiera e passala al setaccio: tutto ciò che rientra nei sei colori di Coubertin sbiadisce, e resta solo quello che ne esce.</div>
+    </div>
+    <div class="set-scelta" id="setScelta"></div>
+    <div class="set-scena">
+      <div class="set-flag-wrap" id="setFlagWrap"></div>
+      <div class="set-verdetto" id="setVerdetto"></div>
+    </div>
+    <button class="set-azione" id="setAzione" onclick="setaccia()">Passa al setaccio</button>
+    <div class="applet-fonte">
+      Le bandiere sono riproduzioni schematiche, ridotte ai campi di colore principali (proporzioni e dettagli araldici semplificati). Le date sono quelle di adozione ufficiale da parte dello Stato. Selezione illustrativa e non esaustiva: serve a mostrare che i colori fuori tavolozza compaiono su bandiere nazionali <em>dopo</em> il 1913, non a censire tutte le bandiere del mondo. Fonte per date e colori: Encyclopædia Britannica, voci <em>flag of Ireland</em>, <em>flag of India</em>, <em>flag of Niger</em>, <em>flag of Cyprus</em>, <em>flag of Qatar</em>, <em>flag of Sweden</em>.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il mito sopravvive anche perché la Carta Olimpica non lo smentisce mai fino in fondo: la Regola 8 dice ancora che il simbolo «rappresenta l'unione dei cinque continenti», ma parla degli anelli, non dei colori, e infatti nessun colore è assegnato a nulla. Della tavolozza è rimasto un dato tecnico: dal manuale grafico del 2010-2011 i cinque anelli sono Pantone 3005, 137, 426, 355 e 192, e si intersecano senza più contorni bianchi.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il simbolo più riconoscibile del pianeta non nasce da un'allegoria dei continenti ma da un calcolo da tipografo: sei colori, nessuna bandiera esclusa. Che è, a pensarci, un'idea di universalità molto più concreta di quella che gli abbiamo attribuito dopo.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Pierre de Coubertin, articolo di presentazione del simbolo, <em>Revue Olympique</em> («Olympique»), agosto 1913 — testo francese: «De plus les six couleurs ainsi combinées reproduisent celles de toutes les nations sans exception […] Voilà vraiment un emblème international»</li>
+      <li>Karl Lennartz, <em>The Story of the Rings</em>, in «Journal of Olympic History», vol. 10, n. 1, 2002, pp. 29-61 — <a href="https://isoh.org/wp-content/uploads/JOH-Archives/JOHv10n1m.pdf">isoh.org</a></li>
+      <li>Robert Knight Barney, <em>This Great Symbol</em>, in «Olympic Review» n. 301, novembre 1992: l'origine della forma degli anelli intrecciati dall'emblema a due anelli dell'USFSA</li>
+      <li><em>Le Comité International Olympique et les Jeux olympiques modernes</em>, CIO, Losanna 1949, p. 18 (ed. inglese <em>The International Olympic Committee and the modern Olympic Games</em>, 1950, p. 18): l'assegnazione dei colori ai continenti</li>
+      <li><em>Decision adopted by the Executive Committee</em>, in «Bulletin du Comité International Olympique / Olympic Review» n. 25, Losanna, gennaio 1951, p. 32: la cancellazione di quel paragrafo</li>
+      <li>Lynn Poole e Gray Johnson Poole, <em>History of the Ancient Olympic Games</em>, Ivan Obolensky, New York 1963: la pietra di Carl Diem scambiata per un reperto antico</li>
+      <li>Comitato Internazionale Olimpico, schede <em>Olympic rings</em> e <em>Olympic flag</em> e <em>Carta Olimpica</em>, Regola 8 — <a href="https://www.olympics.com/ioc/olympic-rings">olympics.com</a></li>
+      <li>Voce <em>Olympic symbols</em>, Wikipedia in inglese, per la ricostruzione bibliografica e il testo francese del 1913 — <a href="https://en.wikipedia.org/wiki/Olympic_symbols">en.wikipedia.org</a></li>
+      <li>Encyclopædia Britannica, voci <em>flag of Ireland</em>, <em>flag of India</em>, <em>flag of Niger</em>, <em>flag of Cyprus</em>, <em>flag of Qatar</em>, <em>flag of Sweden</em>, per date di adozione e colori</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══ APPLET 01 · TAVOLOZZA ══════════════════════════════════════ */
+var COLORI = { blu: '#0081C8', giallo: '#FCB131', nero: '#1c1c2e', verde: '#00A651', rosso: '#EE334E' };
+var acceso = { blu: false, giallo: false, nero: false, verde: false, rosso: false };
+
+/* Bandiere nella versione in uso nel 1913, ridotte ai colori dominanti.
+   Il bianco è sempre disponibile: è lo sfondo della bandiera olimpica. */
+var NAZIONI = [
+  { nome: 'Svezia', col: ['blu', 'giallo'] },
+  { nome: 'Grecia', col: ['blu', 'bianco'] },
+  { nome: 'Francia', col: ['blu', 'bianco', 'rosso'] },
+  { nome: 'Regno Unito', col: ['blu', 'bianco', 'rosso'] },
+  { nome: 'Stati Uniti', col: ['blu', 'bianco', 'rosso'] },
+  { nome: 'Impero tedesco', col: ['nero', 'bianco', 'rosso'] },
+  { nome: 'Belgio', col: ['nero', 'giallo', 'rosso'] },
+  { nome: "Regno d'Italia", col: ['verde', 'bianco', 'rosso'] },
+  { nome: 'Ungheria', col: ['rosso', 'bianco', 'verde'] },
+  { nome: 'Spagna', col: ['rosso', 'giallo', 'rosso'] },
+  { nome: 'Brasile', col: ['verde', 'giallo', 'blu'] },
+  { nome: 'Australia', col: ['blu', 'bianco', 'rosso'] },
+  { nome: 'Giappone', col: ['bianco', 'rosso', 'bianco'] },
+  { nome: 'Cina (1912)', col: ['rosso', 'giallo', 'blu', 'bianco', 'nero'] }
+];
+
+function costruisciTavolozza() {
+  var g = document.getElementById('tavGriglia');
+  var html = '';
+  for (var i = 0; i < NAZIONI.length; i++) {
+    var seg = '';
+    for (var j = 0; j < NAZIONI[i].col.length; j++) {
+      seg += '<span data-c="' + NAZIONI[i].col[j] + '"></span>';
+    }
+    html += '<div class="tav-naz" data-n="' + i + '"><div class="tav-naz-nome">' + NAZIONI[i].nome +
+            '</div><div class="tav-bandiera">' + seg + '</div></div>';
+  }
+  g.innerHTML = html;
+
+  var anelli = document.querySelectorAll('.tav-anello');
+  for (var k = 0; k < anelli.length; k++) {
+    anelli[k].onclick = (function (el) {
+      return function () {
+        var c = el.getAttribute('data-col');
+        acceso[c] = !acceso[c];
+        el.setAttribute('stroke', acceso[c] ? COLORI[c] : '#d4cfc7');
+        aggiornaTavolozza();
+      };
+    })(anelli[k]);
+  }
+  aggiornaTavolozza();
+}
+
+function aggiornaTavolozza() {
+  var completate = 0;
+  var righe = document.querySelectorAll('.tav-naz');
+  for (var i = 0; i < NAZIONI.length; i++) {
+    var ok = true;
+    for (var j = 0; j < NAZIONI[i].col.length; j++) {
+      var c = NAZIONI[i].col[j];
+      if (c !== 'bianco' && !acceso[c]) { ok = false; }
+    }
+    if (ok) completate++;
+    righe[i].classList.toggle('ok', ok);
+    var seg = righe[i].querySelectorAll('.tav-bandiera span');
+    for (var s = 0; s < seg.length; s++) {
+      var cc = seg[s].getAttribute('data-c');
+      if (cc === 'bianco') seg[s].style.background = '#ffffff';
+      else seg[s].style.background = acceso[cc] ? COLORI[cc] : '#d4cfc7';
+    }
+  }
+  document.getElementById('tavConta').textContent = completate + '/14';
+  document.getElementById('tavBarra').style.width = (completate / 14 * 100) + '%';
+}
+
+function tavReset() {
+  var anelli = document.querySelectorAll('.tav-anello');
+  for (var k = 0; k < anelli.length; k++) {
+    acceso[anelli[k].getAttribute('data-col')] = false;
+    anelli[k].setAttribute('stroke', '#d4cfc7');
+  }
+  aggiornaTavolozza();
+}
+
+/* ══ APPLET 02 · MAPPA ══════════════════════════════════════════ */
+var MAPPA = [
+  {
+    fill: { cAmerica: '#EE334E', cEuropa: '#0081C8', cAfrica: '#1c1c2e', cAsia: '#FCB131', cOceania: '#00A651' },
+    testo: 'Per due edizioni del manuale ufficiale il CIO mette nero su bianco l&rsquo;equazione: <strong>blu Europa, giallo Asia, nero Africa, verde Oceania e Australia, rosso America</strong> (Nord e Sud insieme). È da qui che la spiegazione entra nei libri di scuola di mezzo mondo &mdash; e da qui non se ne andrà più, nemmeno dopo essere stata ritirata.'
+  },
+  {
+    fill: { cAmerica: '#d4cfc7', cEuropa: '#d4cfc7', cAfrica: '#d4cfc7', cAsia: '#d4cfc7', cOceania: '#d4cfc7' },
+    testo: 'Nel gennaio 1951 il Comitato esecutivo del CIO delibera che <strong>non si è potuta trovare alcuna prova certa che quell&rsquo;attribuzione di colori fosse l&rsquo;idea originaria di Pierre de Coubertin</strong>, cancella il paragrafo e decide di non assegnare più alcun colore ai continenti. Da quel giorno la mappa è vuota: nessun anello ha un continente, e nessun continente ha un anello.'
+  }
+];
+
+function mostraMappa(i) {
+  document.getElementById('mapBtn0').classList.toggle('attivo', i === 0);
+  document.getElementById('mapBtn1').classList.toggle('attivo', i === 1);
+  var f = MAPPA[i].fill;
+  for (var id in f) { document.getElementById(id).setAttribute('fill', f[id]); }
+  var etichette = ['tAmerica', 'tEuropa', 'tAfrica', 'tAsia', 'tOceania'];
+  for (var e = 0; e < etichette.length; e++) {
+    document.getElementById(etichette[e]).setAttribute('fill', i === 0 ? '#ffffff' : '#8b857c');
+  }
+  document.getElementById('mapTesto').innerHTML = MAPPA[i].testo;
+}
+
+/* ══ APPLET 03 · LINEA DEL TEMPO ════════════════════════════════ */
+var tappe = [
+  { anno: '15 lug 1913', tit: 'Il foglio di Parigi',
+    txt: 'Coubertin scrive una lettera su carta intestata del congresso convocato per il 1914 e vi disegna a mano, colorandoli, i cinque cerchi intrecciati. È il primo documento noto del simbolo: non un bozzetto d&rsquo;agenzia, uno scarabocchio a margine di una lettera.' },
+  { anno: 'ago 1913', tit: 'La presentazione pubblica',
+    txt: 'Gli anelli compaiono sulla rivista «Olympique» con la spiegazione dell&rsquo;autore. Il numero cinque, precisa Coubertin, sta per «le cinque parti del mondo ormai conquistate all&rsquo;olimpismo»; i colori, invece, servono a un altro scopo.',
+    cit: '«De plus les six couleurs ainsi combinées reproduisent celles de toutes les nations sans exception […] Voilà vraiment un emblème international.»' },
+  { anno: '5 apr 1914', tit: 'Alessandria d&rsquo;Egitto',
+    txt: 'La bandiera con i cinque anelli sventola per la prima volta allo stadio Chatsby di Alessandria, in occasione dei Giochi pan-egiziani. Il debutto del simbolo avviene fuori dall&rsquo;Europa e fuori dai Giochi olimpici.' },
+  { anno: '17 giu 1914', tit: 'Congresso di Parigi',
+    txt: 'Anelli e bandiera vengono adottati ufficialmente al Congresso Olimpico di Parigi, convocato per i vent&rsquo;anni del movimento. L&rsquo;esordio ai Giochi era previsto per Berlino 1916: poche settimane dopo scoppia la guerra e quei Giochi non si tengono.' },
+  { anno: '1920', tit: 'Anversa',
+    txt: 'Con sei anni di ritardo la bandiera olimpica esordisce finalmente ai Giochi di Anversa. Quella issata allo stadio sparisce: verrà restituita al CIO solo nel 2000, dopo ottant&rsquo;anni, da un ex tuffatore statunitense che confessò di averla presa per scherzo.' },
+  { anno: '1936', tit: 'La pietra di Delfi',
+    txt: 'Carl Diem, organizzatore dei Giochi di Berlino, fa scolpire per la cerimonia della fiamma un cippo di pietra alto quasi un metro con gli anelli incisi sui fianchi, e lo lascia a Delfi. Nessuno lo rimuove.' },
+  { anno: '1949-50', tit: 'Il manuale del CIO',
+    txt: 'A pagina 18 del manuale ufficiale del CIO &mdash; edizione francese 1949, inglese 1950 &mdash; compare per iscritto l&rsquo;attribuzione di un colore a ciascun continente. È la fonte istituzionale della spiegazione che tutti conoscono.' },
+  { anno: 'gen 1951', tit: 'La delibera che cancella tutto',
+    txt: 'Il Comitato esecutivo del CIO ritira il paragrafo: non esiste prova che l&rsquo;attribuzione venisse da Coubertin, e si decide di non assegnare più alcun colore ai continenti. La correzione esce sul bollettino ufficiale &mdash; e non la legge quasi nessuno.',
+    cit: '«No definite proof could be found that this allocation of colours was P. de Coubertin&rsquo;s original idea […] the E.C. of the I.O.C. decided to cancel this paragraph and not to allocate any colours to the various continents.»' },
+  { anno: '1963', tit: 'Il libro dei Poole',
+    txt: 'Lynn e Gray Johnson Poole, che avevano visto la pietra di Diem a Delfi, pubblicano <em>History of the Ancient Olympic Games</em> e attribuiscono al simbolo un&rsquo;origine greca antica. Nasce il secondo mito: quello degli anelli come eredità dell&rsquo;antichità.' },
+  { anno: 'nov 1992', tit: 'Barney e i due anelli',
+    txt: 'Sulla «Olympic Review» lo storico americano Robert Barney propone la spiegazione oggi più accreditata sulla <em>forma</em>: i cerchi intrecciati verrebbero dall&rsquo;emblema a due anelli dell&rsquo;USFSA, l&rsquo;unione delle società sportive francesi in cui Coubertin aveva lavorato.' },
+  { anno: '2010-11', tit: 'La tavolozza diventa Pantone',
+    txt: 'Il nuovo manuale grafico del CIO fissa i codici colore (Pantone 3005 blu, 137 giallo, 426 nero, 355 verde, 192 rosso) e abolisce i contorni bianchi: da qui in poi gli anelli si intersecano davvero, senza stacchi.' }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+/* ══ APPLET 04 · IL SETACCIO ════════════════════════════════════ */
+var BANDIERE = [
+  {
+    nome: 'Svezia', anno: '1906', dentro: true,
+    svg: '<rect class="ok" x="0" y="0" width="200" height="125" fill="#005293"/>' +
+         '<rect class="ok" x="0" y="52" width="200" height="21" fill="#FECB00"/>' +
+         '<rect class="ok" x="56" y="0" width="21" height="125" fill="#FECB00"/>',
+    fuori: null,
+    txt: 'Blu e giallo: i due colori che Coubertin cita per primi nel 1913. La bandiera svedese passa il setaccio senza lasciare residui &mdash; è esattamente il tipo di bandiera per cui la tavolozza era stata costruita.'
+  },
+  {
+    nome: 'Irlanda', anno: '1919 / 1937', dentro: false,
+    svg: '<rect class="ok" x="0" y="0" width="67" height="125" fill="#169B62"/>' +
+         '<rect class="ok" x="67" y="0" width="66" height="125" fill="#FFFFFF"/>' +
+         '<rect class="ko" x="133" y="0" width="67" height="125" fill="#FF883E"/>',
+    fuori: { nome: 'arancione', hex: '#FF883E' },
+    txt: 'L&rsquo;arancione ricorda i protestanti seguaci di Guglielmo d&rsquo;Orange, il verde la tradizione gaelica e cattolica, il bianco la pace fra i due. Il disegno esiste dal 1848, ma nel 1913 nessuno Stato lo issava: diventa bandiera della Repubblica d&rsquo;Irlanda nel 1919 ed è sancito dalla Costituzione del 1937.'
+  },
+  {
+    nome: 'India', anno: '1947', dentro: false,
+    svg: '<rect class="ko" x="0" y="0" width="200" height="42" fill="#FF9933"/>' +
+         '<rect class="ok" x="0" y="42" width="200" height="41" fill="#FFFFFF"/>' +
+         '<rect class="ok" x="0" y="83" width="200" height="42" fill="#138808"/>' +
+         '<circle class="ok-stroke" cx="100" cy="62.5" r="15" fill="none" stroke="#000088" stroke-width="2.5"/>',
+    fuori: { nome: 'zafferano (kesari)', hex: '#FF9933' },
+    txt: 'Adottata dall&rsquo;Assemblea costituente il 22 luglio 1947, tre settimane prima dell&rsquo;indipendenza. Lo zafferano in cima non è un giallo né un rosso: è un colore autonomo. Il verde in basso e il blu della ruota di Ashoka restano invece dentro la tavolozza del 1913.'
+  },
+  {
+    nome: 'Niger', anno: '1959', dentro: false,
+    svg: '<rect class="ko" x="0" y="0" width="200" height="42" fill="#E05206"/>' +
+         '<rect class="ok" x="0" y="42" width="200" height="41" fill="#FFFFFF"/>' +
+         '<rect class="ok" x="0" y="83" width="200" height="42" fill="#0DB02B"/>' +
+         '<circle class="ko" cx="100" cy="62.5" r="16" fill="#E05206"/>',
+    fuori: { nome: 'arancione', hex: '#E05206' },
+    txt: 'Adottata il 23 novembre 1959, alla vigilia dell&rsquo;indipendenza. L&rsquo;arancione in alto è il Sahara settentrionale, il verde in basso le terre coltivate del sud, il bianco il fiume Niger; il disco centrale è il sole. Due elementi su quattro escono dai sei colori.'
+  },
+  {
+    nome: 'Cipro', anno: '1960', dentro: false,
+    svg: '<rect class="ok" x="0" y="0" width="200" height="125" fill="#FFFFFF"/>' +
+         '<path class="ko" d="M58,42 L96,38 L128,44 L146,40 L152,50 L134,58 L112,56 L96,64 L74,60 L58,52 Z" fill="#D57800"/>' +
+         '<path class="ok-stroke" d="M84,78 Q100,88 116,78" fill="none" stroke="#4E5B31" stroke-width="2.5"/>' +
+         '<path class="ok-stroke" d="M88,86 Q100,94 112,86" fill="none" stroke="#4E5B31" stroke-width="2.5"/>',
+    fuori: { nome: 'rame', hex: '#D57800' },
+    txt: 'La sagoma dell&rsquo;isola è color rame: il metallo che a Cipro si estrae dall&rsquo;antichità e che dall&rsquo;isola prende il nome latino, <em>cuprum</em>. Adottata con l&rsquo;indipendenza dal Regno Unito nel 1960; i rami d&rsquo;ulivo verdi restano dentro la tavolozza, il rame no.'
+  },
+  {
+    nome: 'Qatar', anno: '1971', dentro: false,
+    svg: '<rect class="ok" x="0" y="0" width="200" height="125" fill="#FFFFFF"/>' +
+         '<path class="ko" d="M64,0 L82,7 L64,14 L82,21 L64,28 L82,35 L64,42 L82,49 L64,56 L82,62.5 L64,69 L82,76 L64,83 L82,90 L64,97 L82,104 L64,111 L82,118 L64,125 L200,125 L200,0 Z" fill="#8A1538"/>',
+    fuori: { nome: 'granata (maroon)', hex: '#8A1538' },
+    txt: 'Il campo non è rosso ma granata: la tradizione lo spiega con la tintura rossa naturale usata nel Golfo, che sotto il sole virava a questa tonalità. Adottata nel 1971, con nove punte dentellate che segnano l&rsquo;adesione del Qatar agli Stati della Tregua.'
+  }
+];
+
+var setSel = 0, setOn = false;
+
+function costruisciSetaccio() {
+  var s = document.getElementById('setScelta');
+  var html = '';
+  for (var i = 0; i < BANDIERE.length; i++) {
+    html += '<button class="set-btn' + (i === 0 ? ' attivo' : '') + '" onclick="scegliBandiera(' + i + ')">' + BANDIERE[i].nome + '</button>';
+  }
+  s.innerHTML = html;
+  scegliBandiera(0);
+}
+
+function scegliBandiera(i) {
+  setSel = i; setOn = false;
+  var btns = document.querySelectorAll('.set-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var b = BANDIERE[i];
+  var wrap = document.getElementById('setFlagWrap');
+  wrap.className = 'set-flag-wrap';
+  wrap.innerHTML = '<svg viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bandiera schematica: ' + b.nome + '">' + b.svg + '</svg>';
+  document.getElementById('setAzione').textContent = 'Passa al setaccio';
+  document.getElementById('setVerdetto').innerHTML =
+    '<h5>' + b.nome + ' <span style="font-weight:400;color:#7f8c8d;font-size:13px;">· ' + b.anno + '</span></h5><p>' + b.txt + '</p>';
+}
+
+function setaccia() {
+  var b = BANDIERE[setSel];
+  var wrap = document.getElementById('setFlagWrap');
+  setOn = !setOn;
+  if (!setOn) { scegliBandiera(setSel); return; }
+  wrap.className = 'set-flag-wrap setacciato';
+  document.getElementById('setAzione').textContent = 'Togli il setaccio';
+  var esito = b.dentro
+    ? '<span class="set-esito dentro">Tutto dentro la tavolozza</span>'
+    : '<span class="set-esito fuori">Un colore resta fuori</span>';
+  var campione = b.fuori
+    ? '<div class="set-campione"><i style="background:' + b.fuori.hex + '"></i> ' + b.fuori.nome + ' &mdash; non è nessuno dei sei colori del 1913</div>'
+    : '<div class="set-campione">Nessun residuo: il setaccio non trattiene niente.</div>';
+  document.getElementById('setVerdetto').innerHTML =
+    '<h5>' + b.nome + ' <span style="font-weight:400;color:#7f8c8d;font-size:13px;">· ' + b.anno + '</span></h5>' +
+    esito + '<p>' + b.txt + '</p>' + campione;
+}
+
+/* ── avvio ── */
+costruisciTavolozza();
+mostraMappa(0);
+costruisciTimeline();
+costruisciSetaccio();
+</script>
+</body>
+</html>
