@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché Venezia è costruita su pali di legno che reggono da secoli?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #c0392b;
+    --accent-light: #fbe6e2;
+    --accent-mid: #e74c3c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · BATTIPALO ── */
+  .palo-modi { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .palo-modo {
+    flex: 1; min-width: 140px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 9px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .palo-modo.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .palo-controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .palo-btn {
+    flex: 1; min-width: 130px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 10px 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .palo-btn.primario { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .palo-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .palo-scena { display: grid; grid-template-columns: 1fr 150px; gap: 14px; align-items: start; }
+  .palo-svg { display: block; width: 100%; height: auto; background: #f4f7f8; border-radius: 6px; }
+  .palo-dati { display: grid; gap: 8px; }
+  .dato { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; }
+  .dato span { display: block; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .dato strong { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--accent); font-weight: 700; }
+  .palo-esito { font-size: 13.5px; line-height: 1.5; color: var(--text); background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 10px 11px; }
+
+  /* ── APPLET 2 · METRO QUADRO ── */
+  .mq-controls { margin-bottom: 16px; }
+  .mq-label { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 6px; }
+  .mq-label strong { color: var(--text); }
+  .mq-label span { color: var(--accent); font-weight: 700; }
+  .mq-range { width: 100%; accent-color: var(--accent); }
+  .mq-scena { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: center; }
+  .mq-svg { display: block; width: 100%; height: auto; }
+  .mq-out { display: grid; gap: 8px; }
+  .mq-riga { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 9px 11px; font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .mq-riga b { display: block; font-family: 'Playfair Display', serif; font-size: 21px; color: var(--accent); font-weight: 700; line-height: 1.2; }
+  .mq-verdetto { margin-top: 14px; }
+
+  /* ── APPLET 3 · LIVELLO DELL'ACQUA ── */
+  .acq-scena { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .acq-svg { display: block; width: 100%; height: auto; background: #f7f5f0; border-radius: 6px; }
+  .acq-legenda { display: grid; gap: 6px; margin-top: 14px; }
+  .acq-riga { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .acq-pallino { flex: 0 0 auto; width: 12px; height: 12px; border-radius: 3px; margin-top: 3px; }
+
+  /* ── APPLET 4 · LINEA DEL TEMPO ── */
+  .tl-track { display: flex; gap: 0; overflow-x: auto; padding: 8px 0 18px; margin-bottom: 4px; }
+  .tl-nodo {
+    flex: 1 0 auto; min-width: 92px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif; padding: 0; position: relative;
+  }
+  .tl-nodo::after { content: ""; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .tl-nodo:last-child::after { display: none; }
+  .tl-punto {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--border);
+    margin: 8px auto 8px; position: relative; z-index: 1; transition: all 0.15s;
+  }
+  .tl-nodo.attivo .tl-punto { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+  .tl-anno { font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; display: block; }
+  .tl-nodo.attivo .tl-anno { color: var(--accent); }
+
+  .tl-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+  .tl-dettaglio h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tl-dettaglio p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .tl-dettaglio em.cit { display: block; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .palo-scena { grid-template-columns: 1fr; }
+    .mq-scena { grid-template-columns: 1fr; }
+    .acq-scena { grid-template-columns: 1fr; }
+    .palo-btn, .palo-modo { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Storia</div>
+    <h1>Perché Venezia è costruita su pali di legno che reggono da secoli?</h1>
+    <div class="risposta-box">
+      <p>Perché stanno sempre sott'acqua — ma non nel modo che si racconta di solito. Il primo studio interdisciplinare sulle fondazioni veneziane ha smontato l'idea che senza ossigeno il legno sia intoccabile: i batteri anaerobi lo mangiano davvero. Regge il sistema, non il singolo palo: acqua e fango riempiono i vuoti che si aprono, e la maggior parte dei tronchi non sostiene per la punta, comprime il fango attorno a sé.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>«Palafitte» è la parola sbagliata: sotto Venezia non ci sono case su trampoli, c'è una foresta rovesciata e sepolta nel fango. Sotto le fondazioni del Ponte di Rialto sono stati contati 6.000 pali lunghi 10 piedi veneti — 3,47 metri — con diametro fra 11 e 23 centimetri, infissi in ragione di circa 25 al metro quadrato.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Batti il palo e senti dove si ferma</div>
+      <div class="applet-istruzione">Scegli quale muro stai fondando, poi dai colpi di maglio: guarda di quanti centimetri scende il palo a ogni colpo, e dove smette di scendere.</div>
+    </div>
+    <div class="palo-modi">
+      <button class="palo-modo attivo" id="modoA" onclick="setModo(0)">Facciata sul Canal Grande</button>
+      <button class="palo-modo" id="modoB" onclick="setModo(1)">Muro portante interno</button>
+    </div>
+    <div class="palo-controls">
+      <button class="palo-btn primario" id="btnColpo" onclick="colpo()">Colpo di maglio</button>
+      <button class="palo-btn" id="btnFino" onclick="finoInFondo()">Batti fino in fondo</button>
+      <button class="palo-btn" id="btnReset" onclick="resetPalo()">Ricomincia</button>
+    </div>
+    <div class="palo-scena">
+      <svg class="palo-svg" id="paloSvg" viewBox="0 0 300 330" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="300" height="40" fill="#dceaf0"></rect>
+        <rect x="0" y="40" width="300" height="90" fill="#d9cdb8"></rect>
+        <rect x="0" y="130" width="300" height="108" fill="#a8a08c"></rect>
+        <rect x="0" y="238" width="300" height="92" fill="#e0cf9a"></rect>
+        <line x1="0" y1="40" x2="300" y2="40" stroke="#b7c9d1" stroke-width="1.5"></line>
+        <line x1="0" y1="130" x2="300" y2="130" stroke="#8d8674" stroke-width="1"></line>
+        <line x1="0" y1="238" x2="300" y2="238" stroke="#b8a672" stroke-width="1.5"></line>
+        <text x="8" y="26" font-family="sans-serif" font-size="10" fill="#5b7480">acqua del canale · quota 0</text>
+        <text x="8" y="60" font-family="sans-serif" font-size="10" fill="#6b5f47">riporto (sabbia, limo, cotto) · 0 / −2,5 m</text>
+        <text x="8" y="150" font-family="sans-serif" font-size="10" fill="#3d3a31">limo argilloso e argilla molle · −2,5 / −5,5 m</text>
+        <text x="8" y="258" font-family="sans-serif" font-size="10" fill="#6b5a2a">sabbia media e fine, resistente · da −5,5 m</text>
+        <g id="tavolatoG" opacity="0">
+          <rect id="tav1" x="96" y="120" width="108" height="5" fill="#c8a06a"></rect>
+          <rect id="tav2" x="96" y="126" width="108" height="5" fill="#b58c58"></rect>
+          <rect id="murD" x="104" y="96" width="92" height="24" fill="#cfc7ba" stroke="#a89f90" stroke-width="1"></rect>
+        </g>
+        <rect id="palo" x="145" y="-108" width="10" height="108" rx="1" fill="#9a6b3f"></rect>
+        <polygon id="punta" points="145,0 155,0 150,12" fill="#7d5430"></polygon>
+        <rect id="maglio" x="132" y="-150" width="36" height="26" rx="3" fill="#5b5f66"></rect>
+        <line id="fune" x1="150" y1="-150" x2="150" y2="-170" stroke="#5b5f66" stroke-width="2"></line>
+      </svg>
+      <div class="palo-dati">
+        <div class="dato"><span>Punta del palo</span><strong id="datoProf">0,0 m</strong></div>
+        <div class="dato"><span>Colpi di maglio</span><strong id="datoColpi">0</strong></div>
+        <div class="dato"><span>Ultimo avanzamento</span><strong id="datoAvanz">—</strong></div>
+      </div>
+    </div>
+    <div class="palo-esito" id="paloEsito" style="margin-top:12px;">Il palo è appoggiato sul fondo. Comincia a battere.</div>
+    <div class="applet-fonte">
+      Stratigrafia e quote reali rilevate sotto Ca' Foscari e Ca' Giustinian dei Vescovi sul Canal Grande: F. Colleselli, <em>Le fondazioni delle costruzioni storiche in Venezia: indagini e verifiche dello stato di conservazione</em>, Università di Brescia — DICATAM (atti CIAS). I pali hanno diametro di circa 20 cm, interasse 40÷60 cm e lunghezza circa 3 m; il tavolato di facciata è impostato a −2,20/−2,30 e le punte arrivano a −5/−5,50, mentre sotto i muri interni i pali «non raggiungono lo strato sabbioso resistente: si tratta quindi di pali flottanti detti anche di costipamento». L'avanzamento per colpo è una resa illustrativa: le fonti danno le quote, non il numero di colpi.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Dove c'è, i pali si fermano sul <strong>caranto</strong>: un limo argilloso sovraconsolidato, essiccato quando la laguna era ancora terraferma, presente nel centro storico quasi ovunque a 4-5 metri con spessore da 1 a 3. L'ingegnere Eugenio Miozzi lo scriveva nel 1969: «nel caranto possono contare per l'appoggio degli edifici, ed arrestano generalmente le palificazioni al primo strato».</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Un milione e centocinquantaseimila pali: fai il conto</div>
+      <div class="applet-istruzione">Muovi il diametro dei pali e guarda quanti ne entrano davvero in un metro quadrato — poi confronta il risultato con la cifra tramandata per la Salute.</div>
+    </div>
+    <div class="mq-controls">
+      <div class="mq-label"><strong>Diametro del palo</strong><span id="mqDiam">20 cm</span></div>
+      <input class="mq-range" id="mqRange" type="range" min="10" max="30" step="1" value="20" oninput="aggiornaMq()">
+    </div>
+    <div class="mq-scena">
+      <svg class="mq-svg" id="mqSvg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="mq-out">
+        <div class="mq-riga"><b id="mqPali">25</b>pali affiancati in un metro quadrato (massimo geometrico)</div>
+        <div class="mq-riga"><b id="mqArea">46.266 m²</b>la superficie che servirebbe per 1.156.657 pali</div>
+        <div class="mq-riga"><b id="mqVolte">29 volte</b>l'area di consolidamento che Longhena stesso aveva previsto: 522 passi quadri, cioè 1.576 m²</div>
+      </div>
+    </div>
+    <div class="box-testo mq-verdetto" id="mqVerdetto"></div>
+    <div class="applet-fonte">
+      La cifra di 1.156.657 pali per Santa Maria della Salute compare nel 1663 in Giustiniano Martinioni, aggiunte a Francesco Sansovino, <em>Venetia città nobilissima et singolare</em>, senza indicazione di fonte. Il calcolo di Longhena del 1631 (522 passi quadri di consolidamento, pali lunghi almeno 4,20 m e di diametro 20÷26 cm) e la ricostruzione dell'errore sono in Antonio Lazzarini, <em>Palificate di fondazione a Venezia. La chiesa della Salute</em>, «Archivio veneto», s. V, CXXXIX (2008), 206, pp. 33-60; la densità di 25 pali al metro quadrato è quella misurata a Rialto (A. De Svaldi, A. Mazzucato, <em>Foundation analysis of the Rialto Bridge in Venice</em>, Antalya 2007). Il massimo geometrico qui mostrato assume pali affiancati a maglia quadrata.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il legno arrivava dalle montagne per fiume: larice, abete e pino dal Cadore, dalla Valsugana e dal Cansiglio; ontano, olmo, frassino e acacia per i paletti di costipamento. Sotto il Ponte di Rialto l'analisi al microscopio ha riconosciuto larice (<em>Larix decidua</em>) e ontano, e il radiocarbonio ha restituito due fasi: 1570 ± 85 — il ponte di Antonio da Ponte — e 960 ± 59, legno di sei secoli più antico rimasto lì sotto.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Abbassa l'acqua e guarda cosa succede al legno</div>
+      <div class="applet-istruzione">Sposta il livello medio dell'acqua: finché copre il tavolato non succede niente, quando scende sotto comincia il guaio.</div>
+    </div>
+    <div class="mq-controls">
+      <div class="mq-label"><strong>Livello medio dell'acqua</strong><span id="acqVal">−1,60 m</span></div>
+      <input class="mq-range" id="acqRange" type="range" min="50" max="350" step="5" value="160" oninput="aggiornaAcqua()">
+    </div>
+    <div class="acq-scena">
+      <svg class="acq-svg" id="acqSvg" viewBox="0 0 300 350" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="300" height="350" fill="#f7f5f0"></rect>
+        <rect id="acqBanda" x="0" y="118" width="300" height="232" fill="#dbeaf1"></rect>
+        <rect x="100" y="25" width="100" height="123" fill="#cfc7ba" stroke="#a89f90" stroke-width="1"></rect>
+        <text x="106" y="60" font-family="sans-serif" font-size="10" fill="#6d6659">muratura</text>
+        <text x="106" y="74" font-family="sans-serif" font-size="10" fill="#6d6659">e pietra d'Istria</text>
+        <rect id="acqTav1" x="94" y="148" width="112" height="7" fill="#c8a06a"></rect>
+        <rect id="acqTav2" x="94" y="156" width="112" height="7" fill="#b58c58"></rect>
+        <text x="212" y="158" font-family="sans-serif" font-size="10" fill="#8a7b5f">tavolato</text>
+        <text x="212" y="170" font-family="sans-serif" font-size="10" fill="#8a7b5f">−2,25 m</text>
+        <g id="paliG"></g>
+        <line id="acqLinea" x1="0" y1="118" x2="300" y2="118" stroke="#3d7f9c" stroke-width="2.5"></line>
+        <text id="acqEtichetta" x="6" y="112" font-family="sans-serif" font-size="10" fill="#2c6a86">livello medio dell'acqua</text>
+      </svg>
+      <div>
+        <div class="box-testo" id="acqTesto"></div>
+        <div class="acq-legenda">
+          <div class="acq-riga"><span class="acq-pallino" style="background:#7a8a92;"></span><span>Sempre sommerso nel fango: agiscono solo batteri anaerobi, lentissimi. Il legno si degrada, ma acqua e fango riempiono i vuoti.</span></div>
+          <div class="acq-riga"><span class="acq-pallino" style="background:#e08a2e;"></span><span>Fascia di oscillazione: bagnata e asciutta a ogni marea, è la condizione peggiore per il legno.</span></div>
+          <div class="acq-riga"><span class="acq-pallino" style="background:#a8551f;"></span><span>Fuori dall'acqua: arriva l'ossigeno, e con l'ossigeno gli organismi che decompongono il legno.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      La regola costruttiva è riportata da F. Colleselli (atti CIAS, Università di Brescia): «Gli zatteroni di legname a più strati sono posti a 2÷3 metri di profondità sotto il piano campagna in modo da rimanere sempre immersi in acqua per garantirne la conservazione», e i tavolati e i pali «posizionati sempre al di sotto del livello minimo di marea, si presentano in buono stato di conservazione, tranne quelli lungo i canali direttamente soggetti all'azione di erosione e scalzamento». Sul degrado batterico in ambiente anossico: F. C. Izzo, G. Biscontin, E. Rinaldi, <em>Il sistema delle fondazioni lignee a Venezia</em>, Corila, e comunicato Ca' Foscari del 30 giugno 2016. Le quote della scena sono quelle rilevate a Ca' Foscari; il livello dell'acqua è manipolabile solo in questa simulazione.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il luogo comune dice che senza ossigeno il legno è intoccabile. Il primo studio interdisciplinare sulle fondazioni veneziane, coordinato da Guido Biscontin di Ca' Foscari con Corila, CNR-Ivalsa e l'Università di Padova, lo ha smontato: «la forte presenza di materiale organico nell'acqua e nel terreno favorisce la presenza di batteri anaerobi che degradano il legno — tuttavia acqua e fango vanno a riempire i vuoti che si creano, garantendo il sostegno», spiega la ricercatrice Francesca Caterina Izzo.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Mille anni di legno sotto la città</div>
+      <div class="applet-istruzione">Clicca una tappa: sono tutte datazioni o misure fatte davvero, sotto edifici che stanno ancora in piedi.</div>
+    </div>
+    <div class="tl-track" id="tlTrack"></div>
+    <div class="tl-dettaglio" id="tlDettaglio"></div>
+    <div class="applet-fonte">
+      Fonti delle singole tappe: F. Colleselli (atti CIAS) per Torcello e per la stratigrafia; M. Bernabei, N. Macchioni, B. Pizzo et al., <em>The wooden foundations of Rialto Bridge (Ponte di Rialto) in Venice: technological characterisation and dating</em>, «Journal of Cultural Heritage», 2019, per le datazioni al radiocarbonio; A. Lazzarini, «Archivio veneto», 2008, per la Salute; Comune di Venezia — Centro Previsioni e Segnalazioni Maree per subsidenza ed eustatismo; comunicato Ca' Foscari, 30 giugno 2016, per lo studio Corila.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>A minacciare i pali oggi non è la marcescenza ma l'acqua che si muove: lungo i canali il moto ondoso scalza le fondazioni, e fra il 1950 e il 1970 l'emungimento delle falde ha abbassato il suolo veneziano di circa 12 centimetri. La livellazione di precisione a Ca' Foscari — mille giorni di misure a partire dal 1996 — ha registrato movimenti dell'ordine del millimetro, in sincrono con le maree: la città respira.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Venezia non sta in piedi sul legno: sta in piedi su un equilibrio fra legno, fango e acqua. E quell'equilibrio non si rompe quando l'acqua arriva — si rompe quando se ne va.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Francesco Colleselli, <em>Le fondazioni delle costruzioni storiche in Venezia: indagini e verifiche dello stato di conservazione</em>, Università di Brescia — DICATAM, atti CIAS — <a href="https://www.cias-italia.it/uploads/15.%20Colleselli.pdf">cias-italia.it</a></li>
+      <li>Eugenio Miozzi, <em>Venezia nei secoli</em>, Ed. Libeccio, vol. III, 1969 (definizione e uso del caranto, citato da Colleselli)</li>
+      <li>P. Gatto, P. Previatello, <em>Significato stratigrafico, comportamento meccanico e distribuzione nella laguna di Venezia di una argilla sovraconsolidata nota come «caranto»</em>, CNR — Laboratorio per lo studio della Dinamica delle Grandi Masse, rapporto tecnico n. 70, 1974</li>
+      <li>A. De Svaldi, A. Mazzucato, <em>Foundation analysis of the Rialto Bridge in Venice</em>, International Symposium on Studies on Historical Heritage, Antalya 2007 (6.000 pali, 3,47 m, Ø 11÷23 cm, ~25 al m²)</li>
+      <li>Mauro Bernabei, Nicola Macchioni, Benedetto Pizzo et al., <em>The wooden foundations of Rialto Bridge (Ponte di Rialto) in Venice: technological characterisation and dating</em>, «Journal of Cultural Heritage», 2019 — <a href="https://www.sciencedirect.com/science/article/abs/pii/S1296207418303868">sciencedirect.com</a></li>
+      <li>Antonio Lazzarini, <em>Palificate di fondazione a Venezia. La chiesa della Salute</em>, «Archivio veneto», s. V, CXXXIX (2008), 206, pp. 33-60</li>
+      <li>Giustiniano Martinioni, aggiunte a Francesco Sansovino, <em>Venetia città nobilissima et singolare</em>, Venezia 1663 (la cifra di 1.156.657 pali)</li>
+      <li>Guido Biscontin, Francesca Caterina Izzo, Enrico Rinaldi, <em>Il sistema delle fondazioni lignee a Venezia</em>, Corila; e <em>Legno, terra e acqua: ricerca di Ca' Foscari sulle fondazioni di Venezia</em>, cafoscariNEWS, 30 giugno 2016 — <a href="https://www.unive.it/pag/14024/?tx_news_pi1%5Bnews%5D=923">unive.it</a></li>
+      <li>Comune di Venezia, Centro Previsioni e Segnalazioni Maree, <em>La subsidenza e l'eustatismo</em> (12 cm di abbassamento 1950-1970; livello medio odierno ~32 cm sopra lo zero mareografico di Punta Salute del 1897) — <a href="https://www.comune.venezia.it/it/content/la-subsidenza-e-leustatismo">comune.venezia.it</a></li>
+      <li>Daniele Donghi, <em>La ricostruzione del campanile di S. Marco a Venezia</em>, «Giornale del Genio Civile», 1913 (rilievo della fondazione del vecchio campanile)</li>
+      <li>Giustina Renier Michiel, <em>Origine delle feste Veneziane</em>, Venezia, Gaetano Longo, 1852, p. 69 (le vittime della peste del 1630-31)</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══ APPLET 01 · BATTIPALO ══ */
+var Y0 = 40, PXM = 36, LPALO = 108;
+var modo = 0, tip = 0, colpi = 0, finito = false, autoId = null;
+var MODI = [
+  { target: 5.5, testa: 2.5,
+    fine: "Rifiuto: la punta ha trovato la sabbia media e fine a −5,5 m e non scende più. Sopra le teste si posa il doppio tavolato di larice a −2,25 m, e sul tavolato la muratura rivestita di pietra d'Istria. Questo palo porta per la punta." },
+  { target: 4.2, testa: 1.2,
+    fine: "Il palo è dentro, ma la punta è ferma nell'argilla molle: non ha trovato niente di solido. È un palo flottante, «di costipamento»: non regge appoggiandosi al fondo, regge perché comprime il fango attorno a sé — e perché è uno di decine, fitti a 40÷60 cm l'uno dall'altro." }
+];
+
+function avanzo(t) {
+  if (t < 2.5) return 0.30;
+  if (modo === 0 && t >= 5.2) return 0.05;
+  return 0.20;
+}
+
+function disegnaPalo() {
+  var apice = Y0 + tip * PXM;
+  var fondo = apice - 12;
+  var testa = fondo - LPALO;
+  var p = document.getElementById('palo');
+  p.setAttribute('y', testa);
+  document.getElementById('punta').setAttribute('points', '145,' + fondo + ' 155,' + fondo + ' 150,' + apice);
+  document.getElementById('maglio').setAttribute('y', testa - 34);
+  document.getElementById('fune').setAttribute('y1', testa - 34);
+  document.getElementById('fune').setAttribute('y2', testa - 56);
+  document.getElementById('datoProf').textContent = '−' + tip.toFixed(2).replace('.', ',') + ' m';
+  document.getElementById('datoColpi').textContent = colpi;
+}
+
+function mostraTavolato() {
+  var testa = Y0 + tip * PXM - 12 - LPALO;
+  document.getElementById('tav1').setAttribute('y', testa - 11);
+  document.getElementById('tav2').setAttribute('y', testa - 5);
+  document.getElementById('murD').setAttribute('y', testa - 35);
+  document.getElementById('tavolatoG').setAttribute('opacity', 1);
+}
+
+function colpo() {
+  if (finito) return;
+  var a = avanzo(tip);
+  tip = Math.min(tip + a, MODI[modo].target);
+  colpi++;
+  document.getElementById('datoAvanz').textContent = Math.round(a * 100) + ' cm';
+  disegnaPalo();
+  var m = document.getElementById('maglio');
+  m.setAttribute('y', parseFloat(m.getAttribute('y')) + 9);
+  setTimeout(disegnaPalo, 90);
+  if (tip >= MODI[modo].target - 0.001) {
+    finito = true;
+    if (autoId) { clearInterval(autoId); autoId = null; }
+    mostraTavolato();
+    document.getElementById('paloEsito').textContent = MODI[modo].fine;
+    document.getElementById('btnColpo').disabled = true;
+    document.getElementById('btnFino').disabled = true;
+  } else if (tip >= 2.5) {
+    document.getElementById('paloEsito').textContent = 'La punta è nell’argilla molle: il palo scende ancora, ma di meno. Qui il terreno non porta, si limita a stringere il tronco.';
+  } else {
+    document.getElementById('paloEsito').textContent = 'Il palo attraversa il terreno di riporto: sabbia, limo argilloso, frammenti di cotto. Scende come nel burro.';
+  }
+}
+
+function finoInFondo() {
+  if (finito || autoId) return;
+  autoId = setInterval(function () { colpo(); }, 130);
+}
+
+function resetPalo() {
+  if (autoId) { clearInterval(autoId); autoId = null; }
+  tip = 0; colpi = 0; finito = false;
+  document.getElementById('tavolatoG').setAttribute('opacity', 0);
+  document.getElementById('datoAvanz').textContent = '—';
+  document.getElementById('btnColpo').disabled = false;
+  document.getElementById('btnFino').disabled = false;
+  document.getElementById('paloEsito').textContent = 'Il palo è appoggiato sul fondo. Comincia a battere.';
+  disegnaPalo();
+}
+
+function setModo(i) {
+  modo = i;
+  document.getElementById('modoA').classList.toggle('attivo', i === 0);
+  document.getElementById('modoB').classList.toggle('attivo', i === 1);
+  resetPalo();
+}
+
+/* ══ APPLET 02 · QUANTI PALI IN UN METRO QUADRO ══ */
+function aggiornaMq() {
+  var d = parseInt(document.getElementById('mqRange').value, 10);
+  var n = Math.floor(100 / d);
+  var tot = n * n;
+  var area = Math.round(1156657 / tot);
+  var volte = area / 1576;
+
+  document.getElementById('mqDiam').textContent = d + ' cm';
+  document.getElementById('mqPali').textContent = tot;
+  document.getElementById('mqArea').textContent = area.toLocaleString('it-IT') + ' m²';
+  document.getElementById('mqVolte').textContent = (volte >= 10 ? Math.round(volte) : volte.toFixed(1).replace('.', ',')) + ' volte';
+
+  var svg = document.getElementById('mqSvg');
+  var s = '<rect x="0" y="0" width="220" height="220" fill="#faf8f4" stroke="#c0392b" stroke-width="2"></rect>';
+  var cella = 220 / n, r = d * 1.1;
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      s += '<circle cx="' + (cella * (i + 0.5)).toFixed(1) + '" cy="' + (cella * (j + 0.5)).toFixed(1) +
+           '" r="' + r.toFixed(1) + '" fill="#c8a06a" stroke="#8d6a3c" stroke-width="0.8"></circle>';
+    }
+  }
+  svg.innerHTML = s;
+
+  document.getElementById('mqVerdetto').innerHTML =
+    'Con pali da <strong>' + d + ' cm</strong> in un metro quadrato ne entrano <strong>' + tot + '</strong>. ' +
+    'Per infiggerne 1.156.657 servirebbero <strong>' + area.toLocaleString('it-IT') + ' m²</strong>: ' +
+    (volte >= 10 ? Math.round(volte) : volte.toFixed(1).replace('.', ',')) + ' volte l’area che Longhena aveva calcolato nel 1631. ' +
+    'Alla densità di 25 pali al metro quadrato misurata a Rialto, sui 1.576 m² previsti dall’architetto i pali sarebbero circa 39.400; ' +
+    'le stime moderne, allargando la superficie a tutto lo spiazzo, si fermano intorno ai 100.000. La cifra del 1663 è fuori scala di un fattore dieci.';
+}
+
+/* ══ APPLET 03 · LIVELLO DELL'ACQUA ══ */
+var AY0 = 25, APXM = 55, PALO_TOP = 157, PALO_FONDO = 322;
+var XPALI = [112, 145, 178];
+
+function aggiornaAcqua() {
+  var L = parseInt(document.getElementById('acqRange').value, 10) / 100;
+  var yW = AY0 + L * APXM;
+  document.getElementById('acqVal').textContent = '−' + L.toFixed(2).replace('.', ',') + ' m';
+  document.getElementById('acqLinea').setAttribute('y1', yW);
+  document.getElementById('acqLinea').setAttribute('y2', yW);
+  document.getElementById('acqEtichetta').setAttribute('y', yW - 6);
+  document.getElementById('acqBanda').setAttribute('y', yW);
+  document.getElementById('acqBanda').setAttribute('height', 350 - yW);
+
+  var espostoFino = Math.max(PALO_TOP, Math.min(yW - 8, PALO_FONDO));
+  var osciFino = Math.max(PALO_TOP, Math.min(yW + 8, PALO_FONDO));
+  var s = '';
+  for (var i = 0; i < XPALI.length; i++) {
+    var x = XPALI[i];
+    if (espostoFino > PALO_TOP) s += '<rect x="' + x + '" y="' + PALO_TOP + '" width="11" height="' + (espostoFino - PALO_TOP) + '" fill="#a8551f"></rect>';
+    if (osciFino > espostoFino) s += '<rect x="' + x + '" y="' + espostoFino + '" width="11" height="' + (osciFino - espostoFino) + '" fill="#e08a2e"></rect>';
+    if (PALO_FONDO > osciFino) s += '<rect x="' + x + '" y="' + osciFino + '" width="11" height="' + (PALO_FONDO - osciFino) + '" fill="#7a8a92"></rect>';
+    s += '<polygon points="' + x + ',' + PALO_FONDO + ' ' + (x + 11) + ',' + PALO_FONDO + ' ' + (x + 5.5) + ',' + (PALO_FONDO + 12) + '" fill="#66737a"></polygon>';
+  }
+  document.getElementById('paliG').innerHTML = s;
+
+  var tavEsposto = L > 2.25;
+  document.getElementById('acqTav1').setAttribute('fill', tavEsposto ? '#b4703a' : '#c8a06a');
+  document.getElementById('acqTav2').setAttribute('fill', tavEsposto ? '#a8551f' : '#b58c58');
+
+  var t;
+  if (L <= 2.10) {
+    t = 'Condizione normale. Tavolato e teste dei pali stanno sotto il livello minimo di marea: nessun ossigeno, nessun fungo. Lavorano solo i batteri anaerobi, e i vuoti che aprono si riempiono di acqua e fango. È la ragione per cui gli zatteroni si posano apposta a 2÷3 metri di profondità.';
+  } else if (L <= 2.45) {
+    t = 'Il tavolato è entrato nella fascia di oscillazione: bagnato e asciutto a ogni marea. È la condizione peggiore, perché alterna ossigeno e umidità — esattamente quella che la regola costruttiva veneziana era fatta per evitare.';
+  } else {
+    t = 'Tavolato e teste dei pali sono all’asciutto. Arriva l’ossigeno e con l’ossigeno gli organismi che decompongono il legno. Non è uno scenario di fantasia: fra il 1950 e il 1970 l’emungimento delle falde, soprattutto a Marghera, ha abbassato il suolo veneziano di circa 12 centimetri.';
+  }
+  document.getElementById('acqTesto').innerHTML = t;
+}
+
+/* ══ APPLET 04 · LINEA DEL TEMPO ══ */
+var tappe = [
+  { anno: '970', tit: 'Torcello, il palo più vecchio datato',
+    txt: 'Il campanile di Santa Maria Assunta, antica sede patriarcale, poggia su uno zatterone di tavoloni sostenuto da una palificata alta circa due metri. Le indagini del 2010 hanno trovato pali lunghi 1,3÷1,5 metri: l’analisi dendrocronologica (olmo e faggio) ha datato un elemento all’anno 970, confermato dal radiocarbonio.',
+    cit: '«Il tavolato e i pali si presentano in un buono stato di conservazione. I pali della lunghezza di circa 1,3÷1,5 m sono risultati integri.»' },
+  { anno: '960 ± 59', tit: 'Sotto Rialto c’è un ponte più antico',
+    txt: 'I campioni prelevati dalle fondazioni del Ponte di Rialto sono stati identificati al microscopio come larice (Larix decidua) e ontano. Il radiocarbonio ha restituito due fasi costruttive distinte: 1570 ± 85, il ponte di pietra, e 960 ± 59 — legno rimasto lì da prima dell’anno Mille.' },
+  { anno: '1587-91', tit: 'Antonio da Ponte conta i suoi pali',
+    txt: 'Per fondare l’unico arco di pietra d’Istria che scavalca il Canal Grande vengono infissi 6.000 pali lunghi 10 piedi veneti (3,47 m), di diametro fra 11 e 23 centimetri, disposti a circa 25 al metro quadrato. Sopra, un doppio strato di tavoloni di larice.' },
+  { anno: '1631', tit: 'Longhena mette per iscritto la superficie',
+    txt: 'Dopo la peste che uccise 80.000 veneziani, il voto della città diventa la basilica della Salute. Per il consolidamento del terreno Longhena prevede 522 passi quadri — 1.576 metri quadrati — e specifica lunghezza, diametro ed essenza dei tolpi: almeno 4,20 metri, fra 20 e 26 centimetri.' },
+  { anno: '1663', tit: 'Nasce la cifra che tutti ripetono',
+    txt: 'Giustiniano Martinioni, nelle sue aggiunte al Sansovino, scrive che sotto la Salute ci sono 1.156.657 pali. Non indica da dove venga il numero. Da lì passa alle guide, ai giornali e ai depliant per tre secoli e mezzo.' },
+  { anno: '1902', tit: 'Il campanile cade, la fondazione no',
+    txt: 'Il 14 luglio, alle 9.47, il campanile di San Marco si accartoccia su sé stesso senza fare vittime. Ispezionati, i pali della fondazione medievale risultano in buono stato e richiedono solo un rinforzo moderato: la torre viene ricostruita «dov’era e com’era» e inaugurata il 25 aprile 1912.' },
+  { anno: '1950-70', tit: 'La città si abbassa',
+    txt: 'L’emungimento delle falde acquifere, cospicuo nella zona industriale di Marghera, abbassa il suolo veneziano di circa 12 centimetri in vent’anni. Sommato all’innalzamento del mare, porta il livello medio odierno a circa 32 centimetri sopra lo zero mareografico fissato a Punta Salute nel 1897.' },
+  { anno: '2008-16', tit: 'I conti tornano, il legno un po’ meno',
+    txt: 'Antonio Lazzarini ricostruisce sull’«Archivio veneto» l’errore di calcolo dietro il milione di pali. Nello stesso periodo lo studio coordinato da Guido Biscontin con Corila, CNR-Ivalsa e Padova conclude che la chiave non è il legno da solo.',
+    cit: '«La chiave è l’equilibrio fisico, chimico e meccanico tra legno, terra e acqua.»' }
+];
+
+function costruisciTimeline() {
+  var track = document.getElementById('tlTrack');
+  for (var i = 0; i < tappe.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'tl-nodo' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<div class="tl-punto"></div><span class="tl-anno">' + tappe[i].anno + '</span>';
+    b.onclick = (function (k) { return function () { mostraTappa(k); }; })(i);
+    track.appendChild(b);
+  }
+  mostraTappa(0);
+}
+
+function mostraTappa(i) {
+  var nodi = document.querySelectorAll('.tl-nodo');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  var t = tappe[i];
+  var html = '<h4>' + t.tit + '</h4><p>' + t.txt + '</p>';
+  if (t.cit) html += '<em class="cit">' + t.cit + '</em>';
+  document.getElementById('tlDettaglio').innerHTML = html;
+}
+
+resetPalo();
+aggiornaMq();
+aggiornaAcqua();
+costruisciTimeline();
+</script>
+</body>
+</html>
