@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché il miele non scade mai?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #16a085;
+    --accent-light: #dcf3ee;
+    --accent-mid: #1abc9c;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · IL VASETTO ── */
+  .vaso-controls { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .vaso-btn {
+    flex: 1; min-width: 150px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .vaso-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .vaso-btn.azione { background: #fff; border-color: var(--accent); color: var(--accent); }
+  .vaso-btn.azione:disabled { opacity: 0.4; cursor: default; border-color: var(--border); color: var(--muted); }
+
+  .vaso-scena { display: grid; grid-template-columns: 168px 1fr; gap: 16px; align-items: stretch; margin-top: 10px; }
+  .vaso-wrap { background: #fdf8ec; border-radius: 6px; overflow: hidden; }
+  .vaso-svg { display: block; width: 100%; height: auto; }
+  .vaso-diario {
+    background: #faf8f4; border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px 14px; font-size: 13.5px; line-height: 1.5;
+    overflow-y: auto; max-height: 236px;
+  }
+  .vaso-diario div { padding: 2px 0; color: var(--muted); }
+  .vaso-diario div.forte { color: var(--accent); font-weight: 600; }
+  .vaso-diario div.esito { color: var(--text); font-weight: 600; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; }
+
+  /* ── APPLET 2 · RIGHELLO ACQUA ATTIVA ── */
+  .aw-track { position: relative; height: 64px; margin: 10px 0 18px; }
+  .aw-linea { position: absolute; top: 30px; left: 0; right: 0; height: 3px; background: var(--border); border-radius: 2px; }
+  .aw-banda { position: absolute; top: 18px; height: 27px; background: var(--accent-light); border: 1px dashed var(--accent); border-radius: 3px; }
+  .aw-banda span { position: absolute; top: -19px; right: 0; font-size: 10.5px; font-weight: 600; color: var(--accent); white-space: nowrap; letter-spacing: 0.04em; }
+  .aw-dot { position: absolute; top: 25px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: #fff; border: 2.5px solid var(--muted); transition: all 0.2s; }
+  .aw-dot.attivo { background: var(--accent); border-color: var(--accent); transform: scale(1.45); }
+  .aw-scala { position: absolute; top: 48px; left: 0; right: 0; display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+
+  .aw-lista { display: grid; gap: 6px; margin-bottom: 16px; }
+  .aw-btn {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    text-align: left; font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 8px 12px; cursor: pointer; transition: all 0.15s;
+  }
+  .aw-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .aw-btn em { font-style: normal; font-weight: 400; font-size: 12.5px; opacity: 0.85; white-space: nowrap; }
+  .aw-verdetto { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 2px; margin-bottom: 8px; color: #fff; }
+
+  /* ── APPLET 3 · CALCOLATORE FERMENTAZIONE ── */
+  .cf-riga { margin-bottom: 16px; }
+  .cf-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .cf-label span { color: var(--accent); font-weight: 700; }
+  .cf-slider { width: 100%; accent-color: #16a085; }
+  .cf-opzioni { display: flex; gap: 6px; flex-wrap: wrap; }
+  .cf-opz {
+    flex: 1; min-width: 74px; font-family: 'Source Sans 3', sans-serif; font-size: 12.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 8px 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .cf-opz.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cf-esito { border-radius: 4px; padding: 14px 16px; color: #fff; margin-top: 20px; }
+  .cf-esito strong { display: block; font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 5px; }
+  .cf-esito p { font-size: 14px; line-height: 1.55; }
+  .cf-nota { font-size: 13px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
+  /* ── APPLET 4 · INVECCHIAMENTO ── */
+  .tp-wrap { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tp-btn {
+    flex: 1; min-width: 78px; font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .tp-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .grafico-box { position: relative; height: 270px; margin-bottom: 10px; }
+  .tp-sintesi { font-size: 14.5px; line-height: 1.6; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .vaso-btn { min-width: 100%; }
+    .vaso-scena { grid-template-columns: 116px 1fr; gap: 12px; }
+    .aw-btn { font-size: 12.5px; }
+    .aw-btn em { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Scienze</div>
+    <h1>Perché il miele non scade mai?</h1>
+    <div class="risposta-box">
+      <p>Perché non c'è abbastanza acqua libera perché qualcosa ci viva dentro: 17,2% di acqua in media, pH 3,91, più un enzima delle api che libera acqua ossigenata. Ma «non marcisce» non significa «non scade»: il miele invecchia eccome, e a 20 °C sfonda il tetto di legge europeo sull'HMF in due anni e mezzo. Infatti sul vasetto la data c'è, per obbligo.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: agosto 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>Il nettare che le api raccolgono è acqua per il 60-80%: una roba che va a male in un giorno. Le api non ci aggiungono conservanti — ne tolgono l'acqua ventilandola con le ali finché ne resta meno di un quinto. Nei 490 mieli analizzati da J. W. White per il Bollettino tecnico 1261 dell'USDA (1962) l'acqua media è il 17,2%, il pH medio 3,91: più acido di una birra.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Le due difese del vasetto</div>
+      <div class="applet-istruzione">Scegli in che stato è il miele, poi lasciaci cadere dentro un batterio e guarda che cosa lo uccide. Le due difese non lavorano mai insieme.</div>
+    </div>
+    <div class="vaso-controls">
+      <button class="vaso-btn attivo" id="btnPuro" onclick="impostaStato('puro')">Miele sigillato · 17% acqua</button>
+      <button class="vaso-btn" id="btnDiluito" onclick="impostaStato('diluito')">Con un cucchiaio d'acqua · 35%</button>
+    </div>
+    <div class="vaso-controls">
+      <button class="vaso-btn azione" id="btnBatterio" onclick="lanciaBatterio()">Lascia cadere un batterio</button>
+    </div>
+    <div class="vaso-scena">
+      <div class="vaso-wrap">
+        <svg class="vaso-svg" id="vasoSvg" viewBox="0 0 170 250" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="170" height="250" fill="#fdf8ec"></rect>
+          <rect x="40" y="16" width="90" height="14" rx="3" fill="#b8a184"></rect>
+          <path d="M42 32 L42 226 Q42 236 52 236 L118 236 Q128 236 128 226 L128 32 Z" fill="#f7f1e4" stroke="#d8cdb8" stroke-width="2"></path>
+          <path id="mieleCorpo" d="M44 72 L44 226 Q44 234 52 234 L118 234 Q126 234 126 226 L126 72 Z" fill="#e8a317"></path>
+          <line id="mieleSup" x1="44" y1="72" x2="126" y2="72" stroke="#c98a0d" stroke-width="2"></line>
+          <g id="particelle"></g>
+          <ellipse id="batterio" cx="85" cy="-30" rx="13" ry="9" fill="#3a6ea5" stroke="#254c74" stroke-width="2" opacity="0"></ellipse>
+          <text id="etichettaAw" x="85" y="248" text-anchor="middle" font-family="sans-serif" font-size="10.5" fill="#7f8c8d"></text>
+        </svg>
+      </div>
+      <div class="vaso-diario" id="vasoDiario">
+        <div>Vasetto chiuso, miele appena smielato.</div>
+        <div>Acqua 17% · acqua attiva circa 0,58 · pH 3,9.</div>
+      </div>
+    </div>
+    <div class="applet-fonte">
+      Meccanismo e valori da J. W. White Jr. e L. W. Doner, <em>Honey Composition and Properties</em>, in «Beekeeping in the United States», USDA Agriculture Handbook 335, ed. riveduta 1980, pp. 82-91: «Honey is not a suitable medium for bacteria for two reasons – it is fairly acid and it is too high in sugar content for growth to occur… It seems to function by literally drying out the bacteria». Nello stesso testo, nove batteri patogeni aggiunti al miele morirono tutti «within a few hours or days»; e fu White nel 1963 a dimostrare che l'attività antibatterica chiamata <em>inhibine</em> è acqua ossigenata che si accumula <strong>solo nel miele diluito</strong>. Durata dell'animazione e numero di particelle sono illustrativi: le fonti descrivono il meccanismo, non la cinetica.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La seconda difesa è un paradosso: la glucosio ossidasi, l'enzima che le api aggiungono al nettare con la saliva, converte il glucosio in acido gluconico — il principale acido del miele — e in acqua ossigenata. Ma nel vasetto sigillato non lavora quasi: le serve acqua. Per questo il miele medicato non è folklore: le garze MEDIHONEY sono in commercio negli ospedali dal decennio scorso e funzionano perché sulla ferita umida l'enzima finalmente si sveglia.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Il righello dell'acqua attiva</div>
+      <div class="applet-istruzione">L'acqua attiva (a<sub>w</sub>) misura quanta acqua è davvero disponibile, da 1,00 in giù. Clicca un microrganismo per vedere dove si ferma — e chi invece arriva dentro la fascia del miele.</div>
+    </div>
+    <div class="aw-track">
+      <div class="aw-linea"></div>
+      <div class="aw-banda" id="awBanda"><span>fascia del miele · a<sub>w</sub> 0,50-0,65</span></div>
+      <div id="awDots"></div>
+      <div class="aw-scala"><span>0,95</span><span>0,85</span><span>0,75</span><span>0,65</span><span>0,55</span></div>
+    </div>
+    <div class="aw-lista" id="awLista"></div>
+    <div class="box-testo" id="awDettaglio"></div>
+    <div class="applet-fonte">
+      Soglie minime di crescita da G. V. Barbosa-Cánovas, A. J. Fontana, S. J. Schmidt e T. P. Labuza (a cura di), <em>Water Activity in Foods: Fundamentals and Applications</em>, Wiley-Blackwell, e dalla scheda <em>Water Activity 102: Microbial Growth</em> di METER Group/AQUALAB: <em>Clostridium botulinum</em> non cresce sotto 0,94, i batteri alteranti e patogeni comuni sotto 0,91, <em>Staphylococcus aureus</em> arriva a 0,86, le muffe alteranti comuni si fermano a 0,80, le muffe xerofile sono documentate fino a circa 0,65 e i lieviti osmofili fino a 0,60. La fascia del miele (a<sub>w</sub> 0,50-0,65) è quella riportata da J. Chirife, M. C. Zamora e A. Motto, <em>The correlation between water activity and % moisture in honey</em>, «Journal of Food Engineering», 2006.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>C'è però una cosa che l'osmosi non uccide: le spore. Sono cellule in quiescenza, già disidratate per conto loro, e nel miele restano intatte per anni. Nel 1979 Stephen Arnon e colleghi, indagando i casi di botulismo infantile in California, trovarono spore di <em>Clostridium botulinum</em> in 9 campioni di miele su 90. È per questo che il miele non si dà ai bambini sotto i dodici mesi: nel loro intestino, ancora senza flora batterica matura, la spora germina.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Questo miele fermenterà?</div>
+      <div class="applet-istruzione">Sposta l'acqua, scegli quanti lieviti ci sono e a che temperatura tieni il vasetto: il verdetto segue le soglie pubblicate dall'USDA, non una stima a occhio.</div>
+    </div>
+    <div class="cf-riga">
+      <div class="cf-label">Acqua nel miele <span id="cfAcquaVal">17,0%</span></div>
+      <input class="cf-slider" type="range" id="cfAcqua" min="130" max="220" step="5" value="170" oninput="calcolaFerm()">
+    </div>
+    <div class="cf-riga">
+      <div class="cf-label">Spore di lievito per grammo</div>
+      <div class="cf-opzioni" id="cfSpore">
+        <button class="cf-opz attivo" data-v="1" onclick="setSpore(1,this)">1</button>
+        <button class="cf-opz" data-v="10" onclick="setSpore(10,this)">10</button>
+        <button class="cf-opz" data-v="1000" onclick="setSpore(1000,this)">1.000</button>
+        <button class="cf-opz" data-v="10000" onclick="setSpore(10000,this)">10.000</button>
+      </div>
+    </div>
+    <div class="cf-riga">
+      <div class="cf-label">Temperatura di conservazione</div>
+      <div class="cf-opzioni" id="cfTemp">
+        <button class="cf-opz" data-v="8" onclick="setTemp(8,this)">8 °C</button>
+        <button class="cf-opz attivo" data-v="16" onclick="setTemp(16,this)">16 °C</button>
+        <button class="cf-opz" data-v="24" onclick="setTemp(24,this)">24 °C</button>
+        <button class="cf-opz" data-v="30" onclick="setTemp(30,this)">30 °C</button>
+      </div>
+    </div>
+    <div class="cf-esito" id="cfEsito"></div>
+    <div class="cf-nota" id="cfNota"></div>
+    <div class="applet-fonte">
+      Soglie da White e Doner, <em>Honey Composition and Properties</em>, USDA Agriculture Handbook 335, 1980: «Honey with less than 17.1 percent water will not ferment in a year, irrespective of the yeast count. Between 17.1 and 18 percent moisture, honey with 1,000 yeast spores or less per gram will be safe for a year. When moisture is between 18.1 and 19 percent, not more than 10 yeast spores per gram can be present for safe storage. Above 19 percent water, honey can be expected to ferment even with only one spore per gram». Per la temperatura, stesso testo: «Honey with a high moisture content will not ferment below 50ºF or above about 80º» (10 °C / 27 °C) e «honey even of relatively low water content will ferment at 60º» (15,5 °C). Il lievito responsabile appartiene quasi sempre al genere <em>Zygosaccharomyces</em>: la specie <em>Z. favi</em> è stata descritta come nuova nel 2015 proprio a partire da miele e pane d'api.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>E i vasetti dei faraoni ancora commestibili? L'articolo dello Smithsonian del 22 agosto 2013 che ha reso virale quella storia non rimanda a un rapporto di scavo, ma a un libro divulgativo, <em>Letters from the Hive</em> di Stephen Buchmann. Il miele antico davvero documentato è un altro: nel 2003, scavando il kurgan di Kodiani presso Sakire (Borjomi, Georgia) durante i lavori dell'oleodotto Baku-Tbilisi-Ceyhan, sono usciti vasi con residui identificati al laboratorio palinologico del Museo Nazionale Georgiano come miele di tiglio, di fiori di prato e di bacche. Ha 5.500 anni. Ma sono tracce sulle pareti interne, non miele da mangiare.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Il miele invecchia: quanto in fretta dipende da te</div>
+      <div class="applet-istruzione">Scegli dove tieni il vasetto e guarda le due lancette dell'invecchiamento: l'HMF che sale verso il tetto di legge, la diastasi che scende verso il minimo di legge.</div>
+    </div>
+    <div class="tp-wrap">
+      <button class="tp-btn" data-t="15" onclick="setTempConserv(15,this)">15 °C · cantina</button>
+      <button class="tp-btn attivo" data-t="20" onclick="setTempConserv(20,this)">20 °C · dispensa</button>
+      <button class="tp-btn" data-t="25" onclick="setTempConserv(25,this)">25 °C · cucina</button>
+      <button class="tp-btn" data-t="32" onclick="setTempConserv(32,this)">32 °C · estate</button>
+    </div>
+    <div class="grafico-box"><canvas id="graficoEta"></canvas></div>
+    <div class="box-testo tp-sintesi" id="tpSintesi"></div>
+    <div class="applet-fonte">
+      Curva dell'HMF costruita sul tasso misurato da A. Kandolf (2007) su miele conservato un anno a circa 20 °C, +16 mg/kg all'anno, riscalato con Q<sub>10</sub> ≈ 3 (energia di attivazione ≈ 76 kJ/mol) per le altre temperature, partendo da zero per leggere direttamente l'accumulo. Curva della diastasi calcolata dai tempi di dimezzamento pubblicati da White e Doner (USDA Handbook 335, 1980): 1.500 giorni a 68 °F (20 °C), 540 a 77 °F (25 °C), 126 a 90 °F (32 °C); il valore per 15 °C è estrapolato con lo stesso Q<sub>10</sub>. Partenza da 20,8 unità Schade, la media dei 270 mieli misurati nel Bollettino USDA 1261. Limiti di legge (HMF 40 mg/kg, diastasi 8) dalla direttiva 2001/110/CE, recepita in Italia col d.lgs. 179/2004. È una proiezione da dati pubblicati, non la misura di un vasetto reale.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La legge lo dice meglio di qualunque leggenda. La direttiva 2001/110/CE fissa per il miele acqua non oltre il 20%, HMF non oltre 40 mg/kg e indice diastasico non sotto 8: oltre quelle soglie non è più commerciabile come miele. E l'allegato X del regolamento UE 1169/2011, che esenta dalla data aceti, sale da cucina, zuccheri allo stato solido e gomme da masticare, il miele non lo nomina: il «da consumarsi preferibilmente entro» va messo, di norma a 24-36 mesi. Il calore accelera tutto: secondo White un'ora a 63 °C in lavorazione equivale a quaranta giorni di magazzino a 25 °C.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Il miele non è eterno: è solo l'unico alimento che invecchia senza mai marcire. Le api non gli hanno aggiunto un conservante — gli hanno tolto l'acqua, e con l'acqua hanno tolto la stanza in cui la putrefazione va ad abitare.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>J. W. White Jr. e L. W. Doner, <em>Honey Composition and Properties</em>, in «Beekeeping in the United States», USDA Agriculture Handbook 335, ed. riveduta ottobre 1980, pp. 82-91 (composizione media, soglie di fermentazione, emivite di diastasi e invertasi, natura dell'<em>inhibine</em>) — <a href="https://sites.evergreen.edu/terroir-spring/wp-content/uploads/sites/186/2016/03/Honey-Composition-and-Properties.pdf">testo integrale</a></li>
+      <li>J. W. White Jr., M. L. Riethof, M. H. Subers e I. Kushnir, <em>Composition of American Honeys</em>, USDA Technical Bulletin 1261, 1962: 490 campioni, acqua media 17,2% (13,4-22,9), levulosio 38,19%, destrosio 31,28%, pH medio 3,91, diastasi media 20,8</li>
+      <li>Direttiva 2001/110/CE del Consiglio del 20 dicembre 2001 concernente il miele, allegato II: acqua ≤ 20% (23% per il miele di <em>Calluna</em>), HMF ≤ 40 mg/kg (80 per i mieli di clima tropicale), indice diastasico ≥ 8 — <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/PDF/?uri=CELEX%3A02001L0110-20140623">EUR-Lex</a>; recepimento italiano: d.lgs. 21 maggio 2004 n. 179</li>
+      <li>Regolamento (UE) 1169/2011, art. 24 e allegato X punto 1 lettera d): elenco degli alimenti esenti dal termine minimo di conservazione (ortofrutticoli freschi, vini, bevande sopra il 10% vol., prodotti da forno consumati entro 24 ore, aceti, sale da cucina, zuccheri allo stato solido, prodotti di confetteria di soli zuccheri, gomme da masticare) — il miele non vi compare</li>
+      <li>S. S. Arnon, T. F. Midura, K. Damus, R. M. Wood e J. Chin, <em>Honey and other environmental risk factors for infant botulism</em>, «The Journal of Pediatrics», 94(2), 1979, pp. 331-336: spore di <em>C. botulinum</em> in 9 campioni di miele su 90 — <a href="https://pubmed.ncbi.nlm.nih.gov/368301/">PubMed</a></li>
+      <li>A. Kandolf, misure sull'aumento dell'HMF dopo un anno di conservazione a circa 20 °C (+16 mg/kg all'anno, 1-2 mg/kg al mese), 2007</li>
+      <li>J. Chirife, M. C. Zamora e A. Motto, <em>The correlation between water activity and % moisture in honey: Fundamental aspects and application to Argentine honeys</em>, «Journal of Food Engineering», vol. 72, 2006</li>
+      <li>G. V. Barbosa-Cánovas, A. J. Fontana, S. J. Schmidt e T. P. Labuza (a cura di), <em>Water Activity in Foods: Fundamentals and Applications</em>, Wiley-Blackwell; scheda <em>Water Activity 102: Microbial Growth</em>, METER Group/AQUALAB — <a href="https://aqualab.com/learn/water-activity-102-microbial-growth">aqualab.com</a></li>
+      <li>Natasha Geiling, <em>The Science Behind Honey's Eternal Shelf Life</em>, «Smithsonian Magazine», 22 agosto 2013, con l'intervista ad Amina Harris (Honey and Pollination Center, UC Davis): «Honey in its natural form is very low moisture. Very few bacteria or microorganisms can survive in an environment like that» — <a href="https://www.smithsonianmag.com/science-nature/the-science-behind-honeys-eternal-shelf-life-1218690/">smithsonianmag.com</a></li>
+      <li>Analisi palinologiche del Museo Nazionale Georgiano sui vasi del kurgan di Kodiani presso Sakire (Borjomi), scavo del 2003 lungo l'oleodotto Baku-Tbilisi-Ceyhan; sintesi in <em>Report: Georgia Unearths the World's Oldest Honey</em>, «Eurasianet» — <a href="https://eurasianet.org/report-georgia-unearths-the-worlds-oldest-honey">eurasianet.org</a></li>
+      <li>A. Čadež, N. Fujii, T. Sipiczki et al., <em>Zygosaccharomyces favi sp. nov., an obligate osmophilic yeast species from bee bread and honey</em>, «Antonie van Leeuwenhoek», 2015 — <a href="https://pubmed.ncbi.nlm.nih.gov/25528339/">PubMed</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════════ APPLET 01 · IL VASETTO ══════════ */
+var statoMiele = 'puro';
+var animAttiva = false;
+
+function diario(testo, classe) {
+  var d = document.getElementById('vasoDiario');
+  var riga = document.createElement('div');
+  if (classe) riga.className = classe;
+  riga.innerHTML = testo;
+  d.appendChild(riga);
+  d.scrollTop = d.scrollHeight;
+}
+
+function impostaStato(s) {
+  if (animAttiva) return;
+  statoMiele = s;
+  document.getElementById('btnPuro').classList.toggle('attivo', s === 'puro');
+  document.getElementById('btnDiluito').classList.toggle('attivo', s === 'diluito');
+  document.getElementById('particelle').innerHTML = '';
+  document.getElementById('batterio').setAttribute('opacity', 0);
+  document.getElementById('vasoDiario').innerHTML = '';
+  document.getElementById('etichettaAw').textContent = '';
+  if (s === 'puro') {
+    document.getElementById('mieleCorpo').setAttribute('fill', '#e8a317');
+    document.getElementById('mieleCorpo').setAttribute('d', 'M44 72 L44 226 Q44 234 52 234 L118 234 Q126 234 126 226 L126 72 Z');
+    document.getElementById('mieleSup').setAttribute('y1', 72);
+    document.getElementById('mieleSup').setAttribute('y2', 72);
+    diario('Vasetto chiuso, miele appena smielato.');
+    diario('Acqua 17% · acqua attiva circa 0,58 · pH 3,9.');
+  } else {
+    document.getElementById('mieleCorpo').setAttribute('fill', '#efc063');
+    document.getElementById('mieleCorpo').setAttribute('d', 'M44 52 L44 226 Q44 234 52 234 L118 234 Q126 234 126 226 L126 52 Z');
+    document.getElementById('mieleSup').setAttribute('y1', 52);
+    document.getElementById('mieleSup').setAttribute('y2', 52);
+    diario('Hai versato acqua nel vasetto.');
+    diario('Acqua 35% · acqua attiva sopra 0,90: la barriera osmotica non c’è più.');
+  }
+}
+
+function nuovaParticella(x, y, colore, testo) {
+  var g = document.getElementById('particelle');
+  var el = document.createElementNS('http://www.w3.org/2000/svg', testo ? 'text' : 'circle');
+  if (testo) {
+    el.setAttribute('x', x); el.setAttribute('y', y);
+    el.setAttribute('font-family', 'sans-serif'); el.setAttribute('font-size', '9');
+    el.setAttribute('text-anchor', 'middle'); el.setAttribute('fill', colore);
+    el.textContent = testo;
+  } else {
+    el.setAttribute('cx', x); el.setAttribute('cy', y);
+    el.setAttribute('r', 2.6); el.setAttribute('fill', colore);
+  }
+  g.appendChild(el);
+  return el;
+}
+
+function lanciaBatterio() {
+  if (animAttiva) return;
+  animAttiva = true;
+  document.getElementById('btnBatterio').disabled = true;
+  document.getElementById('particelle').innerHTML = '';
+  var b = document.getElementById('batterio');
+  b.setAttribute('opacity', 1);
+  b.setAttribute('rx', 13); b.setAttribute('ry', 9);
+  b.setAttribute('fill', '#3a6ea5');
+  var yPartenza = -20, yArrivo = 152, t0 = performance.now();
+  var fase = 'caduta', particelle = [], t1 = 0;
+
+  function passo(ts) {
+    var dt = ts - t0;
+    if (fase === 'caduta') {
+      var p = Math.min(dt / 900, 1);
+      b.setAttribute('cy', yPartenza + p * (yArrivo - yPartenza));
+      if (p >= 1) {
+        t1 = ts;
+        if (statoMiele === 'puro') {
+          fase = 'osmosi';
+          diario('Il batterio tocca il miele. Dentro la cellula c’è molta più acqua libera che fuori.', 'forte');
+          for (var i = 0; i < 14; i++) {
+            var a = (Math.PI * 2 * i) / 14;
+            particelle.push({ el: nuovaParticella(85, 152, '#5aa7d8'), a: a, r0: 6 });
+          }
+        } else {
+          fase = 'perossido';
+          diario('Il batterio sopravvive: con il 35% di acqua l’osmosi non lo tocca.', 'forte');
+          diario('Ma quell’acqua sveglia la glucosio ossidasi, ferma fino a un attimo fa.');
+          for (var j = 0; j < 8; j++) {
+            var ang = (Math.PI * 2 * j) / 8;
+            particelle.push({ el: nuovaParticella(85 + Math.cos(ang) * 46, 152 + Math.sin(ang) * 40, '#16a085', 'H₂O₂'), a: ang, r0: 46 });
+          }
+        }
+      }
+      requestAnimationFrame(passo);
+      return;
+    }
+
+    var q = Math.min((ts - t1) / 2600, 1);
+
+    if (fase === 'osmosi') {
+      b.setAttribute('rx', 13 - 8.5 * q);
+      b.setAttribute('ry', 9 - 6 * q);
+      b.setAttribute('fill', q > 0.6 ? '#8d99a6' : '#3a6ea5');
+      for (var k = 0; k < particelle.length; k++) {
+        var pk = particelle[k];
+        var rr = pk.r0 + q * 44;
+        pk.el.setAttribute('cx', 85 + Math.cos(pk.a) * rr);
+        pk.el.setAttribute('cy', 152 + Math.sin(pk.a) * rr * 0.8);
+        pk.el.setAttribute('opacity', 1 - q * 0.7);
+      }
+    } else {
+      for (var m = 0; m < particelle.length; m++) {
+        var pm = particelle[m];
+        var rm = pm.r0 * (1 - q * 0.82);
+        pm.el.setAttribute('x', 85 + Math.cos(pm.a) * rm);
+        pm.el.setAttribute('y', 152 + Math.sin(pm.a) * rm * 0.8);
+      }
+      b.setAttribute('fill', q > 0.75 ? '#8d99a6' : '#3a6ea5');
+      b.setAttribute('opacity', 1 - q * 0.35);
+    }
+    if (q >= 1) { chiudiScena(); return; }
+    requestAnimationFrame(passo);
+  }
+  requestAnimationFrame(passo);
+}
+
+function chiudiScena() {
+  animAttiva = false;
+  document.getElementById('btnBatterio').disabled = false;
+  if (statoMiele === 'puro') {
+    diario('L’acqua esce dalla cellula e passa nel miele: è osmosi, nient’altro.');
+    document.getElementById('etichettaAw').textContent = 'acqua attiva 0,58 · nessuna crescita';
+    diario('Cellula disidratata. Morta in poche ore, senza che il miele muova un dito.', 'esito');
+  } else {
+    diario('L’enzima produce acido gluconico e acqua ossigenata, che attacca il batterio.');
+    document.getElementById('etichettaAw').textContent = 'acqua attiva > 0,90 · agisce l’enzima';
+    diario('Ucciso lo stesso, ma da un’arma chimica, non dalla sete. E ora il miele è aggredibile dai lieviti.', 'esito');
+  }
+}
+
+/* ══════════ APPLET 02 · RIGHELLO ACQUA ATTIVA ══════════ */
+var AW_MIN = 0.55, AW_MAX = 0.95;
+var organismi = [
+  { nome: 'Clostridium botulinum', aw: 0.94, stop: true,
+    txt: 'Sotto a<sub>w</sub> 0,94 non cresce e non produce tossina: nel miele è fuori gioco con un margine enorme. Il problema però non è la cellula, è la <strong>spora</strong>, che per restare viva non ha bisogno di crescere — e che il miele non elimina affatto.' },
+  { nome: 'Batteri alteranti e patogeni comuni', aw: 0.91, stop: true,
+    txt: 'La grande maggioranza dei batteri si ferma attorno a 0,91. È il motivo per cui, quando al miele furono aggiunti nove batteri patogeni diversi, morirono tutti «within a few hours or days»: nessuno ha mai avuto la possibilità di moltiplicarsi.' },
+  { nome: 'Staphylococcus aureus', aw: 0.86, stop: true,
+    txt: 'Fra i patogeni è l’asso della siccità: cresce fino a 0,86, un valore che gli permette di prosperare in salumi e formaggi stagionati dove nessun altro batterio arriva. Nel miele resta comunque lontanissimo dalla soglia.' },
+  { nome: 'Muffe alteranti comuni', aw: 0.80, stop: true,
+    txt: 'Le muffe che fanno ammuffire pane, frutta e confetture non scendono sotto 0,80. È la ragione per cui un vasetto di marmellata aperto in frigorifero prende la muffa e uno di miele, nelle stesse condizioni, no.' },
+  { nome: 'Muffe xerofile', aw: 0.65, stop: true,
+    txt: 'Le muffe amanti del secco arrivano fino a circa 0,65 e attaccano frutta essiccata, spezie, cereali stoccati. Sfiorano il bordo superiore della fascia del miele: su un miele molto umido, aperto e mal conservato, il margine si assottiglia parecchio.' },
+  { nome: 'Zygosaccharomyces rouxii', aw: 0.62, stop: false,
+    txt: 'È <strong>l’unico vero nemico del miele</strong>: un lievito osmofilo documentato in crescita fino ad a<sub>w</sub> 0,62, cioè dentro la fascia del miele. Non lo fa marcire, lo fa <em>fermentare</em>: trasforma gli zuccheri in alcol e anidride carbonica, la superficie si copre di schiuma e il sapore vira all’aceto. Una specie affine, <em>Z. favi</em>, è stata descritta nel 2015 proprio a partire da miele e pane d’api.' },
+  { nome: 'Xeromyces bisporus', aw: 0.61, stop: false,
+    txt: 'Detiene il primato di crescita al minimo di acqua disponibile mai documentato, attorno a 0,61: vive su datteri, prugne secche, tabacco, liquirizia. È la prova che la fascia del miele non è un muro invalicabile, ma un imbuto strettissimo in cui passano due o tre organismi in tutto.' }
+];
+
+function posAw(aw) {
+  var p = ((AW_MAX - aw) / (AW_MAX - AW_MIN)) * 100;
+  return Math.max(0, Math.min(100, p));
+}
+
+function costruisciRighello() {
+  var dots = document.getElementById('awDots');
+  var lista = document.getElementById('awLista');
+  var banda = document.getElementById('awBanda');
+  banda.style.left = posAw(0.65) + '%';
+  banda.style.width = (100 - posAw(0.65)) + '%';
+  for (var i = 0; i < organismi.length; i++) {
+    var d = document.createElement('div');
+    d.className = 'aw-dot';
+    d.style.left = posAw(organismi[i].aw) + '%';
+    dots.appendChild(d);
+
+    var b = document.createElement('button');
+    b.className = 'aw-btn';
+    b.innerHTML = '<span>' + organismi[i].nome + '</span><em>a<sub>w</sub> min ' + organismi[i].aw.toFixed(2).replace('.', ',') + '</em>';
+    b.onclick = (function (k) { return function () { mostraOrganismo(k); }; })(i);
+    lista.appendChild(b);
+  }
+  mostraOrganismo(5);
+}
+
+function mostraOrganismo(i) {
+  var btns = document.querySelectorAll('.aw-btn');
+  var dts = document.querySelectorAll('.aw-dot');
+  for (var k = 0; k < btns.length; k++) {
+    btns[k].classList.toggle('attivo', k === i);
+    dts[k].classList.toggle('attivo', k === i);
+  }
+  var o = organismi[i];
+  var badge = o.stop
+    ? '<span class="aw-verdetto" style="background:#16a085">Fermato dal miele</span>'
+    : '<span class="aw-verdetto" style="background:#c0392b">Ce la può fare</span>';
+  document.getElementById('awDettaglio').innerHTML = badge + '<div>' + o.txt + '</div>';
+}
+
+/* ══════════ APPLET 03 · FERMENTAZIONE ══════════ */
+var cfSpore = 1, cfTemp = 16;
+
+function setSpore(v, el) {
+  cfSpore = v;
+  var b = document.querySelectorAll('#cfSpore .cf-opz');
+  for (var i = 0; i < b.length; i++) b[i].classList.toggle('attivo', b[i] === el);
+  calcolaFerm();
+}
+function setTemp(v, el) {
+  cfTemp = v;
+  var b = document.querySelectorAll('#cfTemp .cf-opz');
+  for (var i = 0; i < b.length; i++) b[i].classList.toggle('attivo', b[i] === el);
+  calcolaFerm();
+}
+
+function calcolaFerm() {
+  var acqua = parseInt(document.getElementById('cfAcqua').value, 10) / 10;
+  document.getElementById('cfAcquaVal').textContent = acqua.toFixed(1).replace('.', ',') + '%';
+
+  var rischio, titolo, spiega;
+  if (acqua < 17.1) {
+    rischio = 0;
+    titolo = 'Non fermenta';
+    spiega = 'Sotto il 17,1% di acqua il miele non fermenta entro l’anno <em>qualunque sia</em> la carica di lieviti: anche con 10.000 spore per grammo non c’è abbastanza acqua libera perché germinino. È la condizione della maggior parte dei mieli ben maturati.';
+  } else if (acqua <= 18.0) {
+    rischio = cfSpore <= 1000 ? 0 : 2;
+    titolo = cfSpore <= 1000 ? 'Al sicuro per un anno' : 'Fermenterà';
+    spiega = 'Tra 17,1 e 18% il limite è <strong>1.000 spore per grammo</strong>: sotto quella soglia il miele regge un anno, sopra no. Qui ne hai ' + cfSpore.toLocaleString('it-IT') + '.';
+  } else if (acqua <= 19.0) {
+    rischio = cfSpore <= 10 ? 0 : 2;
+    titolo = cfSpore <= 10 ? 'Al sicuro, ma per un soffio' : 'Fermenterà';
+    spiega = 'Tra 18,1 e 19% bastano <strong>più di 10 spore per grammo</strong> per far partire la fermentazione. Qui ne hai ' + cfSpore.toLocaleString('it-IT') + ': una contaminazione di quel livello è normalissima in qualunque laboratorio di smielatura.';
+  } else {
+    rischio = 2;
+    titolo = 'Fermenterà';
+    spiega = 'Sopra il 19% di acqua il miele fermenta <strong>anche con una sola spora per grammo</strong>, un livello di contaminazione così basso da essere rarissimo. E sopra il 20% non è nemmeno più vendibile come miele, per la direttiva 2001/110/CE.';
+  }
+
+  var notaT;
+  if (cfTemp <= 10) {
+    notaT = 'A ' + cfTemp + ' °C la fermentazione è bloccata finché il vasetto resta lì: sotto i 10 °C i lieviti non lavorano. Ma il freddo sospende, non sterilizza — riportando il miele a temperatura ambiente in primavera la fermentazione riparte da dove si era fermata.';
+    if (rischio === 2) rischio = 1;
+  } else if (cfTemp >= 30) {
+    notaT = 'Sopra i 27 °C circa la fermentazione si ferma di nuovo, ma è una vittoria di Pirro: a quella temperatura il miele si degrada per un’altra via, con l’HMF che sale di quasi 60 mg/kg all’anno (vedi l’applet qui sotto).';
+    if (rischio === 2) rischio = 1;
+  } else if (cfTemp === 16) {
+    notaT = '16 °C è la temperatura peggiore possibile: è esattamente il punto in cui, scrivono White e Doner, «honey even of relatively low water content will ferment». Ed è la temperatura tipica di una cantina.';
+  } else {
+    notaT = 'A 24 °C i lieviti osmofili sono pienamente attivi, dentro la finestra 10-27 °C in cui la fermentazione è possibile. Il miele già cristallizzato è più esposto: i cristalli di glucosio sottraggono acqua alla parte liquida, che diventa più umida e quindi più fermentabile.';
+  }
+
+  var colori = ['#16a085', '#e67e22', '#c0392b'];
+  var e = document.getElementById('cfEsito');
+  e.style.background = colori[rischio];
+  e.innerHTML = '<strong>' + titolo + '</strong><p>' + spiega + '</p>';
+  document.getElementById('cfNota').innerHTML = notaT;
+}
+
+/* ══════════ APPLET 04 · INVECCHIAMENTO ══════════ */
+var K_HMF = { 15: 9.24, 20: 16, 25: 27.7, 32: 59.8 };
+var EMIVITA = { 15: 2598, 20: 1500, 25: 540, 32: 126 };
+var ORIZZONTE = { 15: 120, 20: 72, 25: 36, 32: 18 };
+var DIAST0 = 20.8, LIM_HMF = 40, LIM_DIAST = 8;
+var graficoEta = null, tempSel = 20;
+
+function mesiSerie(T) {
+  var out = [], max = ORIZZONTE[T];
+  for (var i = 0; i <= 24; i++) out.push(+(max * i / 24).toFixed(2));
+  return out;
+}
+
+function mesiTesto(m, T) {
+  if (m > ORIZZONTE[T]) return 'più di ' + Math.round(ORIZZONTE[T] / 12) + ' anni';
+  if (m < 12) return Math.round(m) + ' mesi';
+  return (m / 12).toFixed(1).replace('.', ',') + ' anni, cioè ' + Math.round(m) + ' mesi';
+}
+
+function setTempConserv(T, el) {
+  tempSel = T;
+  var b = document.querySelectorAll('.tp-btn');
+  for (var i = 0; i < b.length; i++) b[i].classList.toggle('attivo', b[i] === el);
+  aggiornaGrafico();
+}
+
+function aggiornaGrafico() {
+  var mesi = mesiSerie(tempSel);
+  var dHmf = mesi.map(function (m) { return +(K_HMF[tempSel] * m / 12).toFixed(1); });
+  var dDia = mesi.map(function (m) { return +(DIAST0 * Math.pow(0.5, (m * 30.44) / EMIVITA[tempSel])).toFixed(2); });
+
+  graficoEta.data.labels = mesi;
+  graficoEta.data.datasets[0].data = dHmf;
+  graficoEta.data.datasets[1].data = dDia;
+  graficoEta.data.datasets[2].data = mesi.map(function () { return LIM_HMF; });
+  graficoEta.data.datasets[3].data = mesi.map(function () { return LIM_DIAST; });
+  graficoEta.update();
+
+  var mHMF = LIM_HMF / K_HMF[tempSel] * 12;
+  var mDia = (EMIVITA[tempSel] * Math.log(DIAST0 / LIM_DIAST) / Math.LN2) / 30.44;
+  document.getElementById('tpSintesi').innerHTML =
+    'A <strong>' + tempSel + ' °C</strong> il miele supera il tetto di legge sull’HMF (40 mg/kg) dopo <strong>' + mesiTesto(mHMF, tempSel) + '</strong>, ' +
+    'e la diastasi scende sotto il minimo di legge (8 unità Schade) dopo <strong>' + mesiTesto(mDia, tempSel) + '</strong>. ' +
+    'Non è diventato pericoloso: è diventato, per la legge, un altro prodotto.';
+}
+
+function creaGrafico() {
+  graficoEta = new Chart(document.getElementById('graficoEta').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'HMF (mg/kg)', data: [], borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.08)',
+          borderWidth: 2.5, pointRadius: 0, tension: 0.1, yAxisID: 'y', fill: true },
+        { label: 'Diastasi (Schade)', data: [], borderColor: '#16a085', backgroundColor: 'transparent',
+          borderWidth: 2.5, pointRadius: 0, tension: 0.1, yAxisID: 'y1' },
+        { label: 'Tetto di legge HMF', data: [], borderColor: '#c0392b',
+          borderWidth: 1.2, borderDash: [5, 4], pointRadius: 0, yAxisID: 'y' },
+        { label: 'Minimo di legge diastasi', data: [], borderColor: '#16a085',
+          borderWidth: 1.2, borderDash: [5, 4], pointRadius: 0, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { boxWidth: 12, font: { family: 'Source Sans 3', size: 11 }, color: '#7f8c8d' } },
+        tooltip: { callbacks: { title: function (c) { return 'Dopo ' + Math.round(c[0].label) + ' mesi'; } } }
+      },
+      scales: {
+        x: { title: { display: true, text: 'mesi di conservazione', font: { size: 11 }, color: '#7f8c8d' },
+             ticks: { font: { size: 10 }, color: '#7f8c8d', maxTicksLimit: 9,
+                      callback: function (v) { return Math.round(this.getLabelForValue(v)); } },
+             grid: { display: false } },
+        y: { position: 'left', min: 0, max: 100, title: { display: true, text: 'HMF mg/kg', font: { size: 11 }, color: '#c0392b' },
+             ticks: { font: { size: 10 }, color: '#c0392b' }, grid: { color: '#f0ede7' } },
+        y1: { position: 'right', min: 0, max: 24, title: { display: true, text: 'diastasi', font: { size: 11 }, color: '#16a085' },
+              ticks: { font: { size: 10 }, color: '#16a085' }, grid: { display: false } }
+      }
+    }
+  });
+  aggiornaGrafico();
+}
+
+/* ── avvio ── */
+costruisciRighello();
+calcolaFerm();
+creaGrafico();
+</script>
+</body>
+</html>
