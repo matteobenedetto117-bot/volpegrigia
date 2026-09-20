@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le vitamine in pillola funzionano come quelle nel cibo?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #8e44ad;
+    --accent-light: #f4e9fa;
+    --accent-mid: #a569bd;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --verde: #27ae60;
+    --rosso: #c0392b;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · IL VARCO DELL'INTESTINO ── */
+  .varco-sel { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 7px; margin-bottom: 16px; }
+  .varco-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 6px;
+    cursor: pointer;
+    line-height: 1.25;
+    transition: all 0.15s;
+  }
+  .varco-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .varco-via { width: 100%; background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 12px; }
+  .varco-svg { display: block; width: 100%; height: auto; }
+  .varco-azione { text-align: center; margin-bottom: 14px; }
+  .varco-go {
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    background: var(--accent); border: 1.5px solid var(--accent); color: #fff;
+    border-radius: 4px; padding: 10px 22px; cursor: pointer;
+  }
+  .varco-go:disabled { opacity: 0.45; cursor: default; }
+  .varco-verdetto { text-align: center; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; margin-bottom: 10px; }
+
+  /* ── APPLET 2 · GLI OTTO GEMELLI ── */
+  .iso-toggle { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .iso-tbtn {
+    flex: 1; min-width: 150px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .iso-tbtn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .iso-griglia { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 14px; }
+  .iso-tile {
+    background: #faf8f4; border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 12px 2px 9px; text-align: center; transition: all 0.45s ease;
+  }
+  .iso-sigla { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; }
+  .iso-stato { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+  .iso-tile.tenuta { background: #eaf7ef; border-color: var(--verde); }
+  .iso-tile.tenuta .iso-sigla { color: var(--verde); }
+  .iso-tile.tenuta .iso-stato { color: var(--verde); }
+  .iso-tile.scartata { background: #f3f1ec; border-color: var(--border); opacity: 0.45; }
+  .iso-tile.scartata .iso-sigla { text-decoration: line-through; }
+  .iso-conto { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .iso-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 11px 12px; }
+  .iso-cella span { display: block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .iso-cella strong { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--accent); }
+
+  /* ── APPLET 3 · IL BANCO DI PROVA ── */
+  .studi-lista { display: grid; gap: 7px; margin-bottom: 16px; }
+  .studi-btn {
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .studi-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .gauge-wrap { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px 4px; margin-bottom: 12px; }
+  .gauge-svg { display: block; width: 100%; height: auto; }
+  .gauge-etichetta { text-align: center; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; padding: 2px 0 8px; }
+  .iso-tbtn small { display: block; font-weight: 400; font-size: 11px; opacity: 0.8; margin-top: 2px; }
+  .studio-dett { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 15px 17px; }
+  .studio-dett h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .studio-riga { font-size: 13px; color: var(--muted); margin-bottom: 9px; }
+  .studio-dett p { font-size: 14.5px; line-height: 1.6; }
+  .studio-dett em.esito { display: block; margin-top: 9px; padding-left: 12px; border-left: 3px solid var(--accent-mid); font-size: 14px; line-height: 1.55; color: var(--text); font-style: normal; }
+
+  /* ── APPLET 4 · LO STESSO PIATTO ── */
+  .piatto-opz { display: grid; gap: 7px; margin-bottom: 16px; }
+  .piatto-btn {
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .piatto-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .piatto-scena { display: grid; grid-template-columns: 148px 1fr; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .piatto-svg { display: block; width: 100%; height: auto; background: #faf8f4; border-radius: 6px; }
+  .car-riga { margin-bottom: 9px; }
+  .car-label { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 3px; }
+  .car-label strong { color: var(--text); font-weight: 600; }
+  .car-label span { color: var(--accent); font-weight: 700; }
+  .car-track { background: #f3f1ec; border-radius: 3px; height: 13px; overflow: hidden; }
+  .car-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.5s ease; }
+
+  /* ── APPLET 5 · LA DOSE ── */
+  .dose-stops { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 16px; }
+  .dose-btn {
+    font-family: 'Source Sans 3', sans-serif; font-size: 12.5px; font-weight: 600;
+    color: var(--muted); background: #f3f1ec; border: 1.5px solid var(--border);
+    border-radius: 4px; padding: 9px 2px; cursor: pointer; transition: all 0.15s;
+  }
+  .dose-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .dose-out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .dose-cella { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 11px 10px; text-align: center; }
+  .dose-cella span { display: block; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); line-height: 1.3; }
+  .dose-cella strong { font-family: 'Playfair Display', serif; font-size: 21px; color: var(--accent); }
+  .dose-grafico { height: 190px; margin-bottom: 12px; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .iso-tbtn { min-width: 100%; }
+    .piatto-scena { grid-template-columns: 104px 1fr; gap: 10px; }
+    .dose-stops { grid-template-columns: repeat(3, 1fr); }
+    .dose-out { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Salute</div>
+    <h1>Le vitamine in pillola funzionano come quelle nel cibo?</h1>
+    <div class="risposta-box">
+      <p>Dipende dalla vitamina, e non nel verso che ci si aspetta. Sull'assorbimento la pillola spesso vince: l'acido folico di una compressa è biodisponibile almeno all'85%, i folati degli spinaci intorno al 50%, e della vitamina K1 di un piatto di spinaci l'intestino recupera solo il 4-17% di quella di una pastiglia. Ma quando si misura la salute invece dei milligrammi il conto si rovescia: in 29.133 fumatori finlandesi il beta-carotene in capsule ha prodotto il 18% di tumori al polmone in più — cosa che le carote non hanno mai fatto.</p>
+    </div>
+    <div class="meta">Lettura: 5 minuti &nbsp;·&nbsp; Aggiornato: settembre 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>«Naturale contro sintetico» è l'asse sbagliato, e la chimica lo dice senza ambiguità: l'acido L-ascorbico prodotto in fabbrica e quello di un limone sono la stessa molecola, e il Linus Pauling Institute chiude la questione in una riga — «non si conoscono differenze nella loro attività biologica». Le differenze vere sono altre tre: la forma esatta della molecola, ciò che le sta attorno nel piatto, e la dose. In Italia la posta in gioco non è teorica: tra maggio 2024 e aprile 2025 sono state vendute oltre 203 milioni di confezioni di integratori, per quasi 4 miliardi di euro.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il varco dell'intestino</div>
+      <div class="applet-istruzione">Scegli una vitamina, poi manda giù cento unità dal piatto e cento dalla pillola: passa il varco solo la frazione che l'intestino sa davvero prendere.</div>
+    </div>
+    <div class="varco-sel" id="varcoSel"></div>
+    <div class="varco-via">
+      <svg class="varco-svg" id="varcoSvg" viewBox="0 0 320 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="320" height="250" fill="#faf8f4"></rect>
+        <text id="etCibo" x="80" y="17" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#7f8c8d">DAL CIBO</text>
+        <text id="etPillola" x="240" y="17" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#7f8c8d">DALLA PILLOLA</text>
+        <rect x="24" y="26" width="112" height="176" rx="5" fill="#fff" stroke="#e8e4de"></rect>
+        <rect x="184" y="26" width="112" height="176" rx="5" fill="#fff" stroke="#e8e4de"></rect>
+        <line x1="24" y1="128" x2="136" y2="128" stroke="#8e44ad" stroke-width="2" stroke-dasharray="5 4"></line>
+        <line x1="184" y1="128" x2="296" y2="128" stroke="#8e44ad" stroke-width="2" stroke-dasharray="5 4"></line>
+        <text x="80" y="107" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#a569bd">parete intestinale</text>
+        <text x="240" y="107" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#a569bd">parete intestinale</text>
+        <g id="dotsCibo"></g>
+        <g id="dotsPillola"></g>
+        <rect x="24" y="206" width="112" height="34" rx="4" fill="#f3f1ec" stroke="#e8e4de"></rect>
+        <rect x="184" y="206" width="112" height="34" rx="4" fill="#f3f1ec" stroke="#e8e4de"></rect>
+        <rect id="pozzoCibo" x="25" y="239" width="110" height="0" fill="#cfe3c2"></rect>
+        <rect id="pozzoPillola" x="185" y="239" width="110" height="0" fill="#dfc9ec"></rect>
+        <text id="numCibo" x="80" y="228" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#1c1c2e">—</text>
+        <text id="numPillola" x="240" y="228" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#1c1c2e">—</text>
+      </svg>
+    </div>
+    <div class="varco-azione">
+      <button class="varco-go" id="varcoGo" onclick="mandaGiu()">Manda giù</button>
+    </div>
+    <div class="varco-verdetto" id="varcoVerdetto">Vince la pillola</div>
+    <div class="box-testo" id="varcoTesto"></div>
+    <div class="applet-fonte">
+      Fonti delle percentuali, vitamina per vitamina: <em>Folate — Health Professional Fact Sheet</em>, NIH Office of Dietary Supplements, aggiornamento 2022 («only about 50% of folate naturally present in food is bioavailable»; «at least 85% of folic acid is estimated to be bioavailable when taken with food»); <em>Vitamin K — Health Professional Fact Sheet</em>, NIH ODS («the body absorbs only 4% to 17% as much phylloquinone from spinach as from a tablet»); Jane Higdon e Victoria Drake, voce <em>Vitamin C — Supplemental Forms</em>, Linus Pauling Institute, Oregon State University, con i dati di Mangels et al. 1993; <em>Vitamin B12</em>, Linus Pauling Institute; <em>Vitamin A and Carotenoids — Health Professional Fact Sheet</em>, NIH ODS, per i fattori RAE (12 µg di beta-carotene alimentare, 2 µg di beta-carotene in olio per 1 µg di retinolo). Le cento unità sono una resa grafica delle percentuali pubblicate, non un esperimento.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Che la pillola spesso vinca sull'assorbimento ha ragioni meccaniche precise. I folati del cibo sono poliglutammati: prima del passaggio un enzima intestinale deve accorciarne la coda, e per strada se ne perde metà — per questo l'unità ufficiale conta 1 µg di folato alimentare come 1 «equivalente» e 1 µg di acido folico preso con i pasti come 1,7. La prova sugli esiti è del 1991: nel MRC Vitamin Study 1.817 donne a rischio, in 33 centri di 7 paesi, presero 4 mg di acido folico al giorno e i difetti del tubo neurale scesero del 72% — 6 casi contro 21. Quei 4 mg non si mangiano: gli spinaci crudi ne contengono 58 µg per tazza, servirebbero oltre due chili al giorno.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Gli otto gemelli della vitamina E</div>
+      <div class="applet-istruzione">Scegli la capsula, poi fai passare il contenuto dal filtro del fegato: la proteina α-TTP tiene solo le geometrie che riconosce e butta le altre.</div>
+    </div>
+    <div class="iso-toggle">
+      <button class="iso-tbtn attivo" id="isoNat" onclick="scegliCapsula('nat')">Capsula naturale<br><small>RRR-α-tocoferolo</small></button>
+      <button class="iso-tbtn" id="isoSin" onclick="scegliCapsula('sin')">Capsula di sintesi<br><small>all-rac-α-tocoferolo</small></button>
+    </div>
+    <div class="iso-griglia" id="isoGriglia"></div>
+    <div class="varco-azione">
+      <button class="varco-go" id="isoGo" onclick="filtraFegato()">Passa il filtro del fegato</button>
+    </div>
+    <div class="iso-conto">
+      <div class="iso-cella"><span>Geometrie trattenute</span><strong id="isoTenute">—</strong></div>
+      <div class="iso-cella"><span>Da 400 UI in etichetta</span><strong id="isoMg">—</strong></div>
+    </div>
+    <div class="box-testo" id="isoTesto">La forma naturale è una sola geometria, <em>RRR</em>: il fegato la riconosce tutta. Premi il pulsante per vedere il filtro all'opera.</div>
+    <div class="applet-fonte">
+      Fonte: voce <em>Vitamin E</em>, Linus Pauling Institute, Oregon State University — <em>all-rac</em>-α-tocoferolo contiene «eight stereoisomers» in parti uguali (RRR, RSR, RRS, RSS, SRR, SSR, SRS, SSS) e «only the forms in the R-conformation at position 2 (noted 2R) meet the vitamin E requirements in humans»; la proteina di trasporto α-TTP negli epatociti lega selettivamente le forme 2R e le cede alle lipoproteine nascenti. I fattori di conversione ufficiali sono quelli della stessa fonte: UI × 0,67 = mg per la forma naturale, UI × 0,45 = mg per quella di sintesi. Le 400 UI sono la dose usata nello studio SELECT (applet 03).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Con la vitamina E il confronto non è nemmeno cibo contro pillola, ma pillola contro pillola. La forma naturale, <em>RRR</em>-α-tocoferolo, ha una sola geometria; quella di sintesi, <em>all-rac</em>, è una miscela in parti uguali di otto stereoisomeri, e contano solo i quattro con configurazione 2R, perché la proteina di trasporto del fegato seleziona quelli e scarta gli altri. Sta tutto nei fattori di conversione ufficiali: 1 unità internazionale vale 0,67 mg di vitamina E naturale e 0,45 mg di quella sintetica. Stesso numero in etichetta, un terzo in meno nel sangue.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Il banco di prova: sei volte che l'hanno messa alla prova sulle persone</div>
+      <div class="applet-istruzione">Scegli uno studio e guarda dove si ferma l'indice: a sinistra il danno, al centro il nulla, a destra il beneficio.</div>
+    </div>
+    <div class="studi-lista" id="studiLista"></div>
+    <div class="gauge-wrap">
+      <svg class="gauge-svg" id="gaugeSvg" viewBox="0 0 320 168" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 40 140 A 120 120 0 0 1 82 47" fill="none" stroke="#c0392b" stroke-width="13" stroke-linecap="round"></path>
+        <path d="M 88 42 A 120 120 0 0 1 232 42" fill="none" stroke="#d8d4ce" stroke-width="13" stroke-linecap="round"></path>
+        <path d="M 238 47 A 120 120 0 0 1 280 140" fill="none" stroke="#27ae60" stroke-width="13" stroke-linecap="round"></path>
+        <text x="34" y="158" font-family="sans-serif" font-size="10.5" font-weight="600" fill="#c0392b">DANNO</text>
+        <text x="160" y="30" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="600" fill="#7f8c8d">NESSUN EFFETTO</text>
+        <text x="286" y="158" text-anchor="end" font-family="sans-serif" font-size="10.5" font-weight="600" fill="#27ae60">BENEFICIO</text>
+        <line id="ago" x1="160" y1="140" x2="160" y2="52" stroke="#1c1c2e" stroke-width="3.5" stroke-linecap="round"></line>
+        <circle cx="160" cy="140" r="8" fill="#1c1c2e"></circle>
+        <circle cx="160" cy="140" r="3" fill="#fdfcf9"></circle>
+      </svg>
+      <div class="gauge-etichetta" id="gaugeEtichetta"></div>
+    </div>
+    <div class="studio-dett" id="studioDett"></div>
+    <div class="applet-fonte">
+      Fonti, uno studio per volta: MRC Vitamin Study Research Group, <em>Prevention of neural tube defects: results of the Medical Research Council Vitamin Study</em>, «The Lancet» 1991 (rischio relativo 0,28; IC 95% 0,12-0,71); The Alpha-Tocopherol, Beta Carotene Cancer Prevention Study Group, <em>The effect of vitamin E and beta carotene on the incidence of lung cancer and other cancers in male smokers</em>, «New England Journal of Medicine» 1994;330:1029-35; Gary E. Omenn et al., <em>Effects of a combination of beta carotene and vitamin A on lung cancer and cardiovascular disease</em>, «NEJM» 1996 (rischio relativo per il tumore al polmone 1,28; IC 95% 1,04-1,57); Eric A. Klein et al., <em>Vitamin E and the risk of prostate cancer: the Selenium and Vitamin E Cancer Prevention Trial (SELECT)</em>, «JAMA» 2011;306(14):1549-56; J. Michael Gaziano et al., <em>Multivitamins in the prevention of cancer in men: the Physicians' Health Study II randomized controlled trial</em>, «JAMA» 2012 (HR 0,92; IC 95% 0,86-0,998; p = 0,04); Howard D. Sesso et al., <em>Multivitamins in the prevention of cancer and cardiovascular disease: the COSMOS randomized clinical trial</em>, «American Journal of Clinical Nutrition» 2022;115(6):1501-10. La posizione dell'indice è una lettura redazionale della direzione e della solidità dell'effetto pubblicato, non una grandezza misurata.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Poi arriva la parte che ha cambiato la storia degli integratori. L'epidemiologia diceva da anni che chi mangia più verdure ricche di carotenoidi si ammala meno di tumore al polmone, e nel 1985 la Finlandia provò la scorciatoia: 29.133 fumatori tra i 50 e i 69 anni, 20 mg di beta-carotene al giorno. Il «New England Journal of Medicine» pubblicò l'esito nel 1994 — 18% di tumori al polmone in più e 8% di morti in più nel gruppo trattato. Il CARET, con 30 mg di beta-carotene e 25.000 UI di retinil palmitato, fu interrotto in anticipo a gennaio 1996 con il 28% di tumori in più. Nel giugno 2022 la US Preventive Services Task Force ha assegnato a beta-carotene e vitamina E un grado D: non usarli per prevenire tumori o malattie cardiovascolari.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Lo stesso piatto, assorbimenti diversi</div>
+      <div class="applet-istruzione">Condisci l'insalata e guarda quanti carotenoidi arrivano nel sangue: cambia solo il grasso, le verdure sono identiche.</div>
+    </div>
+    <div class="piatto-opz" id="piattoOpz"></div>
+    <div class="piatto-scena">
+      <svg class="piatto-svg" id="piattoSvg" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="75" cy="75" r="62" fill="#ffffff" stroke="#e8e4de" stroke-width="2"></circle>
+        <circle cx="75" cy="75" r="50" fill="#fbfaf7" stroke="#f0ede7"></circle>
+        <ellipse cx="58" cy="66" rx="22" ry="13" fill="#7fb069" transform="rotate(-18 58 66)"></ellipse>
+        <ellipse cx="88" cy="60" rx="19" ry="11" fill="#95c07f" transform="rotate(14 88 60)"></ellipse>
+        <ellipse cx="72" cy="88" rx="21" ry="12" fill="#6da35b" transform="rotate(8 72 88)"></ellipse>
+        <rect x="46" y="92" width="30" height="6" rx="3" fill="#e08a3c" transform="rotate(-12 46 92)"></rect>
+        <rect x="80" y="84" width="26" height="6" rx="3" fill="#e79c52" transform="rotate(22 80 84)"></rect>
+        <circle cx="96" cy="88" r="8" fill="#d9534f"></circle>
+        <g id="avocadoG" opacity="0"></g>
+        <g id="gocceG" opacity="0"></g>
+      </svg>
+      <div>
+        <div class="car-riga">
+          <div class="car-label"><strong>β-carotene</strong><span id="valBeta">×1</span></div>
+          <div class="car-track"><div class="car-fill" id="barBeta" style="width:6%"></div></div>
+        </div>
+        <div class="car-riga">
+          <div class="car-label"><strong>α-carotene</strong><span id="valAlfa">×1</span></div>
+          <div class="car-track"><div class="car-fill" id="barAlfa" style="width:6%"></div></div>
+        </div>
+        <div class="car-riga">
+          <div class="car-label"><strong>Luteina</strong><span id="valLut">×1</span></div>
+          <div class="car-track"><div class="car-fill" id="barLut" style="width:6%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="box-testo" id="piattoTesto"></div>
+    <div class="applet-fonte">
+      Fonte dei multipli: Nuray Z. Unlu, Torsten Bohn, Steven K. Clinton e Steven J. Schwartz, <em>Carotenoid absorption from salad and salsa by humans is enhanced by the addition of avocado or avocado oil</em>, «The Journal of Nutrition» 2005;135(3):431-6 — undici soggetti sani per braccio, disegno crossover, aumenti misurati rispetto alla stessa insalata senza avocado. Per il punto di partenza: Mary J. Brown et al., <em>Carotenoid bioavailability is higher from salads ingested with full-fat than with fat-reduced salad dressings as measured with electrochemical detection</em>, «American Journal of Clinical Nutrition» 2004;80(2):396-403 — sette volontari, condimenti da 28 g, 6 g e 0 g di olio di colza: con quello senza grassi la comparsa di α-carotene, β-carotene e licopene nei chilomicroni è «negligible». Sono due studi distinti: i multipli dell'avocado non si sommano ai grammi di olio di Brown.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La ragione per cui il cibo si comporta in modo diverso ha un nome tecnico, matrice alimentare, e un esperimento memorabile. Nel 2004 Mary Brown diede a sette volontari la stessa insalata con tre condimenti — 28 g di olio di colza, 6 g, e zero: con quello senza grassi la comparsa di α-carotene, β-carotene e licopene nei chilomicroni era «trascurabile». Non era l'insalata a essere povera, era il piatto a non consegnare. E c'è il rovescio della medaglia: una carota porta decine di carotenoidi diversi tutti insieme, la capsula ne porta uno solo — alla dose che nessun pasto raggiunge.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">05</div>
+      <div class="applet-titolo">Un grammo di vitamina C: dove finisce</div>
+      <div class="applet-istruzione">Scegli la dose e guarda la biodisponibilità scendere mentre i milligrammi salgono — la curva è misurata, non modellata.</div>
+    </div>
+    <div class="dose-stops" id="doseStops"></div>
+    <div class="dose-out">
+      <div class="dose-cella"><span>Biodisponibilità</span><strong id="doseBio">—</strong></div>
+      <div class="dose-cella"><span>Assorbito</span><strong id="doseAss">—</strong></div>
+      <div class="dose-cella"><span>Arance equivalenti</span><strong id="doseAra">—</strong></div>
+    </div>
+    <div class="dose-grafico"><canvas id="doseChart"></canvas></div>
+    <div class="box-testo" id="doseTesto"></div>
+    <div class="applet-fonte">
+      Fonte: Sebastian J. Padayatty e Mark Levine, <em>New insights into the physiology and pharmacology of vitamin C</em>, «Canadian Medical Association Journal» 2001;164(3):353-5, che riporta la biodisponibilità mediana per dose singola (87% a 30 mg, 80% a 100 mg, 72% a 200 mg, 63% a 500 mg, meno del 50% a 1.250 mg) e la saturazione: intorno ai 60 µmol/L di plasma, raggiunti con circa 100 mg al giorno, «plasma is 70% saturated and circulating white blood cells are fully saturated». I dati primari sono di Mark Levine et al., <em>Vitamin C pharmacokinetics in healthy volunteers: evidence for a recommended dietary allowance</em>, «PNAS» 1996;93(8):3704-9. Le arance equivalenti sono calcolate su 70 mg per arancia media (USDA, National Nutrient Database for Standard Reference Legacy, 2018).
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Resta la dose, il punto in cui l'aritmetica smette di funzionare. La biodisponibilità della vitamina C cala mentre i milligrammi salgono: 87% a 30 mg, 72% a 200, sotto il 50% a 1.250, secondo il lavoro farmacocinetico del gruppo di Mark Levine. E sopra i 100 mg al giorno il plasma è già saturo al 70% e i globuli bianchi sono pieni: la compressa da un grammo non mette in circolo dieci arance, mette solo più acido ascorbico nelle urine. Il paradosso finale è che la pillola è nata per risolvere le carenze — e lì funziona benissimo — ma viene comprata per aggiungere salute a chi non ne ha.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>La chimica non distingue l'arancia dal laboratorio: è il contesto a distinguerli. Una pillola consegna una molecola, un piatto consegna un sistema — e quasi sempre il problema non è la vitamina che manca, è il sistema che non c'è.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li><em>Folate — Health Professional Fact Sheet</em>, NIH Office of Dietary Supplements — biodisponibilità del 50% per i folati alimentari, almeno 85% per l'acido folico assunto con il cibo, fattori DFE 1,7 e 2 — <a href="https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/">ods.od.nih.gov</a></li>
+      <li><em>Vitamin K — Health Professional Fact Sheet</em>, NIH Office of Dietary Supplements — «the body absorbs only 4% to 17% as much phylloquinone from spinach as from a tablet» — <a href="https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/">ods.od.nih.gov</a></li>
+      <li><em>Vitamin A and Carotenoids — Health Professional Fact Sheet</em>, NIH Office of Dietary Supplements — fattori RAE: 12 µg di beta-carotene alimentare, 2 µg in olio, 24 µg di α-carotene o β-criptoxantina per 1 µg di retinolo — <a href="https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/">ods.od.nih.gov</a></li>
+      <li>Jane Higdon, Victoria J. Drake et al., voci <em>Vitamin E</em>, <em>Vitamin B12</em> e <em>Vitamin C — Supplemental Forms</em>, Micronutrient Information Center, Linus Pauling Institute, Oregon State University — otto stereoisomeri di <em>all-rac</em>-α-tocoferolo, selezione 2R da parte di α-TTP, conversioni UI 0,67 / 0,45, equivalenza chimica tra acido ascorbico naturale e di sintesi — <a href="https://lpi.oregonstate.edu/mic/vitamins/vitamin-E">lpi.oregonstate.edu</a></li>
+      <li>MRC Vitamin Study Research Group, <em>Prevention of neural tube defects: results of the Medical Research Council Vitamin Study</em>, «The Lancet» 1991;338(8760):131-7 — 1.817 donne, 33 centri in 7 paesi, 4 mg di acido folico, RR 0,28 (IC 95% 0,12-0,71)</li>
+      <li>The Alpha-Tocopherol, Beta Carotene Cancer Prevention Study Group, <em>The effect of vitamin E and beta carotene on the incidence of lung cancer and other cancers in male smokers</em>, «New England Journal of Medicine» 1994;330(15):1029-35 — 29.133 fumatori finlandesi di 50-69 anni, 50 mg di α-tocoferolo e 20 mg di beta-carotene al giorno, mediana 6,1 anni</li>
+      <li>Gary E. Omenn et al., <em>Effects of a combination of beta carotene and vitamin A on lung cancer and cardiovascular disease</em>, «New England Journal of Medicine» 1996;334(18):1150-5 — CARET, 18.314 soggetti a rischio, interrotto a gennaio 1996</li>
+      <li>Eric A. Klein, Ian M. Thompson, Catherine M. Tangen et al., <em>Vitamin E and the risk of prostate cancer: the Selenium and Vitamin E Cancer Prevention Trial (SELECT)</em>, «JAMA» 2011;306(14):1549-56 — oltre 35.000 uomini, 400 UI al giorno di <em>dl</em>-α-tocoferil acetato, 76 tumori della prostata ogni 1.000 uomini in sette anni contro 65 nel placebo</li>
+      <li>J. Michael Gaziano, Howard D. Sesso, William G. Christen et al., <em>Multivitamins in the prevention of cancer in men: the Physicians' Health Study II randomized controlled trial</em>, «JAMA» 2012;308(18):1871-80 — 14.641 medici uomini, Centrum Silver, follow-up mediano 11,2 anni, HR 0,92 per il cancro totale</li>
+      <li>Howard D. Sesso, Pamela M. Rist, Aaron K. Aragaki et al., <em>Multivitamins in the prevention of cancer and cardiovascular disease: the COcoa Supplement and Multivitamin Outcomes Study (COSMOS) randomized clinical trial</em>, «American Journal of Clinical Nutrition» 2022;115(6):1501-10 — 21.442 adulti, HR 0,97 per i tumori invasivi e 0,98 per gli eventi cardiovascolari</li>
+      <li>US Preventive Services Task Force, <em>Vitamin, mineral, and multivitamin supplementation to prevent cardiovascular disease and cancer: recommendation statement</em>, «JAMA» 2022;327(23):2326-33, 21 giugno 2022 — grado D per beta-carotene e vitamina E, grado I per i multivitaminici; il 52% degli adulti statunitensi intervistati (n = 11.024) dichiarava di usare almeno un integratore — <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/vitamin-supplementation-to-prevent-cvd-and-cancer-preventive-medication">uspreventiveservicestaskforce.org</a></li>
+      <li>Nuray Z. Unlu, Torsten Bohn, Steven K. Clinton, Steven J. Schwartz, <em>Carotenoid absorption from salad and salsa by humans is enhanced by the addition of avocado or avocado oil</em>, «The Journal of Nutrition» 2005;135(3):431-6</li>
+      <li>Mary J. Brown, Mario G. Ferruzzi, Minhthy L. Nguyen et al., <em>Carotenoid bioavailability is higher from salads ingested with full-fat than with fat-reduced salad dressings as measured with electrochemical detection</em>, «American Journal of Clinical Nutrition» 2004;80(2):396-403</li>
+      <li>Sebastian J. Padayatty, Mark Levine, <em>New insights into the physiology and pharmacology of vitamin C</em>, «Canadian Medical Association Journal» 2001;164(3):353-5 — <a href="https://www.cmaj.ca/content/164/3/353">cmaj.ca</a>; Mark Levine et al., <em>Vitamin C pharmacokinetics in healthy volunteers</em>, «PNAS» 1996;93(8):3704-9</li>
+      <li><em>Gli italiani e gli integratori: oltre 200 milioni di confezioni vendute</em>, «Quotidiano Sanità», dati Pharma Data Factory per il periodo maggio 2024 - aprile 2025 — 203 milioni di confezioni, quasi 4 miliardi di euro — <a href="https://www.quotidianosanita.it/cronache/articolo.php?articolo_id=130050">quotidianosanita.it</a></li>
+      <li>USDA, <em>National Nutrient Database for Standard Reference Legacy</em> (2018), per il contenuto di vitamina C dell'arancia e di folati degli spinaci crudi</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ══════════ APPLET 01 · IL VARCO DELL'INTESTINO ══════════ */
+var VITAMINE = [
+  { id: 0, breve: 'Folati', nome: 'Folati e acido folico',
+    cibo: 50, pillola: 85,
+    etCibo: 'SPINACI', etPillola: 'COMPRESSA',
+    verdetto: 'Vince la pillola', colore: 'var(--accent)',
+    txt: "Nel cibo i folati sono <strong>poliglutammati</strong>: una coda di più residui che un enzima dell'orletto intestinale deve accorciare prima che la molecola passi. In quel passaggio se ne perde circa metà. L'acido folico della compressa è già monoglutammato e non ha nulla da tagliare: con il cibo è biodisponibile almeno all'85%, a stomaco vuoto quasi al 100%. È l'unico caso in cui la differenza è stata scritta dentro l'unità di misura ufficiale: 1 µg di folato del piatto conta 1 equivalente, 1 µg di acido folico con i pasti ne conta 1,7." },
+  { id: 1, breve: 'Vitamina K1', nome: 'Vitamina K1 (fillochinone)',
+    cibo: 10, pillola: 80,
+    etCibo: 'SPINACI', etPillola: 'PASTIGLIA',
+    verdetto: 'Vince la pillola, di otto volte', colore: 'var(--accent)',
+    txt: "Nelle foglie il fillochinone è incastrato nelle <strong>membrane dei cloroplasti</strong>, e l'intestino fa fatica a estrarlo: l'Office of Dietary Supplements statunitense stima che dagli spinaci si assorba solo dal 4% al 17% di quanto si assorbe da una pastiglia, dove la molecola è libera e la resa arriva intorno all'80%. Un po' di grasso nel piatto migliora le cose, ma non colma il divario. È il caso in cui essere «nudi» conviene." },
+  { id: 2, breve: 'Vitamina C', nome: 'Vitamina C (acido ascorbico)',
+    cibo: 80, pillola: 80,
+    etCibo: 'ARANCIA', etPillola: 'COMPRESSA',
+    verdetto: 'Pareggio, ed è chimica', colore: 'var(--muted)',
+    txt: "Qui non c'è partita perché non c'è differenza: l'acido L-ascorbico dell'arancia e quello di sintesi sono <strong>la stessa molecola</strong>. Uno studio del 1993 confrontò arance, succo d'arancia e broccoli cotti con acido ascorbico puro e trovò biodisponibilità simili; su dieci studi che hanno provato ad aggiungere flavonoidi per «potenziare» l'assorbimento, nessuno ha mostrato differenze apprezzabili. L'unica cosa che conta davvero, per la vitamina C, è la dose — e lo vedremo nell'applet 05." },
+  { id: 3, breve: 'Vitamina B12', nome: 'Vitamina B12 (cobalamina)',
+    cibo: 50, pillola: 50,
+    etCibo: 'CARNE', etPillola: 'COMPRESSA',
+    verdetto: 'Pareggio — ma non dopo i cinquant’anni', colore: 'var(--muted)',
+    txt: "A dose piccola e con uno stomaco sano le due strade si equivalgono: il fattore intrinseco preleva la B12 e la porta dentro. Ma nel cibo la cobalamina è <strong>legata alle proteine</strong>, e va staccata con acido e pepsina: con la gastrite atrofica, frequente in età avanzata, quel passaggio si inceppa. Il Linus Pauling Institute lo dice senza giri di parole — chi ne è affetto non ha un bisogno maggiore di B12, ha bisogno della <em>forma cristallina</em> degli alimenti fortificati e degli integratori. Alle dosi alte, per contro, la pillola perde: senza fattore intrinseco passa solo l'1-2% per diffusione." },
+  { id: 4, breve: 'Beta-carotene', nome: 'Beta-carotene come vitamina A',
+    cibo: 8, pillola: 50,
+    etCibo: 'CAROTE', etPillola: 'PERLA IN OLIO',
+    verdetto: 'Vince la pillola, di sei volte', colore: 'var(--accent)',
+    txt: "Il beta-carotene non è vitamina A: va tagliato in due dall'organismo, e la resa dipende da dove si trova. I fattori ufficiali di conversione lo mettono nero su bianco: servono <strong>12 µg di beta-carotene del cibo</strong> per ottenere 1 µg di retinolo, ma solo <strong>2 µg se è disciolto in olio</strong> dentro una perla. Sei volte meglio. Ed è esattamente la molecola che, data in capsule a 29.133 fumatori, ha fatto più tumori al polmone, non meno: la biodisponibilità non è la salute." }
+];
+
+var varcoIdx = 0, varcoAnim = null, varcoT0 = 0;
+var N_DOT = 20, VARCO_DUR = 2400;
+var Y_PART = 44, Y_BARRIERA = 128, Y_FONDO = 196;
+
+function costruisciVarcoSel() {
+  var c = document.getElementById('varcoSel');
+  for (var i = 0; i < VITAMINE.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'varco-btn' + (i === 0 ? ' attivo' : '');
+    b.textContent = VITAMINE[i].breve;
+    b.onclick = (function (k) { return function () { scegliVitamina(k); }; })(i);
+    c.appendChild(b);
+  }
+}
+
+function scegliVitamina(i) {
+  varcoIdx = i;
+  var btns = document.querySelectorAll('.varco-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var v = VITAMINE[i];
+  document.getElementById('etCibo').textContent = v.etCibo;
+  document.getElementById('etPillola').textContent = v.etPillola;
+  document.getElementById('varcoVerdetto').textContent = v.verdetto;
+  document.getElementById('varcoVerdetto').style.color = v.colore;
+  document.getElementById('varcoTesto').innerHTML = v.txt;
+  azzeraVarco();
+}
+
+function azzeraVarco() {
+  if (varcoAnim) { cancelAnimationFrame(varcoAnim); varcoAnim = null; }
+  creaDots('dotsCibo', 80, 0, '#7fb069');
+  creaDots('dotsPillola', 240, 0, '#a569bd');
+  document.getElementById('pozzoCibo').setAttribute('height', 0);
+  document.getElementById('pozzoCibo').setAttribute('y', 239);
+  document.getElementById('pozzoPillola').setAttribute('height', 0);
+  document.getElementById('pozzoPillola').setAttribute('y', 239);
+  document.getElementById('numCibo').textContent = '—';
+  document.getElementById('numPillola').textContent = '—';
+  document.getElementById('varcoGo').disabled = false;
+  document.getElementById('varcoGo').textContent = 'Manda giù';
+}
+
+function creaDots(gruppo, cx, quota, colore) {
+  var g = document.getElementById(gruppo);
+  g.innerHTML = '';
+  var passanti = Math.round(quota / 100 * N_DOT);
+  var lista = [];
+  for (var i = 0; i < N_DOT; i++) {
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    var dx = cx - 36 + (i % 5) * 18;
+    c.setAttribute('cx', dx);
+    c.setAttribute('cy', Y_PART);
+    c.setAttribute('r', 4);
+    c.setAttribute('fill', colore);
+    g.appendChild(c);
+    lista.push({ el: c, passa: i < passanti, delay: i * 0.03, x: dx });
+  }
+  return lista;
+}
+
+function mandaGiu() {
+  var v = VITAMINE[varcoIdx];
+  azzeraVarco();
+  document.getElementById('varcoGo').disabled = true;
+  var dCibo = creaDots('dotsCibo', 80, v.cibo, '#7fb069');
+  var dPill = creaDots('dotsPillola', 240, v.pillola, '#a569bd');
+  varcoT0 = performance.now();
+  function passo(ts) {
+    var t = Math.min((ts - varcoT0) / VARCO_DUR, 1);
+    muoviGruppo(dCibo, t);
+    muoviGruppo(dPill, t);
+    var q = Math.min(t / 0.75, 1);
+    aggiornaPozzo('pozzoCibo', 'numCibo', v.cibo * q);
+    aggiornaPozzo('pozzoPillola', 'numPillola', v.pillola * q);
+    if (t < 1) { varcoAnim = requestAnimationFrame(passo); }
+    else {
+      aggiornaPozzo('pozzoCibo', 'numCibo', v.cibo);
+      aggiornaPozzo('pozzoPillola', 'numPillola', v.pillola);
+      document.getElementById('varcoGo').disabled = false;
+      document.getElementById('varcoGo').textContent = 'Manda giù di nuovo';
+    }
+  }
+  varcoAnim = requestAnimationFrame(passo);
+}
+
+function muoviGruppo(lista, t) {
+  for (var i = 0; i < lista.length; i++) {
+    var d = lista[i];
+    var tt = (t - d.delay) / (1 - d.delay);
+    if (tt <= 0) { d.el.setAttribute('cy', Y_PART); continue; }
+    if (tt >= 1) tt = 1;
+    if (d.passa) {
+      d.el.setAttribute('cy', Y_PART + tt * (Y_FONDO - Y_PART));
+      d.el.setAttribute('opacity', 1 - 0.75 * Math.max(0, (tt - 0.8) / 0.2));
+    } else {
+      var lim = Math.min(tt / 0.62, 1);
+      d.el.setAttribute('cy', Y_PART + lim * (Y_BARRIERA - 8 - Y_PART));
+      if (lim >= 1) { d.el.setAttribute('fill', '#cfcac2'); d.el.setAttribute('r', 3); }
+    }
+  }
+}
+
+function aggiornaPozzo(idRect, idNum, valore) {
+  var h = valore / 100 * 32;
+  var r = document.getElementById(idRect);
+  r.setAttribute('height', h);
+  r.setAttribute('y', 239 - h);
+  document.getElementById(idNum).textContent = Math.round(valore) + ' su 100';
+}
+
+/* ══════════ APPLET 02 · GLI OTTO GEMELLI DELLA VITAMINA E ══════════ */
+var ISO_SIN = ['RRR', 'RSR', 'RRS', 'RSS', 'SRR', 'SSR', 'SRS', 'SSS'];
+var capsula = 'nat', isoFiltrata = false;
+
+function disegnaIsomeri() {
+  var g = document.getElementById('isoGriglia');
+  g.innerHTML = '';
+  for (var i = 0; i < 8; i++) {
+    var sigla = capsula === 'nat' ? 'RRR' : ISO_SIN[i];
+    var d = document.createElement('div');
+    d.className = 'iso-tile';
+    var stato = '&nbsp;';
+    if (isoFiltrata) {
+      if (sigla.charAt(0) === 'R') { d.className += ' tenuta'; stato = 'tenuta'; }
+      else { d.className += ' scartata'; stato = 'scartata'; }
+    }
+    d.innerHTML = '<div class="iso-sigla">' + sigla + '</div><div class="iso-stato">' + stato + '</div>';
+    g.appendChild(d);
+  }
+}
+
+function scegliCapsula(tipo) {
+  capsula = tipo;
+  isoFiltrata = false;
+  document.getElementById('isoNat').classList.toggle('attivo', tipo === 'nat');
+  document.getElementById('isoSin').classList.toggle('attivo', tipo === 'sin');
+  document.getElementById('isoGo').disabled = false;
+  document.getElementById('isoTenute').textContent = '—';
+  document.getElementById('isoMg').textContent = '—';
+  document.getElementById('isoTesto').innerHTML = tipo === 'nat'
+    ? "La forma naturale è una sola geometria, <em>RRR</em>-α-tocoferolo: tutte le molecole della capsula sono identiche e tutte hanno l'anello nella posizione che il fegato riconosce. Premi il pulsante per vedere il filtro all'opera."
+    : "La sintesi chimica non sa scegliere il verso: <em>all-rac</em>-α-tocoferolo esce dal reattore come miscela in parti uguali di otto stereoisomeri diversi, e solo quattro hanno la configurazione <em>2R</em> — quella che conta per l'uomo. Premi il pulsante per vedere quali sopravvivono.";
+  disegnaIsomeri();
+}
+
+function filtraFegato() {
+  isoFiltrata = true;
+  disegnaIsomeri();
+  document.getElementById('isoGo').disabled = true;
+  var tenute = capsula === 'nat' ? 8 : 4;
+  document.getElementById('isoTenute').textContent = tenute + ' su 8';
+  document.getElementById('isoMg').textContent = (capsula === 'nat' ? 268 : 180) + ' mg';
+  document.getElementById('isoTesto').innerHTML = capsula === 'nat'
+    ? "Nessuno scarto: la proteina di trasporto del fegato, l'α-TTP, lega tutte le molecole <em>RRR</em> e le cede alle lipoproteine nascenti che le portano in circolo. Ecco perché il fattore ufficiale di conversione della forma naturale è il più generoso: <strong>1 UI = 0,67 mg</strong>, e 400 UI in etichetta valgono 268 mg."
+    : "Metà del contenuto non arriva a destinazione: l'α-TTP riconosce solo le quattro geometrie <em>2R</em> — RRR, RSR, RRS, RSS — e le altre quattro vengono metabolizzate ed eliminate. Per questo il fattore ufficiale della forma di sintesi è più basso: <strong>1 UI = 0,45 mg</strong>, e le stesse 400 UI in etichetta valgono 180 mg, un terzo in meno.";
+}
+
+/* ══════════ APPLET 03 · IL BANCO DI PROVA ══════════ */
+var STUDI = [
+  { sigla: 'MRC Vitamin Study, 1991', ago: 82, etic: 'Beneficio netto',
+    riga: '1.817 donne a rischio · 33 centri in 7 paesi · 4 mg di acido folico al giorno',
+    txt: "Donne che avevano già avuto una gravidanza con un difetto del tubo neurale, randomizzate a quattro gruppi. È il caso in cui la pillola non imita il cibo: la fa meglio, perché 4 mg di folati al giorno nessuna dieta li contiene.",
+    esito: "Difetti del tubo neurale ridotti del <strong>72%</strong>: 6 casi contro 21 (rischio relativo 0,28; IC 95% 0,12-0,71). Nessun effetto delle altre vitamine somministrate (RR 0,80; IC 0,32-1,72)." },
+  { sigla: 'ATBC, Finlandia, 1994', ago: -68, etic: 'Danno',
+    riga: '29.133 fumatori maschi di 50-69 anni · 20 mg di beta-carotene e 50 mg di α-tocoferolo al giorno · mediana 6,1 anni',
+    txt: "Nato per confermare l'osservazione epidemiologica che chi mangia più verdure ricche di carotenoidi si ammala meno di cancro al polmone. Il risultato andò nella direzione opposta e fece scuola.",
+    esito: "<strong>18% di tumori al polmone in più</strong> e <strong>8% di morti in più</strong> nel gruppo beta-carotene (rischio relativo per il polmone 1,16; IC 95% 1,02-1,33). L'α-tocoferolo non ridusse il cancro al polmone." },
+  { sigla: 'CARET, Stati Uniti, 1996', ago: -88, etic: 'Danno, studio interrotto',
+    riga: '18.314 fumatori ed esposti all’amianto · 30 mg di beta-carotene e 25.000 UI di retinil palmitato al giorno',
+    txt: "Doveva essere la conferma su larga scala della prevenzione con beta-carotene, a dose più alta dell'ATBC e con l'aggiunta di vitamina A. Il comitato di sicurezza lo fermò in anticipo, a gennaio 1996, quando i dati diventarono inequivocabili.",
+    esito: "<strong>28% di tumori al polmone in più</strong> (rischio relativo 1,28; IC 95% 1,04-1,57) e <strong>17% di morti in più</strong>. Sei anni dopo la sospensione l'eccesso si era attenuato: RR 1,12 (IC 0,97-1,31)." },
+  { sigla: 'SELECT, 2011', ago: -55, etic: 'Danno',
+    riga: 'Oltre 35.000 uomini · 400 UI al giorno di dl-α-tocoferil acetato, la forma di sintesi',
+    txt: "Cercava la prevenzione del tumore della prostata con vitamina E e selenio. Quelle 400 UI di forma sintetica corrispondono a 180 mg di α-tocoferolo utile, dodici volte il fabbisogno giornaliero di un adulto — e sono nella forma che il fegato scarta a metà (applet 02).",
+    esito: "<strong>17% di tumori della prostata in più</strong> nel gruppo vitamina E: <strong>76 casi ogni 1.000 uomini in sette anni contro 65</strong> nel placebo, cioè 11 tumori in più ogni mille." },
+  { sigla: 'Physicians’ Health Study II, 2012', ago: 24, etic: 'Beneficio piccolo',
+    riga: '14.641 medici uomini, età media 64 anni · un multivitaminico da banco · follow-up mediano 11,2 anni',
+    txt: "Il più longevo studio randomizzato su un multivitaminico comune. È l'unico risultato positivo del gruppo, e resta piccolo e circoscritto: sposta l'incidenza totale, non la mortalità.",
+    esito: "Tumori totali ridotti dell'<strong>8%</strong> (HR 0,92; IC 95% 0,86-0,998; p = 0,04). Nessun effetto sul tumore della prostata (HR 0,98) né sulla mortalità per cancro." },
+  { sigla: 'COSMOS, 2022', ago: 2, etic: 'Nessun effetto',
+    riga: '21.442 adulti: 12.666 donne dai 65 anni e 8.776 uomini dai 60 · multivitaminico-minerale · mediana 3,6 anni',
+    txt: "Lo studio più recente e più grande sul multivitaminico quotidiano nella popolazione anziana, disegnato per misurare tumori ed eventi cardiovascolari insieme. L'indice resta al centro.",
+    esito: "Tumori invasivi totali: HR <strong>0,97</strong> (IC 95% 0,86-1,09). Eventi cardiovascolari: HR <strong>0,98</strong> (IC 95% 0,86-1,12). Conclusione degli autori: nessuna riduzione significativa." }
+];
+
+function costruisciStudi() {
+  var c = document.getElementById('studiLista');
+  for (var i = 0; i < STUDI.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'studi-btn' + (i === 0 ? ' attivo' : '');
+    b.textContent = STUDI[i].sigla;
+    b.onclick = (function (k) { return function () { mostraStudio(k); }; })(i);
+    c.appendChild(b);
+  }
+  mostraStudio(0);
+}
+
+function mostraStudio(i) {
+  var btns = document.querySelectorAll('.studi-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var s = STUDI[i];
+  var ang = s.ago / 100 * 82;
+  var rad = (ang - 90) * Math.PI / 180;
+  var x2 = 160 + 88 * Math.cos(rad), y2 = 140 + 88 * Math.sin(rad);
+  var ago = document.getElementById('ago');
+  ago.setAttribute('x2', x2.toFixed(1));
+  ago.setAttribute('y2', y2.toFixed(1));
+  ago.style.transition = 'all 0.6s ease';
+  ago.setAttribute('stroke', s.ago < -12 ? '#c0392b' : (s.ago > 12 ? '#27ae60' : '#1c1c2e'));
+  var et = document.getElementById('gaugeEtichetta');
+  et.textContent = s.etic;
+  et.style.color = s.ago < -12 ? '#c0392b' : (s.ago > 12 ? '#27ae60' : '#7f8c8d');
+  document.getElementById('studioDett').innerHTML =
+    '<h4>' + s.sigla + '</h4><div class="studio-riga">' + s.riga + '</div><p>' + s.txt + '</p><em class="esito">' + s.esito + '</em>';
+}
+
+/* ══════════ APPLET 04 · LO STESSO PIATTO ══════════ */
+var PIATTI = [
+  { et: 'Insalata scondita — 0 g di grassi', beta: 1, alfa: 1, lut: 1, avo: 0, gocce: 0,
+    txt: "Il punto di partenza, e non è un punto neutro: nell'esperimento di Mary Brown la stessa insalata servita con un condimento <strong>senza grassi</strong> faceva comparire nei chilomicroni quantità di α-carotene, β-carotene e licopene definite «trascurabili». Le verdure c'erano tutte, i carotenoidi non arrivavano in circolo. Sono molecole liposolubili: senza una fase grassa che le porti, restano nell'intestino." },
+  { et: '+ 75 g di avocado', beta: 13.6, alfa: 8.3, lut: 4.3, avo: 2, gocce: 1,
+    txt: "Mezzo avocado, circa 12 g di grassi, e l'assorbimento cambia ordine di grandezza: <strong>β-carotene ×13,6</strong>, α-carotene ×8,3, luteina ×4,3 rispetto alla stessa insalata senza avocado. Non è un ingrediente miracoloso: è il veicolo che mancava." },
+  { et: '+ 150 g di avocado', beta: 15.3, alfa: 7.2, lut: 5.1, avo: 4, gocce: 2,
+    txt: "Un avocado intero, ed emerge il dettaglio più istruttivo dello studio: raddoppiando la dose il β-carotene sale ancora un po' (<strong>×15,3</strong>) e la luteina pure (×5,1), ma l'α-carotene <em>scende</em>, da ×8,3 a ×7,2. Oltre una certa soglia il grasso in più non aggiunge assorbimento — il sistema di trasporto ha un tetto, come tutto il resto." },
+  { et: '+ 24 g di olio di avocado', beta: 17.4, alfa: 8.9, lut: 6.7, avo: 0, gocce: 4,
+    txt: "Solo il grasso, senza la polpa: <strong>β-carotene ×17,4</strong>, α-carotene ×8,9, luteina ×6,7 — i valori più alti dell'intero esperimento. È la prova che il merito non sta nell'avocado ma nei suoi lipidi, e insieme il motivo per cui l'olio sull'insalata non è un vizio italiano ma un pezzo del meccanismo digestivo." }
+];
+
+function costruisciPiatto() {
+  var c = document.getElementById('piattoOpz');
+  for (var i = 0; i < PIATTI.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'piatto-btn' + (i === 0 ? ' attivo' : '');
+    b.textContent = PIATTI[i].et;
+    b.onclick = (function (k) { return function () { mostraPiatto(k); }; })(i);
+    c.appendChild(b);
+  }
+  mostraPiatto(0);
+}
+
+function mostraPiatto(i) {
+  var btns = document.querySelectorAll('.piatto-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var p = PIATTI[i];
+  var MAX = 18;
+  setBarra('barBeta', 'valBeta', p.beta, MAX);
+  setBarra('barAlfa', 'valAlfa', p.alfa, MAX);
+  setBarra('barLut', 'valLut', p.lut, MAX);
+  document.getElementById('piattoTesto').innerHTML = p.txt;
+  disegnaGrassi(p.avo, p.gocce);
+}
+
+function setBarra(idBar, idVal, v, max) {
+  document.getElementById(idBar).style.width = Math.max(v / max * 100, 4) + '%';
+  document.getElementById(idVal).textContent = '×' + String(v).replace('.', ',');
+}
+
+function disegnaGrassi(nAvo, nGocce) {
+  var posAvo = [[52, 46], [96, 44], [44, 100], [100, 104]];
+  var posGoc = [[70, 58], [86, 76], [60, 82], [92, 62]];
+  var ga = document.getElementById('avocadoG');
+  var gg = document.getElementById('gocceG');
+  ga.innerHTML = ''; gg.innerHTML = '';
+  ga.setAttribute('opacity', nAvo ? 1 : 0);
+  gg.setAttribute('opacity', nGocce ? 1 : 0);
+  for (var i = 0; i < nAvo; i++) {
+    var e = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    e.setAttribute('cx', posAvo[i][0]); e.setAttribute('cy', posAvo[i][1]);
+    e.setAttribute('rx', 11); e.setAttribute('ry', 6);
+    e.setAttribute('fill', '#b7d17a'); e.setAttribute('stroke', '#5f8b3a');
+    e.setAttribute('transform', 'rotate(' + (i * 37 - 20) + ' ' + posAvo[i][0] + ' ' + posAvo[i][1] + ')');
+    ga.appendChild(e);
+  }
+  for (var j = 0; j < nGocce; j++) {
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', posGoc[j][0]); c.setAttribute('cy', posGoc[j][1]);
+    c.setAttribute('r', 3.6); c.setAttribute('fill', '#f1c40f'); c.setAttribute('opacity', 0.85);
+    gg.appendChild(c);
+  }
+}
+
+/* ══════════ APPLET 05 · UN GRAMMO DI VITAMINA C ══════════ */
+var DOSI = [
+  { mg: 30, bio: 87, txt: "Trenta milligrammi: metà del fabbisogno giornaliero, e la resa è la migliore di tutta la curva — <strong>87%</strong>. È la zona in cui il trasportatore attivo dell'intestino lavora senza affanno, e in cui una dieta normale si muove senza bisogno di compresse." },
+  { mg: 100, bio: 80, txt: "Cento milligrammi al giorno: qui il plasma è già <strong>saturo al 70%</strong> e i globuli bianchi circolanti sono <em>completamente</em> pieni. È la soglia oltre la quale il corpo non sta più immagazzinando, sta gestendo un surplus. Non per caso è anche l'ordine di grandezza del fabbisogno raccomandato." },
+  { mg: 200, bio: 72, txt: "Duecento milligrammi, cioè tre arance in una compressa: la biodisponibilità è già scesa al <strong>72%</strong>. Il trasportatore comincia a saturarsi, e ciò che entra oltre la saturazione del plasma prende la via del rene." },
+  { mg: 500, bio: 63, txt: "Mezzo grammo: <strong>63%</strong>. Secondo la revisione di Padayatty e Levine, dosi superiori ai 500 mg al giorno «contribuiscono poco» alle concentrazioni nel plasma e nei tessuti — il grosso viene escreto." },
+  { mg: 1250, bio: 49, txt: "Un grammo e un quarto, la dose di molte compresse effervescenti: <strong>meno della metà viene assorbito</strong>. E di quella metà, quasi tutto ciò che supera la saturazione finisce nelle urine. La compressa da un grammo non mette in circolo diciotto arance: mette in circolo quanto una decina, e nel bagno il resto." }
+];
+var doseIdx = 0, doseChart = null;
+
+function costruisciDose() {
+  var c = document.getElementById('doseStops');
+  for (var i = 0; i < DOSI.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'dose-btn' + (i === 0 ? ' attivo' : '');
+    b.textContent = DOSI[i].mg + ' mg';
+    b.onclick = (function (k) { return function () { mostraDose(k); }; })(i);
+    c.appendChild(b);
+  }
+  creaGrafico();
+  mostraDose(0);
+}
+
+function creaGrafico() {
+  var ctx = document.getElementById('doseChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+  doseChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: DOSI.map(function (d) { return d.mg + ' mg'; }),
+      datasets: [{
+        label: 'Biodisponibilità (%)',
+        data: DOSI.map(function (d) { return d.bio; }),
+        borderColor: '#8e44ad',
+        backgroundColor: 'rgba(142,68,173,0.10)',
+        fill: true,
+        tension: 0.25,
+        pointRadius: DOSI.map(function (d, i) { return i === 0 ? 8 : 4; }),
+        pointBackgroundColor: DOSI.map(function (d, i) { return i === 0 ? '#8e44ad' : '#ffffff'; }),
+        pointBorderColor: '#8e44ad',
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 40, max: 95, ticks: { callback: function (v) { return v + '%'; }, font: { size: 11 } }, grid: { color: '#f0ede7' } },
+        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function mostraDose(i) {
+  doseIdx = i;
+  var btns = document.querySelectorAll('.dose-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  var d = DOSI[i];
+  document.getElementById('doseBio').textContent = d.bio + '%';
+  document.getElementById('doseAss').textContent = Math.round(d.mg * d.bio / 100) + ' mg';
+  document.getElementById('doseAra').textContent = (d.mg / 70).toFixed(1).replace('.', ',');
+  document.getElementById('doseTesto').innerHTML = d.txt;
+  if (doseChart) {
+    doseChart.data.datasets[0].pointRadius = DOSI.map(function (x, k) { return k === i ? 8 : 4; });
+    doseChart.data.datasets[0].pointBackgroundColor = DOSI.map(function (x, k) { return k === i ? '#8e44ad' : '#ffffff'; });
+    doseChart.update();
+  }
+}
+
+/* ══════════ AVVIO ══════════ */
+costruisciVarcoSel();
+scegliVitamina(0);
+scegliCapsula('nat');
+costruisciStudi();
+costruisciPiatto();
+costruisciDose();
+</script>
+</body>
+</html>
