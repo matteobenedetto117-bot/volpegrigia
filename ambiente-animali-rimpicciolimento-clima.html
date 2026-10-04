@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perché alcune specie animali si stanno rimpicciolendo per il cambiamento climatico?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdfcf9;
+    --text: #1c1c2e;
+    --accent: #27ae60;
+    --accent-light: #e4f4ea;
+    --accent-mid: #2ecc71;
+    --muted: #7f8c8d;
+    --border: #e8e4de;
+    --card-bg: #ffffff;
+    --max: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+
+  .container { max-width: var(--max); margin: 0 auto; }
+
+  header {
+    padding: 48px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .risposta-box {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .risposta-box::before {
+    content: "La risposta";
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .risposta-box p { font-size: 17px; line-height: 1.55; font-weight: 400; }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .testo { margin: 32px 0; }
+  .testo p { font-size: 17px; line-height: 1.75; color: var(--text); margin-bottom: 0; }
+
+  .applet {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px 20px;
+    margin: 40px 0;
+  }
+
+  .applet-header { margin-bottom: 6px; }
+  .applet-numero { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .applet-titolo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .applet-istruzione { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
+  .applet-fonte { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .applet-fonte a { color: var(--accent); text-decoration: none; }
+  .applet-fonte a:hover { text-decoration: underline; }
+
+  .box-testo { font-size: 14.5px; line-height: 1.6; color: var(--text); background: var(--accent-light); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 4px 4px 0; }
+
+  /* ── APPLET 1 · CASSETTO DEL MUSEO ── */
+  .cass-etichette { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .cass-tag {
+    flex: 1;
+    min-width: 62px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 3px 3px 6px 6px;
+    padding: 8px 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cass-tag.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .cass-scena { display: grid; grid-template-columns: 1fr 150px; gap: 16px; align-items: stretch; }
+  .cass-vassoio { background: #f6f2ea; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .cass-svg { display: block; width: 100%; height: auto; }
+
+  .cass-misure { display: grid; gap: 8px; align-content: start; }
+  .cass-misura { background: #faf8f4; border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; }
+  .cass-misura-lab { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .cass-misura-val { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .cass-misura-delta { font-size: 11.5px; font-weight: 600; color: var(--accent); }
+  .cass-misura-delta.su { color: #2980b9; }
+
+  .cass-nota { font-size: 13.5px; color: var(--text); background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 11px 14px; margin-top: 14px; line-height: 1.55; }
+
+  /* ── APPLET 2 · MECCANISMI ── */
+  .mec-lista { display: grid; gap: 8px; margin-bottom: 18px; }
+  .mec-btn {
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mec-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .mec-bilancia { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .mec-piatto { border-radius: 5px; padding: 11px 13px; font-size: 13.5px; line-height: 1.5; }
+  .mec-pro { background: var(--accent-light); border-left: 3px solid var(--accent); }
+  .mec-contro { background: #fdeeea; border-left: 3px solid #c0392b; }
+  .mec-piatto-lab { display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .mec-pro .mec-piatto-lab { color: var(--accent); }
+  .mec-contro .mec-piatto-lab { color: #c0392b; }
+
+  .mec-verdetto { display: flex; align-items: center; gap: 10px; font-size: 13px; margin-bottom: 12px; }
+  .mec-verdetto-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: var(--accent); padding: 3px 9px; border-radius: 3px; }
+  .mec-verdetto-track { flex: 1; background: #f3f1ec; border-radius: 3px; height: 10px; overflow: hidden; }
+  .mec-verdetto-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+
+  /* ── APPLET 3 · ACQUA CONTRO TERRA ── */
+  .ris-btns { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .ris-btn {
+    flex: 1;
+    min-width: 72px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ris-btn.attivo { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ris-canvas-wrap { position: relative; height: 230px; margin-bottom: 12px; }
+  .ris-sintesi { font-size: 13.5px; line-height: 1.55; color: var(--text); text-align: center; padding: 4px 2px 0; }
+  .ris-sintesi strong { color: var(--accent); }
+
+  /* ── APPLET 4 · CASCATA DEL CHINOOK ── */
+  .chi-pesce { background: #eef4f7; border: 1px solid var(--border); border-radius: 6px; padding: 10px 8px 4px; margin-bottom: 16px; }
+  .chi-svg { display: block; width: 100%; height: auto; }
+
+  .chi-catena { display: grid; gap: 7px; }
+  .chi-anello {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 12px;
+    align-items: center;
+    text-align: left;
+    font-family: 'Source Sans 3', sans-serif;
+    background: #f3f1ec;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chi-anello.attivo { background: var(--accent-light); border-color: var(--accent); }
+  .chi-cifra { font-family: 'Playfair Display', serif; font-size: 23px; font-weight: 900; color: var(--muted); line-height: 1; text-align: right; }
+  .chi-anello.attivo .chi-cifra { color: var(--accent); }
+  .chi-lab { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .chi-dettaglio { background: #faf8f4; border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; margin-top: 14px; font-size: 14px; line-height: 1.6; }
+
+  .frase-finale { margin: 48px 0 40px; padding: 24px 28px; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--border); }
+  .frase-finale p { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; line-height: 1.55; color: var(--text); }
+
+  .fonti { padding: 28px 0 48px; border-top: 1px solid var(--border); }
+  .fonti h3 { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .fonti ul { list-style: none; display: grid; gap: 6px; }
+  .fonti li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+  .fonti li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .fonti a { color: var(--muted); text-decoration: underline; }
+  .fonti a:hover { color: var(--accent); }
+
+  .home-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; margin-bottom: 32px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .home-link:hover { color: var(--accent); }
+
+  @media (max-width: 480px) {
+    body { padding: 0 16px; }
+    .applet { padding: 20px 16px 16px; }
+    .cass-scena { grid-template-columns: 1fr; }
+    .mec-bilancia { grid-template-columns: 1fr; }
+    .cass-tag { min-width: 28%; }
+    .chi-anello { grid-template-columns: 60px 1fr; gap: 9px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="index.html" class="home-link">← Tutte le pillole</a>
+    <div class="tag">#Ambiente</div>
+    <h1>Perché alcune specie animali si stanno rimpicciolendo per il cambiamento climatico?</h1>
+    <div class="risposta-box">
+      <p>Perché un corpo piccolo smaltisce calore meglio — ma questa è solo una delle spiegazioni, e forse non la principale. Nei 70.716 uccelli raccolti a Chicago da un unico misuratore fra il 1978 e il 2016 la zampa si è accorciata del 2,4% e l'ala si è allungata dell'1,3%; in acqua il rimpicciolimento corre dieci volte più veloce che sulla terraferma. Però un esperimento del 2025 sulle quaglie mostra che la forma «ottimizzata» quasi non aiuta a disperdere calore: in molti casi gli animali non si stanno adattando, stanno semplicemente crescendo peggio.</p>
+    </div>
+    <div class="meta">Lettura: 4 minuti &nbsp;·&nbsp; Aggiornato: ottobre 2026</div>
+  </header>
+
+  <div class="testo">
+    <p>L'idea ha 179 anni. Nel 1847 l'anatomista tedesco Carl Bergmann pubblica negli <em>Göttinger Studien</em> un saggio dal titolo <em>Über die Verhältnisse der Wärmeökonomie der Thiere zu ihrer Grösse</em> — «sui rapporti fra l'economia del calore degli animali e la loro taglia» — e nota che le specie grandi vivono più a nord, le piccole più a sud: se due specie differissero solo per le dimensioni, scrive, «la più piccola richiederebbe un clima più caldo». Oggi quella regola è diventata una previsione: se il mondo si scalda, gli animali dovrebbero rimpicciolirsi. E in effetti succede.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">01</div>
+      <div class="applet-titolo">Il cassetto del Field Museum</div>
+      <div class="applet-istruzione">Tira fuori dal cassetto un esemplare di un'annata e guarda come cambiano le tre misure sul tavolo di David Willard.</div>
+    </div>
+    <div class="cass-etichette" id="cassEtichette"></div>
+    <div class="cass-scena">
+      <div class="cass-vassoio">
+        <svg class="cass-svg" id="cassSvg" viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="300" height="170" fill="#f6f2ea"></rect>
+          <line x1="20" y1="148" x2="280" y2="148" stroke="#d8d0c2" stroke-width="1.5"></line>
+          <g id="gCorpo">
+            <ellipse id="corpo" cx="140" cy="86" rx="52" ry="31" fill="#c8a97e"></ellipse>
+            <circle id="testa" cx="196" cy="68" r="19" fill="#d8bd96"></circle>
+            <polygon id="becco" points="214,68 236,72 214,76" fill="#8a7047"></polygon>
+            <circle cx="202" cy="64" r="2.6" fill="#1c1c2e"></circle>
+            <path id="ala" d="M120 78 Q 86 70 44 90 Q 88 98 124 94 Z" fill="#a98c62"></path>
+            <line id="zampa1" x1="132" y1="114" x2="132" y2="148" stroke="#8a7047" stroke-width="3.4"></line>
+            <line id="zampa2" x1="152" y1="114" x2="152" y2="148" stroke="#8a7047" stroke-width="3.4"></line>
+          </g>
+          <line id="calibroSu" x1="104" y1="114" x2="104" y2="114" stroke="#27ae60" stroke-width="2"></line>
+          <line id="calibroGiu" x1="104" y1="148" x2="104" y2="148" stroke="#27ae60" stroke-width="2"></line>
+          <line id="calibroAsta" x1="104" y1="114" x2="104" y2="148" stroke="#27ae60" stroke-width="1.2" stroke-dasharray="3 3"></line>
+          <text id="calibroTxt" x="98" y="134" text-anchor="end" font-family="sans-serif" font-size="10" fill="#27ae60">tarso</text>
+          <text id="cassEtic" x="20" y="24" font-family="sans-serif" font-size="11" fill="#9b8f7c">cassetto FMNH — Chicago</text>
+        </svg>
+      </div>
+      <div class="cass-misure">
+        <div class="cass-misura">
+          <div class="cass-misura-lab">Tarso</div>
+          <div class="cass-misura-val" id="valTarso">—</div>
+          <div class="cass-misura-delta" id="delTarso">&nbsp;</div>
+        </div>
+        <div class="cass-misura">
+          <div class="cass-misura-lab">Massa</div>
+          <div class="cass-misura-val" id="valMassa">—</div>
+          <div class="cass-misura-delta" id="delMassa">&nbsp;</div>
+        </div>
+        <div class="cass-misura">
+          <div class="cass-misura-lab">Ala</div>
+          <div class="cass-misura-val" id="valAla">—</div>
+          <div class="cass-misura-delta su" id="delAla">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+    <div class="cass-nota" id="cassNota"></div>
+    <div class="applet-fonte">
+      Dati: Brian C. Weeks, David E. Willard, Marketa Zimova, Aspen A. Ellis, Max L. Witynski, Mary Hennen, Benjamin M. Winger, <em>Shared morphological consequences of global warming in North American migratory birds</em>, «Ecology Letters» 23 (2020), pp. 316–325. Willard, del Field Museum, ha misurato personalmente tutti gli esemplari per trentotto anni: un unico operatore, stesso calibro, nessuna variabilità fra misuratori diversi — è ciò che rende confrontabili dati raccolti a quarant'anni di distanza. Variazioni complessive misurate sul periodo 1978–2016: tarso −2,4%, massa −2,6%, lunghezza dell'ala +1,3%, medie su 52 specie e 70.716 individui. Le cifre assolute mostrate qui sono ricostruite applicando quelle percentuali, in modo lineare, a un esemplare medio di riferimento: servono a rendere leggibile l'ordine di grandezza, non sono misure di singoli esemplari.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Quegli uccelli non erano stati raccolti per studiare il clima: si erano schiantati di notte contro i vetri del McCormick Place, a Chicago. E non è un artefatto da grande città: nel cuore della foresta amazzonica intatta, 77 specie misurate su oltre 15.000 individui hanno perso circa il 2% di massa per decennio. Chi negli anni Ottanta pesava 30 grammi oggi ne pesa 27,6.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">02</div>
+      <div class="applet-titolo">Quattro spiegazioni, una sola bilancia</div>
+      <div class="applet-istruzione">Scegli un meccanismo e pesa la prova che lo sostiene contro quella che lo smonta: il verdetto cambia parecchio.</div>
+    </div>
+    <div class="mec-lista">
+      <button class="mec-btn attivo" data-mec="0" onclick="mostraMec(0)">1 · Il corpo piccolo si raffredda meglio</button>
+      <button class="mec-btn" data-mec="1" onclick="mostraMec(1)">2 · L'inverno non uccide più i piccoli</button>
+      <button class="mec-btn" data-mec="2" onclick="mostraMec(2)">3 · In acqua manca l'ossigeno</button>
+      <button class="mec-btn" data-mec="3" onclick="mostraMec(3)">4 · Si cresce peggio, non si diventa adatti</button>
+    </div>
+    <div class="mec-bilancia">
+      <div class="mec-piatto mec-pro"><span class="mec-piatto-lab">A favore</span><span id="mecPro"></span></div>
+      <div class="mec-piatto mec-contro"><span class="mec-piatto-lab">Contro</span><span id="mecContro"></span></div>
+    </div>
+    <div class="mec-verdetto">
+      <span class="mec-verdetto-badge" id="mecBadge">—</span>
+      <div class="mec-verdetto-track"><div class="mec-verdetto-fill" id="mecFill" style="width:50%"></div></div>
+    </div>
+    <div class="box-testo" id="mecTesto"></div>
+    <div class="applet-fonte">
+      Fonti dei quattro meccanismi, nell'ordine: Sara Ryding, Marcel Klaassen, Glenn J. Tattersall, Janet L. Gardner, Matthew R. E. Symonds, <em>Shape-shifting: changing animal morphologies as a response to climatic warming</em>, «Trends in Ecology &amp; Evolution» 36 (11), 2021, pp. 1036–1048; Arpat Ozgul, Shripad Tuljapurkar, Tim G. Benton, Josephine M. Pemberton, Tim H. Clutton-Brock, Tim Coulson, <em>The Dynamics of Phenotypic Change and the Shrinking Sheep of St. Kilda</em>, «Science» 325, 2 luglio 2009; Jack Forster, Andrew G. Hirst, David Atkinson, <em>Warming-induced reductions in body size are greater in aquatic than terrestrial species</em>, «PNAS», 5 novembre 2012; Joshua K. R. Tabh, Elin Persson, Maria Correia, Ciarán Ó Cuív, Elisa Thoral, Andreas Nord, <em>Limited evidence that body size shrinking and shape-shifting alleviate thermoregulatory pressures in a warmer world</em>, «Communications Biology», 2025. La barra del verdetto è una valutazione redazionale del sostegno sperimentale disponibile, non una misura.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>La spiegazione più suggestiva non riguarda il corpo ma le sue appendici. Il gruppo di Sara Ryding, a Deakin, ha trovato becchi dei pappagalli australiani cresciuti dal 4 al 10% dal 1871, code più lunghe nei topi selvatici, zampe e code più lunghe nei toporagni: un becco è un radiatore irrorato di sangue, e allargarlo serve a buttare via calore. «Il mondo sta cambiando a una velocità senza precedenti», commenta Ryding: «quello che vediamo sono animali che fanno del loro meglio per stare al passo».</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">03</div>
+      <div class="applet-titolo">Un grado in aria, un grado in acqua</div>
+      <div class="applet-istruzione">Imposta di quanto si scalda l'ambiente e confronta le due curve: lo stesso grado non pesa affatto uguale.</div>
+    </div>
+    <div class="ris-btns" id="risBtns"></div>
+    <div class="ris-canvas-wrap"><canvas id="risChart"></canvas></div>
+    <div class="ris-sintesi" id="risSintesi"></div>
+    <div class="applet-fonte">
+      Dati: Jack Forster, Andrew G. Hirst, David Atkinson, <em>Warming-induced reductions in body size are greater in aquatic than terrestrial species</em>, «PNAS», 5 novembre 2012 — meta-analisi su 169 specie terrestri, d'acqua dolce e marine: in media −5% di taglia per °C nelle specie acquatiche contro −0,5% per °C in quelle terrestri. Come sintetizza Andrew Hirst, «gli animali acquatici si rimpiccioliscono dieci volte più di quelli di terra». La proiezione a più gradi è un'estrapolazione lineare di quei due coefficienti, utile come ordine di grandezza: in natura la risposta non resta lineare indefinitamente.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Il motivo di quel fattore dieci è fisico: l'acqua calda contiene meno ossigeno disciolto, e un pesce respira attraverso branchie la cui superficie cresce più lentamente del volume del corpo. Più l'animale è grande, più fatica a far entrare abbastanza ossigeno quando l'acqua si scalda — un vincolo che un uccello, che respira aria, semplicemente non ha.</p>
+  </div>
+
+  <div class="applet">
+    <div class="applet-header">
+      <div class="applet-numero">04</div>
+      <div class="applet-titolo">Otto per cento: la cascata del Chinook</div>
+      <div class="applet-istruzione">Clicca un anello della catena per vedere che cosa comporta, a valle, un salmone reale più corto dell'8%.</div>
+    </div>
+    <div class="chi-pesce">
+      <svg class="chi-svg" id="chiSvg" viewBox="0 0 320 96" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="320" height="96" fill="#eef4f7"></rect>
+        <text x="12" y="18" font-family="sans-serif" font-size="10" fill="#8fa3ad">prima del 1990</text>
+        <g>
+          <path d="M24 38 Q 100 20 236 38 Q 100 56 24 38 Z" fill="#9db9c4"></path>
+          <polygon points="236,38 262,26 262,50" fill="#9db9c4"></polygon>
+          <circle cx="48" cy="36" r="2.4" fill="#2c3e50"></circle>
+        </g>
+        <text x="272" y="42" font-family="sans-serif" font-size="10" fill="#8fa3ad">100%</text>
+        <text x="12" y="70" font-family="sans-serif" font-size="10" fill="#27ae60">dopo il 2010</text>
+        <g>
+          <path d="M24 86 Q 94 70 214 86 Q 94 100 24 86 Z" fill="#27ae60"></path>
+          <polygon points="214,86 238,75 238,97" fill="#27ae60"></polygon>
+          <circle cx="46" cy="84" r="2.3" fill="#1c3b28"></circle>
+        </g>
+        <text x="272" y="90" font-family="sans-serif" font-size="10" fill="#27ae60">−8,0%</text>
+      </svg>
+    </div>
+    <div class="chi-catena" id="chiCatena"></div>
+    <div class="chi-dettaglio" id="chiDettaglio"></div>
+    <div class="applet-fonte">
+      Dati: K. B. Oke, C. J. Cunningham, P. A. H. Westley et al., <em>Recent declines in salmon body size impact ecosystems and fisheries</em>, «Nature Communications» 11 (2020), articolo 4155 — 60 anni di misure su 12,5 milioni di pesci in 1.014 siti di campionamento in Alaska. Confronto fra il periodo precedente al 1990 e quello successivo al 2010; le percentuali «a valle» sono le riduzioni per singolo pesce calcolate dagli autori per il salmone reale (Chinook). Il profilo del salmone in alto è una schematizzazione in scala della sola differenza di lunghezza.
+    </div>
+  </div>
+
+  <div class="testo">
+    <p>Qui il meccanismo non è la termoregolazione, è il calendario. Secondo Oke e colleghi l'88% del rimpicciolimento si spiega con l'età alla maturità e non con una crescita più lenta: i salmoni risalgono il fiume più giovani, e un Chinook che torna un anno prima è semplicemente un Chinook più corto. Il clima c'entra, ma entra dalla porta di servizio.</p>
+  </div>
+
+  <div class="frase-finale">
+    <p>Un animale che rimpicciolisce non è per forza un animale che si adatta: può essere, molto più banalmente, un animale che non ha avuto il tempo — o il cibo — per diventare grande.</p>
+  </div>
+
+  <div class="fonti">
+    <h3>Fonti dei dati</h3>
+    <ul>
+      <li>Carl Bergmann, <em>Über die Verhältnisse der Wärmeökonomie der Thiere zu ihrer Grösse</em>, «Göttinger Studien» 3 (1), 1847, pp. 595–708 — formulazione originale della regola di Bergmann</li>
+      <li>Brian C. Weeks, David E. Willard, Marketa Zimova, Aspen A. Ellis, Max L. Witynski, Mary Hennen, Benjamin M. Winger, <em>Shared morphological consequences of global warming in North American migratory birds</em>, «Ecology Letters» 23, 2020, pp. 316–325, DOI 10.1111/ele.13434</li>
+      <li>Vitek Jirinec, Philip C Stouffer et al., <em>Morphological consequences of climate change for resident birds in intact Amazonian rainforest</em>, «Science Advances» 7 (46), 12 novembre 2021, DOI 10.1126/sciadv.abk1743 — oltre 15.000 individui di 77 specie, circa −2% di massa per decennio</li>
+      <li>Sara Ryding, Marcel Klaassen, Glenn J. Tattersall, Janet L. Gardner, Matthew R. E. Symonds, <em>Shape-shifting: changing animal morphologies as a response to climatic warming</em>, «Trends in Ecology &amp; Evolution» 36 (11), 2021, pp. 1036–1048, DOI 10.1016/j.tree.2021.07.006</li>
+      <li>Jack Forster, Andrew G. Hirst, David Atkinson, <em>Warming-induced reductions in body size are greater in aquatic than terrestrial species</em>, «PNAS», 5 novembre 2012, DOI 10.1073/pnas.1210460109 — meta-analisi su 169 specie</li>
+      <li>K. B. Oke, C. J. Cunningham, P. A. H. Westley et al., <em>Recent declines in salmon body size impact ecosystems and fisheries</em>, «Nature Communications» 11, 2020, art. 4155, DOI 10.1038/s41467-020-17726-z</li>
+      <li>Arpat Ozgul, Shripad Tuljapurkar, Tim G. Benton, Josephine M. Pemberton, Tim H. Clutton-Brock, Tim Coulson, <em>The Dynamics of Phenotypic Change and the Shrinking Sheep of St. Kilda</em>, «Science» 325, 2 luglio 2009</li>
+      <li>Joshua K. R. Tabh, Elin Persson, Maria Correia, Ciarán Ó Cuív, Elisa Thoral, Andreas Nord, <em>Limited evidence that body size shrinking and shape-shifting alleviate thermoregulatory pressures in a warmer world</em>, «Communications Biology», 2025 — 237 quaglie giapponesi allevate a 10, 20 e 30 °C</li>
+      <li>Arnaud Sentis, Simon Bazin, David S. Boukal, Robby Stoks, <em>Ecological consequences of body size reduction under warming</em>, «Proceedings of the Royal Society B», 2024 — nel 95% delle specie di pesci marini la produzione di uova cresce più che proporzionalmente con la taglia</li>
+    </ul>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+/* numeri all'italiana: virgola decimale */
+function it(n, dec) { return n.toFixed(dec).replace('.', ','); }
+
+/* ── APPLET 01 · IL CASSETTO DEL FIELD MUSEUM ── */
+/* Variazioni totali 1978-2016 (Weeks et al. 2020): tarso -2,4%, massa -2,6%, ala +1,3%.
+   Applicate linearmente a un esemplare medio di riferimento per renderle leggibili. */
+var ANNI = [1978, 1988, 1998, 2008, 2016];
+var BASE = { tarso: 21.40, massa: 15.60, ala: 76.00 };
+var VAR = { tarso: -0.024, massa: -0.026, ala: 0.013 };
+var NOTE = [
+  "Primo anno di raccolta. Willard comincia a misurare gli uccelli che di notte urtano i vetri del McCormick Place: nessuno, allora, pensava al clima.",
+  "Dieci anni dopo le differenze sono dentro il rumore di fondo: su un singolo esemplare lo scarto è invisibile, serve la massa dei numeri.",
+  "A metà serie il segnale comincia a emergere. Le specie si rimpiccioliscono tutte insieme, anche quelle senza nulla in comune fra loro.",
+  "Il tarso — l'osso lungo della zampa, il miglior indicatore di taglia scheletrica nei passeriformi — è ormai misurabilmente più corto.",
+  "Ultimo anno della serie: 70.716 individui di 52 specie. Il corpo è più piccolo, ma l'ala è più lunga: un corpo leggero con ali lunghe migra meglio."
+];
+
+function annoFrazione(i) { return (ANNI[i] - 1978) / (2016 - 1978); }
+
+function mostraAnno(i) {
+  var t = annoFrazione(i);
+  var tarso = BASE.tarso * (1 + VAR.tarso * t);
+  var massa = BASE.massa * (1 + VAR.massa * t);
+  var ala = BASE.ala * (1 + VAR.ala * t);
+
+  var tags = document.querySelectorAll('.cass-tag');
+  for (var k = 0; k < tags.length; k++) tags[k].classList.toggle('attivo', k === i);
+
+  document.getElementById('valTarso').textContent = it(tarso, 2) + ' mm';
+  document.getElementById('valMassa').textContent = it(massa, 2) + ' g';
+  document.getElementById('valAla').textContent = it(ala, 2) + ' mm';
+
+  document.getElementById('delTarso').textContent = t === 0 ? 'riferimento 1978' : '−' + it(Math.abs(VAR.tarso * t * 100), 2) + '% sul 1978';
+  document.getElementById('delMassa').textContent = t === 0 ? 'riferimento 1978' : '−' + it(Math.abs(VAR.massa * t * 100), 2) + '% sul 1978';
+  document.getElementById('delAla').textContent = t === 0 ? 'riferimento 1978' : '+' + it(VAR.ala * t * 100, 2) + '% sul 1978';
+
+  /* la scena: il corpo si contrae, l'ala si allunga, la zampa si accorcia — amplificati per leggibilita' */
+  var ampl = 14;
+  var kCorpo = 1 + VAR.massa * t * ampl;
+  var kAla = 1 + VAR.ala * t * ampl;
+  var kZampa = 1 + VAR.tarso * t * ampl;
+
+  document.getElementById('corpo').setAttribute('rx', (52 * kCorpo).toFixed(2));
+  document.getElementById('corpo').setAttribute('ry', (31 * kCorpo).toFixed(2));
+  document.getElementById('testa').setAttribute('r', (19 * kCorpo).toFixed(2));
+
+  var yZampa = 148 - 34 * kZampa;
+  document.getElementById('zampa1').setAttribute('y1', yZampa.toFixed(2));
+  document.getElementById('zampa2').setAttribute('y1', yZampa.toFixed(2));
+
+  var puntaAla = 44 - 42 * (kAla - 1);
+  document.getElementById('ala').setAttribute('d',
+    'M120 78 Q 86 70 ' + puntaAla.toFixed(1) + ' 90 Q 88 98 124 94 Z');
+
+  /* calibro sul tarso */
+  document.getElementById('calibroSu').setAttribute('y1', yZampa.toFixed(2));
+  document.getElementById('calibroSu').setAttribute('y2', yZampa.toFixed(2));
+  document.getElementById('calibroSu').setAttribute('x2', '116');
+  document.getElementById('calibroGiu').setAttribute('x2', '116');
+  document.getElementById('calibroAsta').setAttribute('y1', yZampa.toFixed(2));
+  document.getElementById('calibroTxt').setAttribute('y', ((yZampa + 148) / 2 + 4).toFixed(1));
+  document.getElementById('cassEtic').textContent = 'cassetto FMNH — Chicago, ' + ANNI[i];
+
+  document.getElementById('cassNota').textContent = NOTE[i];
+}
+
+(function costruisciCassetto() {
+  var box = document.getElementById('cassEtichette');
+  for (var i = 0; i < ANNI.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'cass-tag' + (i === 0 ? ' attivo' : '');
+    b.textContent = ANNI[i];
+    b.onclick = (function (k) { return function () { mostraAnno(k); }; })(i);
+    box.appendChild(b);
+  }
+  mostraAnno(0);
+})();
+
+/* ── APPLET 02 · I QUATTRO MECCANISMI ── */
+var meccanismi = [
+  {
+    pro: "Un corpo piccolo ha più superficie per ogni grammo di massa, quindi disperde calore più in fretta: è la regola che Bergmann formula nel 1847. Le appendici seguono: becchi dei pappagalli australiani +4–10% dal 1871, code più lunghe nei topi selvatici e nei toporagni.",
+    contro: "È una regola geografica trasformata in previsione temporale, due cose diverse. E l'esperimento del 2025 sulle quaglie trova che le forme «ottimizzate» danno un vantaggio metabolico reale solo nel 2,5% dei casi.",
+    badge: "Classica, ma in discussione", fill: 55,
+    txt: "È la spiegazione da manuale, e spiega bene perché il cambiamento sia così <strong>coerente fra specie lontanissime</strong> — 52 specie di uccelli di Chicago si accorciano insieme, e non hanno nulla in comune se non il termometro. Quello che non spiega è perché, messa alla prova in laboratorio, la nuova forma non renda davvero più facile sopravvivere al caldo."
+  },
+  {
+    pro: "Sull'isola di Hirta, a St Kilda, le pecore Soay hanno perso circa il 5% del peso corporeo in 24 anni. Non perché il caldo le selezioni: perché gli inverni miti hanno smesso di uccidere gli agnelli piccoli, che prima non ce la facevano.",
+    contro: "È un meccanismo locale e stagionale: funziona dove l'inverno era il filtro principale, e dice poco sulle foreste tropicali amazzoniche, dove gli uccelli si rimpiccioliscono senza alcun inverno da superare.",
+    badge: "Dimostrata, ma locale", fill: 78,
+    txt: "«In passato sopravvivevano all'inverno solo le pecore grandi e sane», spiega Tim Coulson, «ora l'erba c'è per più mesi all'anno e ce la fanno anche gli individui che crescono lentamente». Si aggiunge il <strong>«young mother effect»</strong>: le femmine giovani non riescono a fare figli grandi quanto erano loro alla nascita. Nessuna selezione per il piccolo: solo selezione <em>mancata</em> contro il piccolo."
+  },
+  {
+    pro: "L'acqua calda contiene meno ossigeno disciolto, e la superficie delle branchie cresce più lentamente del volume del corpo: il pesce grande è il primo a restare senza fiato. Nei dati, le specie acquatiche perdono il 5% di taglia per °C, le terrestri lo 0,5%.",
+    contro: "Il legame diretto con l'ossigeno è contestato: in un salmonide d'acqua fredda si è visto il rimpicciolimento con il caldo senza alcun limite branchiale misurabile. Il fattore dieci resta solido, la sua spiegazione no.",
+    badge: "Effetto certo, causa contesa", fill: 70,
+    txt: "Il dato del <strong>fattore dieci</strong> viene da 169 specie analizzate insieme da Forster, Hirst e Atkinson nel 2012, e non è in discussione. Ciò che resta aperto è il perché: l'ipotesi del limite branchiale è elegante, ma gli esperimenti che la mettono alla prova specie per specie non la confermano sempre. Intanto in Alaska i salmoni tornano più corti, e lì il colpevole è un altro ancora."
+  },
+  {
+    pro: "237 quaglie giapponesi allevate a 10, 20 e 30 °C sviluppano esattamente i corpi che si osservano in natura col riscaldamento — ma la respirometria non trova quasi nessun vantaggio termico. Gli autori parlano di «plasticità neutra, o selezione rilassata contro la taglia piccola».",
+    contro: "Resta un esperimento su una sola specie domesticata, in gabbia e con cibo illimitato: non dimostra che in natura l'adattamento termico sia assente, solo che non è necessario per produrre quelle forme.",
+    badge: "Il ribaltone recente", fill: 62,
+    txt: "È la spiegazione più scomoda: l'animale non diventa piccolo <em>per</em> sopportare il caldo, diventa piccolo <strong>perché il caldo gli rovina la crescita</strong> — meno cibo, più stress, sviluppo accorciato. Un rimpicciolimento che sembra adattamento e invece è un sintomo. Distinguere i due casi, specie per specie, è oggi il vero problema aperto."
+  }
+];
+
+function mostraMec(i) {
+  var btns = document.querySelectorAll('.mec-btn');
+  for (var k = 0; k < btns.length; k++) btns[k].classList.toggle('attivo', k === i);
+  document.getElementById('mecPro').innerHTML = meccanismi[i].pro;
+  document.getElementById('mecContro').innerHTML = meccanismi[i].contro;
+  document.getElementById('mecBadge').textContent = meccanismi[i].badge;
+  document.getElementById('mecFill').style.width = meccanismi[i].fill + '%';
+  document.getElementById('mecTesto').innerHTML = meccanismi[i].txt;
+}
+mostraMec(0);
+
+/* ── APPLET 03 · ACQUA CONTRO TERRA ── */
+var GRADI = [1, 2, 3, 4];
+var COEFF_ACQUA = -0.05, COEFF_TERRA = -0.005;
+var risChart = null, gradoAttivo = 2;
+
+function serie(coeff, gMax) {
+  var out = [];
+  for (var g = 0; g <= gMax; g++) out.push(+(100 * Math.pow(1 + coeff, g)).toFixed(2));
+  return out;
+}
+
+function etichette(gMax) {
+  var out = [];
+  for (var g = 0; g <= gMax; g++) out.push('+' + g + ' °C');
+  return out;
+}
+
+function disegnaRis() {
+  if (typeof Chart === 'undefined') return;
+  var acqua = serie(COEFF_ACQUA, gradoAttivo);
+  var terra = serie(COEFF_TERRA, gradoAttivo);
+  var dati = {
+    labels: etichette(gradoAttivo),
+    datasets: [
+      { label: 'Specie acquatiche', data: acqua, borderColor: '#2980b9', backgroundColor: 'rgba(41,128,185,0.10)', borderWidth: 2.5, tension: 0.25, pointRadius: 4, fill: true },
+      { label: 'Specie terrestri', data: terra, borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,0.10)', borderWidth: 2.5, tension: 0.25, pointRadius: 4, fill: true }
+    ]
+  };
+  if (risChart) { risChart.data = dati; risChart.update(); }
+  else {
+    risChart = new Chart(document.getElementById('risChart'), {
+      type: 'line',
+      data: dati,
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { font: { family: "'Source Sans 3', sans-serif", size: 12 }, boxWidth: 14 } },
+          tooltip: { callbacks: { label: function (c) { return c.dataset.label + ': ' + it(c.parsed.y, 1) + '% della taglia iniziale'; } } }
+        },
+        scales: {
+          y: { min: 78, max: 102, title: { display: true, text: 'taglia (% del valore iniziale)', font: { size: 11 } }, ticks: { font: { size: 11 } } },
+          x: { ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+  var a = acqua[acqua.length - 1], t = terra[terra.length - 1];
+  document.getElementById('risSintesi').innerHTML =
+    'Con <strong>+' + gradoAttivo + ' °C</strong> un animale acquatico scende al <strong>' + it(a, 1) + '%</strong> della taglia di partenza, uno terrestre al <strong>' + it(t, 1) + '%</strong>: lo stesso riscaldamento pesa ' +
+    it((100 - a) / (100 - t), 1) + ' volte di più sott\'acqua.';
+}
+
+(function costruisciRis() {
+  var box = document.getElementById('risBtns');
+  for (var i = 0; i < GRADI.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'ris-btn' + (GRADI[i] === gradoAttivo ? ' attivo' : '');
+    b.textContent = '+' + GRADI[i] + ' °C';
+    b.onclick = (function (g, el) {
+      return function () {
+        gradoAttivo = g;
+        var bs = document.querySelectorAll('.ris-btn');
+        for (var k = 0; k < bs.length; k++) bs[k].classList.toggle('attivo', bs[k] === el);
+        disegnaRis();
+      };
+    })(GRADI[i], b);
+    box.appendChild(b);
+  }
+  disegnaRis();
+})();
+
+/* ── APPLET 04 · LA CASCATA DEL CHINOOK ── */
+var catena = [
+  { cifra: '−8,0%', lab: 'Lunghezza del salmone reale',
+    txt: "È il confronto fra i Chinook pescati prima del 1990 e quelli pescati dopo il 2010, su 12,5 milioni di pesci misurati in 1.014 siti dell'Alaska. Le altre tre specie seguono, più piano: coho −3,3%, chum −2,4%, sockeye −2,1%." },
+  { cifra: '−16%', lab: 'Uova per femmina',
+    txt: "Una femmina più corta ha meno spazio per le uova, e il rapporto non è proporzionale: in uno studio del 2024 sulle conseguenze ecologiche del rimpicciolimento, nel 95% delle specie di pesci marini la produzione di uova cresce <em>più che proporzionalmente</em> con la taglia. Perdere l'8% di lunghezza costa molto più dell'8% di figli." },
+  { cifra: '−28%', lab: 'Nutrienti portati dal mare al fiume',
+    txt: "Il salmone che risale e muore è un camion di azoto e fosforo marini scaricato nelle foreste costiere: orsi, aquile e alberi ci campano. Un pesce più piccolo consegna quasi un terzo in meno di quel carico, e il conto lo paga tutto il bacino idrografico." },
+  { cifra: '−21%', lab: 'Valore commerciale per pesce',
+    txt: "Il Chinook si vende a peso, e il peso cala più della lunghezza. Per la pesca commerciale dell'Alaska significa un quinto di ricavo in meno a parità di pesci catturati — senza che il numero di salmoni sia diminuito." },
+  { cifra: '−26%', lab: 'Pasti per le comunità rurali',
+    txt: "È la voce più concreta: nei villaggi dell'Alaska interna il salmone essiccato è cibo d'inverno, non un prodotto di mercato. Lo stesso numero di pesci nella rete oggi sfama un quarto di persone in meno." }
+];
+
+function mostraAnello(i) {
+  var nodi = document.querySelectorAll('.chi-anello');
+  for (var k = 0; k < nodi.length; k++) nodi[k].classList.toggle('attivo', k === i);
+  document.getElementById('chiDettaglio').innerHTML = catena[i].txt;
+}
+
+(function costruisciCatena() {
+  var box = document.getElementById('chiCatena');
+  for (var i = 0; i < catena.length; i++) {
+    var b = document.createElement('button');
+    b.className = 'chi-anello' + (i === 0 ? ' attivo' : '');
+    b.innerHTML = '<span class="chi-cifra">' + catena[i].cifra + '</span><span class="chi-lab">' + catena[i].lab + '</span>';
+    b.onclick = (function (k) { return function () { mostraAnello(k); }; })(i);
+    box.appendChild(b);
+  }
+  mostraAnello(0);
+})();
+</script>
+</body>
+</html>
